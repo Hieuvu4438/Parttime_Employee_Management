@@ -178,32 +178,149 @@ Employees 1 and 2 already have registrations for the next week. Employee 3, Nguy
 
 The detailed scenario and expected results of the standard test case are shown in Table~\ref{tab:testing-scenario-standard}.
 
-\begin{longtable}{|p{0.08\textwidth}|p{0.42\textwidth}|p{0.42\textwidth}|}
+\begin{longtable}{|p{0.43\textwidth}|p{0.49\textwidth}|}
 \hline
-\textbf{Step} & \textbf{Action} & \textbf{Expected result} \\
+\textbf{Scenario} & \textbf{Expected result} \\
 \hline
 \endfirsthead
 \hline
-\textbf{Step} & \textbf{Action} & \textbf{Expected result} \\
+\textbf{Scenario} & \textbf{Expected result} \\
 \hline
 \endhead
-1 & Start the application. & The system displays the login interface. \\
+\begin{minipage}[t]{\linewidth}
+1. Start the application.
+\end{minipage}
+&
+\begin{minipage}[t]{\linewidth}
+The login interface appeared with:
+\begin{itemize}
+    \item a text field for entering username;
+    \item a text field for entering password;
+    \item a Login button.
+\end{itemize}
+\end{minipage} \\
 \hline
-2 & Enter username \texttt{staff01}, password \texttt{staff01}, and click the login button. & The system validates the account and displays the Registration Staff home interface. The home interface contains the \textit{Register for next week} function. \\
+\begin{minipage}[t]{\linewidth}
+2. Enter:
+\begin{itemize}
+    \item username = \texttt{staff01};
+    \item password = \texttt{staff01}.
+\end{itemize}
+and click on the Login button.
+\end{minipage}
+&
+\begin{minipage}[t]{\linewidth}
+The home interface of the registration staff appeared with:
+\begin{itemize}
+    \item User's name: ``Registration Staff'';
+    \item a button: Register for next week.
+\end{itemize}
+\end{minipage} \\
 \hline
-3 & Click the \textit{Register for next week} function. & The system displays the search employee interface. \\
+\begin{minipage}[t]{\linewidth}
+3. Click on the Register for next week button.
+\end{minipage}
+&
+\begin{minipage}[t]{\linewidth}
+The search employee interface appeared with:
+\begin{itemize}
+    \item a text field to enter keyword (employee name);
+    \item a Search button;
+    \item an empty result table.
+\end{itemize}
+\end{minipage} \\
 \hline
-4 & Enter the keyword \texttt{Nguyen Van} and click the search button. & The system displays three matching employees: Nguyen Van An, Nguyen Van Binh, and Nguyen Van Cuong. \\
+\begin{minipage}[t]{\linewidth}
+4. Enter keyword = \texttt{Nguyen Van} and click on the Search button.
+\end{minipage}
+&
+\begin{minipage}[t]{\linewidth}
+Three employees appeared in the result table:
+
+{\scriptsize
+\begin{tabular}{|p{0.11\linewidth}|p{0.18\linewidth}|p{0.36\linewidth}|p{0.25\linewidth}|}
 \hline
-5 & Select the row of Nguyen Van Cuong. & The system displays the register shift interface for Nguyen Van Cuong. The next-week shift table is displayed with all checkboxes unchecked because this employee has no registration yet. \\
+\textbf{No.} & \textbf{Code} & \textbf{Name} & \textbf{Phone} \\
 \hline
-6 & Tick Monday Shift 2, Tuesday Shift 1, Thursday Shift 1, Thursday Shift 2, and Friday Shift 2. & The system shows that five shifts are selected. \\
+1 & EMP001 & Nguyen Van An & 0901111111 \\
 \hline
-7 & Click the save button. & The system validates the selected shifts. The total number of selected shifts is five, and five is greater than or equal to the minimum threshold of four shifts per week. \\
+2 & EMP002 & Nguyen Van Binh & 0902222222 \\
 \hline
-8 & Confirm the save action. & The system saves the registration records and displays the message \textit{Registration saved successfully!}. \\
+3 & EMP003 & Nguyen Van Cuong & 0903333333 \\
 \hline
-9 & Click OK on the success message. & The system returns to the Registration Staff home interface. \\
+\end{tabular}
+}
+\end{minipage} \\
+\hline
+\begin{minipage}[t]{\linewidth}
+5. Click on the row of Nguyen Van Cuong (row 3).
+\end{minipage}
+&
+\begin{minipage}[t]{\linewidth}
+The register shift interface appeared with:
+
+\textbf{Employee Info:}
+\begin{itemize}
+    \item Code: EMP003;
+    \item Name: Nguyen Van Cuong;
+    \item Phone: 0903333333.
+\end{itemize}
+
+\textbf{Shift registration table (all unchecked):}
+
+{\scriptsize
+\begin{tabular}{|p{0.28\linewidth}|p{0.29\linewidth}|p{0.31\linewidth}|}
+\hline
+\textbf{Day} & \textbf{Shift 1} & \textbf{Shift 2} \\
+\hline
+Monday & $\square$ & $\square$ \\
+\hline
+Tuesday & $\square$ & $\square$ \\
+\hline
+Wednesday & $\square$ & $\square$ \\
+\hline
+Thursday & $\square$ & $\square$ \\
+\hline
+Friday & $\square$ & $\square$ \\
+\hline
+Saturday & $\square$ & $\square$ \\
+\hline
+Sunday & $\square$ & $\square$ \\
+\hline
+\end{tabular}
+}
+
+and a Save button.
+\end{minipage} \\
+\hline
+\begin{minipage}[t]{\linewidth}
+6. Tick the following checkboxes:
+\begin{itemize}
+    \item Monday: Shift 2;
+    \item Tuesday: Shift 1;
+    \item Thursday: Shift 1 and Shift 2;
+    \item Friday: Shift 2.
+\end{itemize}
+(total = 5 shifts)
+
+and click on the Save button.
+\end{minipage}
+&
+\begin{minipage}[t]{\linewidth}
+The system validates: total registered shifts (5) $\geq$ minimum threshold (4).
+
+A message appeared:
+
+``Registration saved successfully!''
+\end{minipage} \\
+\hline
+\begin{minipage}[t]{\linewidth}
+7. Click on the OK button of the message.
+\end{minipage}
+&
+\begin{minipage}[t]{\linewidth}
+Return to the home interface of the registration staff.
+\end{minipage} \\
 \hline
 \caption{Standard black-box test case scenario}\label{tab:testing-scenario-standard}
 \end{longtable}
