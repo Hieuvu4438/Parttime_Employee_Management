@@ -1,0 +1,103 @@
+\documentclass[12pt, a4paper]{article}
+
+% GÓI HỖ TRỢ TIẾNG VIỆT VÀ FONT
+\usepackage[utf8]{inputenc}
+\usepackage[vietnam]{babel}
+
+% GÓI TOÁN HỌC
+\usepackage{amsmath}
+\usepackage{amsfonts} % Cần thiết cho các ký hiệu như \mathbb
+
+% GÓI CĂN CHỈNH TRANG
+\usepackage{geometry}
+\geometry{a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+% GÓI SIÊU LIÊN KẾT (HYPERLINK)
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Tổng Quan về Các Dạng Tấn Công vào Hệ Thống Mật Mã RSA},
+    pdfauthor={Tổng hợp và Phân tích},
+}
+
+% THÔNG TIN TÀI LIỆU
+\title{\textbf{Tổng Quan Chi Tiết về Các Dạng Tấn Công \\ vào Hệ Thống Mật Mã RSA}}
+\author{Tổng hợp và Phân tích}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent % Bỏ thụt đầu dòng cho abstract
+Hệ thống mật mã RSA, được phát minh bởi Rivest, Shamir, và Adleman vào năm 1977, là một trong những nền tảng của mật mã hóa khóa công khai hiện đại, được sử dụng rộng rãi để đảm bảo tính bí mật, toàn vẹn và xác thực của dữ liệu số. An toàn của RSA phụ thuộc trực tiếp vào độ khó tính toán của bài toán phân tích một số nguyên lớn $N$ thành các thừa số nguyên tố cấu thành nó, $p$ và $q$. Mặc dù nền tảng toán học của RSA đã được chứng minh là vững chắc qua nhiều thập kỷ, các cuộc tấn công đa dạng đã được phát triển nhắm vào các khía cạnh khác nhau của hệ thống. Các cuộc tấn công này có thể được phân loại thành các nhóm chính: tấn công dựa trên nền tảng toán học, tấn công khai thác lỗ hổng trong quá trình triển khai (tấn công kênh phụ), tấn công vào giao thức sử dụng RSA, và các tấn công phát sinh từ việc cấu hình và quản lý khóa yếu kém. Bài viết này sẽ phân loại, phân tích chi tiết và trình bày một cách có hệ thống về các dạng tấn công chính vào hệ thống mật mã RSA.
+\end{abstract}
+
+
+
+\section{Tấn công dựa vào triển khai (Implementation Attacks)}
+
+Các cuộc tấn công này, còn được gọi là tấn công kênh phụ (side-channel attacks), không nhắm vào các điểm yếu lý thuyết của thuật toán RSA mà thay vào đó khai thác các lỗ hổng phát sinh từ cách thuật toán được triển khai trên các hệ thống vật lý (phần cứng hoặc phần mềm). Chúng khai thác thông tin bị rò rỉ một cách vô tình trong quá trình tính toán, chẳng hạn như thời gian, mức tiêu thụ điện năng, hoặc bức xạ điện từ.
+
+\subsection{Tấn công thời gian (Timing Attacks)}
+Cuộc tấn công này, do Paul Kocher đề xuất vào năm 1996, dựa trên việc đo lường chính xác thời gian thực hiện các phép toán mật mã. Trong RSA, quá trình giải mã hoặc ký số, tức là tính toán $M = C^d \pmod{N}$, thường được thực hiện bằng thuật toán "bình phương và nhân lặp" (square-and-multiply). Thời gian thực hiện của thuật toán này có thể thay đổi tùy thuộc vào các bit của khóa bí mật $d$. Ví dụ, một bit '1' trong $d$ có thể yêu cầu cả một phép bình phương và một phép nhân, trong khi một bit '0' chỉ yêu cầu một phép bình phương. Bằng cách đo lường thời gian giải mã cho một lượng lớn các bản mã khác nhau và thực hiện phân tích thống kê, kẻ tấn công có thể suy luận ra từng bit của khóa bí mật $d$.
+
+\textbf{Biện pháp phòng chống} bao gồm:
+\begin{itemize}
+    \item \textbf{Thực thi thời gian không đổi (Constant-Time Execution):} Đảm bảo rằng mọi phép toán giải mã/ký số đều mất cùng một khoảng thời gian, bất kể giá trị của khóa và dữ liệu. Điều này có thể đạt được bằng cách thêm các phép toán giả (dummy operations) để cân bằng thời gian thực thi của các nhánh trong thuật toán.
+    \item \textbf{Làm mù (Blinding):} Trước khi thực hiện phép toán giải mã, máy chủ sẽ "làm mù" bản mã $C$ bằng cách nhân nó với một số ngẫu nhiên $r$ được nâng lên lũy thừa $e$. Cụ thể, máy chủ tính $C' = C \cdot r^e \pmod{N}$. Sau đó, nó thực hiện giải mã trên $C'$ để nhận được $M' = (C')^d \pmod{N} = (C \cdot r^e)^d \pmod{N} = C^d \cdot r^{ed} \pmod{N} = M \cdot r \pmod{N}$. Cuối cùng, máy chủ "gỡ mù" kết quả bằng cách nhân $M'$ với nghịch đảo modular của $r$, tức là $M = M' \cdot r^{-1} \pmod{N}$. Vì kẻ tấn công không biết giá trị ngẫu nhiên $r$, thời gian đo được không còn tương quan trực tiếp với các bit của khóa $d$.
+\end{itemize}
+
+\subsection{Tấn công lỗi (Fault Injection Attacks)}
+Cuộc tấn công này khai thác khả năng gây ra lỗi vật lý (do tia vũ trụ, nhiễu điện từ, thay đổi điện áp) trong quá trình tính toán của thiết bị mật mã. Nhiều triển khai RSA sử dụng Định lý số dư Trung Hoa (Chinese Remainder Theorem - CRT) để tăng tốc đáng kể quá trình giải mã và ký. Thay vì tính $C^d \pmod{N}$ trực tiếp, hệ thống sẽ tính $M_p = C^{d_p} \pmod{p}$ và $M_q = C^{d_q} \pmod{q}$ (với $d_p = d \pmod{p-1}$ và $d_q = d \pmod{q-1}$), sau đó kết hợp chúng để có được kết quả cuối cùng. Nếu một lỗi xảy ra trong quá trình tính toán một trong hai thành phần (ví dụ, tính toán sai $\hat{M}_q$ nhưng $M_p$ vẫn đúng), kết quả giải mã cuối cùng $\hat{M}$ sẽ bị sai. Kẻ tấn công, khi nhận được kết quả sai $\hat{M}$, biết rằng $\hat{M} \equiv M_p \pmod{p}$ nhưng $\hat{M} \not\equiv M_q \pmod{q}$. Điều này có nghĩa là $\hat{M}^e \equiv C \pmod{p}$ nhưng $\hat{M}^e \not\equiv C \pmod{q}$. Do đó, $\hat{M}^e - C$ là một bội số của $p$ nhưng không phải là bội số của $q$. Bằng cách tính $\gcd(\hat{M}^e - C, N)$, kẻ tấn công sẽ tìm ra thừa số $p$ và phá vỡ hoàn toàn hệ thống.
+
+\textbf{Biện pháp phòng chống:} Kiểm tra lại kết quả trước khi công bố. Ví dụ, sau khi tính toán $M$ bằng CRT, hệ thống có thể kiểm tra xem $M^e \pmod{N}$ có thực sự bằng $C$ hay không.
+
+\subsection{Tấn công phân tích năng lượng (Power Analysis Attacks)}
+Tương tự như tấn công thời gian, các cuộc tấn công này giám sát mức tiêu thụ điện năng của thiết bị (ví dụ: thẻ thông minh, FPGA) trong quá trình thực hiện các phép toán mật mã. Các phép toán khác nhau (như nhân, bình phương, truy cập bộ nhớ) tiêu thụ lượng năng lượng khác nhau.
+\begin{itemize}
+    \item \textbf{Simple Power Analysis (SPA):} Kẻ tấn công phân tích trực tiếp một hoặc vài dấu vết năng lượng (power trace) để xác định chuỗi các phép toán đã được thực hiện và từ đó suy ra các bit của khóa bí mật.
+    \item \textbf{Differential Power Analysis (DPA):} Một hình thức tấn công mạnh hơn, sử dụng các phương pháp thống kê trên hàng trăm hoặc hàng nghìn dấu vết năng lượng để phát hiện các mối tương quan nhỏ giữa dữ liệu đang được xử lý và mức tiêu thụ điện năng. DPA có thể đánh bại các biện pháp đối phó đơn giản như thêm độ trễ ngẫu nhiên.
+\end{itemize}
+
+\section{Tấn công giao thức (Protocol Attacks)}
+
+Các cuộc tấn công này không nhắm vào thuật toán RSA hay việc triển khai cụ thể, mà khai thác các lỗ hổng trong cách RSA được tích hợp và sử dụng như một phần của một giao thức truyền thông lớn hơn.
+
+\subsection{Tấn công bản mã lựa chọn (Chosen-Ciphertext Attack - CCA)}
+Năm 1998, Daniel Bleichenbacher đã mô tả một cuộc tấn công thực tế và tàn khốc vào các giao thức sử dụng định dạng đệm PKCS\#1 phiên bản 1.5, một tiêu chuẩn phổ biến vào thời điểm đó (ví dụ, trong SSL/TLS). Trong cuộc tấn công này, kẻ tấn công bắt đầu với một bản mã hợp lệ $C$. Sau đó, họ tạo ra hàng nghìn bản mã đã được sửa đổi một chút và gửi chúng đến máy chủ để giải mã. Máy chủ, sau khi giải mã, sẽ kiểm tra xem phần đệm (padding) của bản rõ có tuân thủ định dạng PKCS\#1 hay không. Nếu không, nó sẽ trả về một thông báo lỗi. Thông báo lỗi này, mặc dù có vẻ vô hại, lại hoạt động như một "oracle" (máy tiên tri), tiết lộ một bit thông tin (padding hợp lệ hay không). Bằng cách phân tích phản hồi của oracle đối với các bản mã được chế tạo cẩn thận, kẻ tấn công có thể từng bước thu hẹp không gian khả năng của bản rõ và cuối cùng giải mã hoàn toàn bản mã gốc mà không cần biết khóa bí mật.
+
+\textbf{Biện pháp phòng chống:} Sử dụng các lược đồ đệm an toàn hơn, được chứng minh là an toàn trước các cuộc tấn công CCA, chẳng hạn như Optimal Asymmetric Encryption Padding (OAEP), được khuyến nghị trong các phiên bản mới hơn của PKCS\#1.
+
+\subsection{Tấn công quảng bá (Broadcast Attack)}
+Cuộc tấn công này, do Johan Håstad đề xuất, xảy ra khi cùng một thông điệp không được đệm (unpadded message) $M$ được gửi đến nhiều người nhận khác nhau. Mỗi người nhận có một khóa công khai riêng $\langle N_i, e \rangle$. Nếu một số mũ công khai $e$ nhỏ (ví dụ, $e=3$) được sử dụng chung cho tất cả mọi người, kẻ tấn công có thể thu thập đủ số lượng bản mã tương ứng. Ví dụ, với $e=3$, kẻ tấn công thu thập ba bản mã: $C_1 \equiv M^3 \pmod{N_1}$, $C_2 \equiv M^3 \pmod{N_2}$, $C_3 \equiv M^3 \pmod{N_3}$. Giả sử $N_1, N_2, N_3$ là các số nguyên tố cùng nhau, kẻ tấn công có thể sử dụng Định lý số dư Trung Hoa để giải hệ phương trình đồng dư này và tìm ra một giá trị duy nhất $X \pmod{N_1 N_2 N_3}$ sao cho $X \equiv C_i \pmod{N_i}$. Giá trị này chính là $M^3$. Vì $M$ là thông điệp gốc và không được đệm, nó có thể nhỏ hơn các giá trị $N_i$. Do đó, $M^3$ có khả năng nhỏ hơn tích $N_1 N_2 N_3$. Kẻ tấn công chỉ cần lấy căn bậc ba của $X$ trên tập số nguyên để phục hồi lại thông điệp $M$.
+
+\textbf{Biện pháp phòng chống:} Luôn luôn sử dụng đệm ngẫu nhiên cho các thông điệp trước khi mã hóa. Việc đệm đảm bảo rằng mỗi lần mã hóa cùng một thông điệp sẽ tạo ra các bản mã khác nhau, làm cho cuộc tấn công này không thể thực hiện được.
+
+\subsection{Tấn công thông điệp liên quan (Related-Message Attack)}
+Franklin và Reiter đã mô tả một cuộc tấn công xảy ra khi hai thông điệp $M_1$ và $M_2$ có một mối quan hệ tuyến tính đã biết (ví dụ, $M_2 = M_1 + \delta$ với $\delta$ đã biết) được mã hóa bằng cùng một khóa công khai $\langle N, e \rangle$ với $e$ nhỏ (ví dụ, $e=3$). Kẻ tấn công, khi có được hai bản mã $C_1 = M_1^e \pmod{N}$ và $C_2 = M_2^e = (M_1 + \delta)^e \pmod{N}$, có thể khai thác mối quan hệ này. Họ có thể thiết lập một hệ phương trình đa thức và sử dụng các kỹ thuật đại số như tính resultant để loại bỏ biến $M_1$ và giải phương trình, từ đó tìm ra cả $M_1$ và $M_2$ một cách hiệu quả.
+
+\section{Tấn công do cấu hình sai và quản lý khóa kém}
+
+Đây là nhóm các cuộc tấn công không phải do điểm yếu của thuật toán mà do lỗi của con người trong quá trình tạo, quản lý và sử dụng khóa RSA.
+
+\subsection{Sử dụng chung mô-đun (Common Modulus Attack)}
+Việc sử dụng cùng một mô-đun $N$ cho nhiều cặp khóa công khai/bí mật khác nhau là một sai lầm nghiêm trọng về mặt bảo mật. Giả sử hai người dùng có các cặp khóa $\langle N, e_1, d_1 \rangle$ và $\langle N, e_2, d_2 \rangle$. Nếu một kẻ tấn công có được hai khóa công khai $\langle N, e_1 \rangle$ và $\langle N, e_2 \rangle$, và một thông điệp $M$ được mã hóa cho cả hai người dùng, tạo ra $C_1 = M^{e_1} \pmod{N}$ và $C_2 = M^{e_2} \pmod{N}$. Nếu $\gcd(e_1, e_2)=1$, kẻ tấn công có thể sử dụng Thuật toán Euclid mở rộng để tìm các số nguyên $x, y$ sao cho $e_1x + e_2y = 1$. Khi đó, họ có thể tính $C_1^x \cdot C_2^y \pmod{N} = (M^{e_1})^x \cdot (M^{e_2})^y \pmod{N} = M^{e_1x + e_2y} \pmod{N} = M^1 \pmod{N} = M$. Bằng cách này, kẻ tấn công có thể khôi phục thông điệp $M$ mà không cần bất kỳ khóa bí mật nào. Do đó, mỗi thực thể phải tạo và sử dụng một mô-đun $N$ duy nhất của riêng mình.
+
+\subsection{Số mũ bí mật thấp (Low Private Exponent)}
+Để tăng tốc độ giải mã, có một sự cám dỗ trong việc chọn một số mũ bí mật $d$ có giá trị nhỏ. Tuy nhiên, M. Wiener đã chứng minh vào năm 1990 rằng nếu $d < \frac{1}{3}N^{1/4}$, thì khóa bí mật $d$ có thể được phục hồi một cách hiệu quả từ khóa công khai $\langle N, e \rangle$. Cuộc tấn công này dựa trên việc sử dụng phương pháp xấp xỉ liên phân số (continued fractions) để tìm các xấp xỉ hợp lý cho $\frac{e}{N}$, từ đó suy ra $d$. Sau đó, Boneh và Durfee đã cải thiện giới hạn này, cho thấy các cuộc tấn công có thể thành công ngay cả khi $d < N^{0.292}$. Do đó, để đảm bảo an toàn, $d$ phải được chọn đủ lớn, thường có cùng bậc độ lớn với $N$.
+
+\subsection{Số mũ công khai thấp (Low Public Exponent)}
+Việc sử dụng một số mũ công khai $e$ nhỏ, chẳng hạn như $e=3$ hoặc phổ biến hơn là $e=2^{16}+1=65537$, là một thực tiễn phổ biến để tăng tốc độ mã hóa và xác minh chữ ký. Bản thân việc sử dụng $e$ nhỏ không phải là một lỗ hổng trực tiếp nếu các biện pháp phòng ngừa được áp dụng. Tuy nhiên, nó làm cho hệ thống dễ bị tổn thương hơn trước các cuộc tấn công giao thức đã đề cập ở trên, như tấn công quảng bá của Håstad và tấn công thông điệp liên quan, đặc biệt là khi thông điệp không được đệm đúng cách. Giá trị $e=65537$ được ưa chuộng vì nó là một số nguyên tố Fermat, chỉ có hai bit '1' trong biểu diễn nhị phân, giúp tối ưu hóa hiệu suất mà vẫn đủ lớn để tránh các vấn đề của $e=3$.
+
+\subsection{Lộ một phần khóa bí mật (Partial Key Exposure)}
+Boneh, Durfee và Frankel đã chỉ ra rằng RSA đặc biệt dễ bị tấn công nếu ngay cả một phần nhỏ của khóa bí mật $d$ bị lộ. Nghiên cứu của họ cho thấy nếu một phần tư các bit có trọng số thấp nhất (least significant bits) của $d$ bị tiết lộ, kẻ tấn công có thể tái tạo lại toàn bộ khóa $d$ một cách hiệu quả về mặt tính toán, đặc biệt khi số mũ công khai $e$ nhỏ. Tương tự, nếu một phần tư các bit có trọng số cao nhất (most significant bits) bị lộ, khóa cũng có thể bị khôi phục. Điều này nhấn mạnh tầm quan trọng sống còn của việc bảo vệ tuyệt đối và toàn vẹn từng bit của khóa bí mật.
+
+\section{Kết luận}
+Qua nhiều thập kỷ nghiên cứu và ứng dụng, hệ thống mật mã RSA đã phải đối mặt với nhiều cuộc tấn công tinh vi, từ những thách thức toán học cơ bản đến việc khai thác các lỗi triển khai và giao thức tinh vi. Tuy nhiên, điều đáng chú ý là cho đến nay, chưa có cuộc tấn công nào có thể phá vỡ nền tảng toán học của RSA khi nó được cấu hình với các tham số đủ mạnh (ví dụ: độ dài khóa 2048-bit trở lên). Thay vào đó, phần lớn các cuộc tấn công thành công trong thực tế đều nhắm vào những cạm bẫy trong quá trình triển khai, sử dụng và quản lý. Do đó, để đảm bảo an toàn cho hệ thống RSA trong thế giới số, việc lựa chọn tham số cẩn thận, quản lý khóa an toàn, và quan trọng nhất là việc tuân thủ nghiêm ngặt các thực hành tốt nhất như sử dụng các lược đồ đệm ngẫu nhiên và an toàn (như OAEP) là cực kỳ quan trọng. An ninh của RSA không chỉ nằm ở độ khó của bài toán phân tích thừa số nguyên tố, mà còn nằm ở sự kỷ luật và chính xác trong từng bước triển khai và ứng dụng nó.
+
+\end{document}

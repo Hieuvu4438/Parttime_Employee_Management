@@ -1,0 +1,30 @@
+\documentclass[12pt, a4paper]{report}
+
+\input{preamble}
+
+\begin{document}
+
+\input{frontmatter/titlepage}
+\input{frontmatter/professor_comments}
+
+\backgroundsetup{
+  scale=1,
+  color=black,
+  opacity=0.8,
+  angle=0,
+  position=current page.center,
+  contents={}
+}
+\tableofcontents
+\listoffigures
+
+\input{chapters/00_opening}
+\input{chapters/01_concept_explanation}
+\input{chapters/02_business_model_natural_language}
+\input{chapters/03_business_model_uml}
+\input{chapters/04_design_phase}
+\input{chapters/05_testing_phase}
+% \input{chapters/test}
+\input{chapters/99_conclusion}
+
+\end{document}

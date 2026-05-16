@@ -1,0 +1,50 @@
+% Vietnamese and encoding support
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[]{babel}
+
+% Tables
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\setlistdepth{6}
+\renewlist{itemize}{itemize}{6}
+\setlist[itemize,1]{label=\textbullet}
+\setlist[itemize,2]{label=--}
+\setlist[itemize,3]{label=*}
+\setlist[itemize,4]{label=\textperiodcentered}
+\setlist[itemize,5]{label=\textbullet}
+\setlist[itemize,6]{label=--}
+
+% Page layout
+\usepackage[left=1.5cm,right=1.5cm,top=2cm,bottom=2cm]{geometry}
+
+% Math, graphics, and formatting
+\usepackage{background}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{verbatim}
+
+\lstdefinestyle{mypython}{
+  language=Python,
+  backgroundcolor=\color{black!5},
+  basicstyle=\ttfamily\tiny,
+  keywordstyle=\color{blue}\bfseries,
+  stringstyle=\color{green!50!black},
+  commentstyle=\color{gray},
+  numbers=left,
+  numberstyle=\tiny,
+  stepnumber=1,
+  numbersep=8pt,
+  frame=single,
+  breaklines=true,
+  tabsize=2,
+  showstringspaces=false
+}

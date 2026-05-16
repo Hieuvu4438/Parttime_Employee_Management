@@ -1,0 +1,138 @@
+\chapter{Concept explaination}
+
+\small
+\section*{Glossary List}
+\begin{longtable}{|>
+{\centering\arraybackslash}p{0.9cm}|>{\raggedright\arraybackslash}p{3.7cm}|>{\raggedright\arraybackslash}p{4.0cm}|>{\raggedright\arraybackslash}p{7.2cm}|}
+
+\hline
+\textbf{STT} & \textbf{Vietnamese} & \textbf{English} & \textbf{Meaning} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{STT} & \textbf{Vietnamese} & \textbf{English} & \textbf{Meaning} \\
+\hline
+\endhead
+
+\hline
+\multicolumn{4}{r}{\textit{}} \\
+\endfoot
+
+\hline
+\endlastfoot
+
+\multicolumn{4}{c|}{\textbf{Concepts related to human}} \\ \hline
+1 & Nhân viên bán thời gian & Parttime Employee & A person who works for a restaurant and receives wages based on working hours. An employee must register shifts for the next week and must ensure the total registered time meets the minimum threshold requirement. \\ \hline
+2 & Quản lý lịch trình & Schedule Manager & A person responsible for selecting employees for the next week's schedule. \\ \hline
+3 & Quản lý tài chính & Financial Manager & A person responsible for calculating the wages of all employees in a specific working period. \\ \hline
+4 & Nhân viên đăng ký lịch & Registration Staff & A person responsible for assisting employees in registering suitable working shifts for the next week. \\ \hline
+5 & Quản lý cấp cao & Executive Manager & A person responsible for generating statistics on employee productivity over a specific working period. \\ \hline
+
+% ==================== GROUP 2 ====================
+\multicolumn{4}{c|}{\textbf{Concepts related to objects}} \\ \hline
+6 & Phiếu lương & Payslip & The main object generated after wage calculation, containing three parts: identification (employee and period info), wage summary (weekly/monthly wage totals: total hours, overtime, fines, net pay), and shift detail (detailed breakdown per shift). \\ \hline
+7 & Chuỗi nhà hàng & Restaurant Chain & A business entity that owns and operates multiple restaurants. \\ \hline
+8 & Nhà hàng & Restaurant & A location where part-time employees are assigned to work in shifts. \\ \hline
+9 & Ca làm việc & Shift & A period of the day during which restaurant employees work, defined by a specific start and end time. \\ \hline
+10 & Ca làm việc 1 & Shift 1 & The first shift of the day, from 8:00 AM to 4:00 PM. \\ \hline
+11 & Ca làm việc 2 & Shift 2 & The second shift of the day, from 4:00 PM to 12:00 AM (midnight). \\ \hline
+12 & Mức lương theo giờ & Hourly Rate & The fixed wage rate applied equally to all hourly employees, used as the base multiplier for calculating shift wages and overtime pay. \\ \hline
+13 & Ngày làm việc & Working Day & A working day consists of 2 shifts: Shift 1 (8am–4pm) and Shift 2 (4pm–12am). \\ \hline
+14 & Hợp đồng & Contract & A signed document that authorizes an employee to work at a restaurant and allows them to register working shifts. \\ \hline
+15 & Thời gian làm việc khả dụng & Available Working Time & The time slots during which an employee is available to work, used as the basis for weekly shift registration. \\ \hline
+16 & Ngưỡng & Threshold & The level or point at which something begins to take effect. \\ \hline
+17 & Ngưỡng làm việc tối thiểu & Minimum Shift Threshold & The minimum number of shifts an employee must register per week. This threshold may be adjusted weekly before scheduling begins. \\ \hline
+18 & Lịch đăng ký & Registration Schedule & The weekly schedule submitted by employees indicating the shifts they are available and wish to work, prior to review by the Schedule Manager. \\ \hline
+19 & Lịch làm việc cho tuần tới & Next Week Schedule & The finalized work schedule for the upcoming week, created by the Schedule Manager based on employee registrations and announced to all staff. \\ \hline
+20 & Số lượng nhân viên tối thiểu mỗi ca & Required Number of Employees per Shift (N) & The minimum number of employees that must be assigned to each shift. The Schedule Manager must ensure every shift meets this requirement. \\ \hline
+21 & Thẻ & Card & The item used by an employee to perform check-in or check-out duties. \\ \hline
+22 & Thẻ vào ca & Check-in Card & The card scanned by an employee upon arriving at work to record their actual check-in time for the shift. \\ \hline
+23 & Thẻ ra ca & Check-out Card & The card scanned by an employee upon leaving work to record their actual check-out time for the shift. \\ \hline
+24 & Thời gian làm việc thực tế & Actual Working Hours & The actual duration an employee worked in a shift, calculated from check-in to check-out time, used as the basis for wage calculation. \\ \hline
+25 & Tiền lương theo tuần & Weekly Wages & The total wages paid to an employee each week, calculated based on actual working hours, including overtime bonuses and deductions for violations. \\ \hline
+26 & Lương tăng ca & Overtime Pay & Additional compensation paid to an employee for hours worked beyond 8 hours in a shift, calculated at the overtime rate. \\ \hline
+27 & Thời gian vắng mặt & Absence Time & The amount of time deducted from an employee's wages due to late arrival or early departure compared to the scheduled shift times. \\ \hline
+28 & Bảng đăng ký theo tuần & Registration Table & A table with 7 rows (one for each day of the next week), where each row has 2 checkboxes corresponding to Shift 1 and Shift 2. \\ \hline
+29 & Bảng lựa chọn nhân viên & Employee Selection Table & A table with 7 rows (one per day of the next week), each row having 2 columns for the 2 shifts. Each column lists the names of employees registered for that shift. \\ \hline
+30 & Tên nhân viên & Employee Name & The full name of a part-time employee, used for searching, displaying, and identifying within the system. \\ \hline
+31 & Số điện thoại nhân viên & Employee Phone Number & The contact phone number of a part-time employee, shown in shift selection and wage calculation screens. \\ \hline
+32 & Tổng số giờ được lên lịch cho tuần tới & Total Scheduled Hours (Next Week) & The total number of hours an employee is currently scheduled to work in the upcoming week. Used as a sorting key when assigning employees to shifts. \\ \hline
+33 & Danh sách nhân viên đã đăng ký ca & List of Registered Employees & A list of employees who have registered for a specific shift but have not yet been assigned. Each entry shows the employee's name, phone number, and total scheduled hours for next week, sorted in ascending order of scheduled hours. \\ \hline
+34 & Tuần & Week & The time unit used for grouping work data, calculating wages, and generating reports. \\ \hline
+35 & Giao diện tính lương & Wage Calculation Interface & The screen that allows the Financial Manager to enter a date range and view the list of wages for all employees in that period. \\ \hline
+36 & Kỳ & Period & A defined length of time with a start date and an end date. \\ \hline
+37 & Ngày bắt đầu kỳ & Starting Date & The start date entered by the Financial Manager to define the beginning of the wage calculation period. \\ \hline
+38 & Ngày kết thúc kỳ & End Date & The end date entered by the Financial Manager to define the end of the wage calculation period. \\ \hline
+39 & Mã nhân viên & Employee Code & The unique identifier assigned to each employee for distinguishing them within the system. \\ \hline
+40 & Tổng giờ tăng ca tuần & Total Overtime Hours (Week) & The total number of overtime hours worked by an employee across all shifts in a given week. \\ \hline
+41 & Tổng giờ vi phạm tuần & Total Late/Early Hours (Week) & The total number of hours an employee arrived late or left early across all shifts in a given week. \\ \hline
+42 & Tổng tiền phạt tuần & Total Fines (Week) & The total monetary deduction applied to an employee for all late arrivals and early departures in a given week. \\ \hline
+43 & Tổng tiền thực nhận tuần & Total Net Pay (Week) & The final amount an employee receives for the week, after adding overtime pay and subtracting fines from the base shift wages. \\ \hline
+44 & Bảng lương tuần & Weekly Wage Table & The list displaying aggregated wage information for all employees in the selected period, one employee per row, sorted alphabetically by name. \\ \hline
+45 & Bảng chi tiết lương ca & Shift Wage Detail Table & The detailed table displayed when a Financial Manager selects an employee from the weekly wage list, showing one row per shift with full wage breakdown. \\ \hline
+46 & Thứ trong tuần & Day of Week & The name of the day (e.g., Monday, Tuesday) corresponding to a shift record, shown in the wage detail table. \\ \hline
+47 & Ngày & Date & The specific calendar date of a shift, used as the timeline reference in wage detail and statistics tables. \\ \hline
+48 & Giờ vào ca & Check-in Time & The actual time an employee scanned their check-in card at the start of a shift. \\ \hline
+49 & Giờ ra ca & Check-out Time & The actual time an employee scanned their check-out card at the end of a shift. \\ \hline
+50 & Số giờ trong ca & Number of Hours in Shift & The standard duration of a shift (8 hours), used as the baseline to determine whether overtime applies. \\ \hline
+51 & Tiền trong ca & Shift Base Pay & The gross pay for a shift, calculated by multiplying actual hours worked by the hourly rate, before adding overtime or subtracting deductions. \\ \hline
+52 & Số giờ tăng ca & Overtime Hours & The number of hours worked beyond the standard 8 hours in a shift, used to calculate overtime pay. \\ \hline
+53 & Tiền tăng ca & Overtime Amount & The additional monetary compensation for overtime hours worked in a shift. \\ \hline
+54 & Tiền phạt ca & Shift Fine & The monetary penalty deducted for late arrival or early departure in a single shift. \\ \hline
+55 & Tổng tiền nhận ca & Net Pay per Shift & The final amount received for a single shift, calculated as base pay + overtime – fines, which is summed to form the weekly total. \\ \hline
+56 & Thống kê & Statistics & A collection of numerical facts or measurements about people, business performance, or other conditions. \\ \hline
+57 & Ngày bắt đầu thống kê & Statistics Start Date & The start date entered by the Executive Manager to define the beginning of the employee statistics period. \\ \hline
+58 & Ngày kết thúc thống kê & Statistics End Date & The end date entered by the Executive Manager to define the end of the employee statistics period. \\ \hline
+59 & Tổng giờ vi phạm & Total Violation Hours & The total hours an employee arrived late or left early during the statistics period. Used as the primary sorting key in the Best Employees report. \\ \hline
+60 & Tổng tiền phạt & Total Fines & The total monetary deductions applied to an employee for all violations during the statistics period. \\ \hline
+61 & Số giờ đi muộn/về sớm & Hours Late/Early & The number of hours an employee arrived late or left early for a specific shift. \\ \hline
+62 & Giao diện thống kê xuất sắc & Best Employees Statistics Interface & The screen where the Executive Manager enters a date range and views the ranked list of employees sorted by total violation hours. \\ \hline
+63 & Danh sách nhân viên xuất sắc & Best Employees List & The list of employees displayed in the statistics screen, sorted in ascending order of total late/early hours, showing each employee's productivity summary for the selected period. \\ \hline
+64 & Bảng chi tiết hiệu suất nhân viên & Employee Performance Detail Table & The detailed table shown when an Executive Manager selects an employee, displaying one row per shift with check-in/out times, actual hours worked, and fines for the statistics period. \\ \hline
+65 & Giao diện tìm kiếm nhân viên & Employee Search Interface & The first screen displayed when opening the Registration module. It contains a search field for staff to enter an employee's name and retrieve matching results. \\ \hline
+66 & Từ khóa tìm kiếm & Search Keyword & The text string entered by staff into the search field. The system uses this keyword to filter and return employees whose names contain it. \\ \hline
+67 & Danh sách nhân viên tìm kiếm & Employee Search Result List & The list returned after a search, where each entry represents one employee whose name contains the entered keyword. Staff selects the correct employee from this list to proceed. \\ \hline
+68 & Giao diện đăng ký ca & Register Shift Interface & The main screen of the registration module, displaying the selected employee's information and a 7-day × 2-shift registration table for choosing shifts. \\ \hline
+
+% ==================== GROUP 3 ====================
+\multicolumn{4}{c|}{\textbf{Concepts related to activities}} \\ \hline
+69 & Yêu cầu đính chính & Correction Request & The action taken by an employee to submit a complaint or request correction of wage-related information (e.g., incorrect working hours, wrong fines, missing shifts, ...) when errors are found in the payslip or wage table. \\ \hline
+70 & Đăng ký ca làm việc & Shift Registration & The activity performed by Registration Staff on behalf of an employee to select available working shifts for the next week within the system. \\ \hline
+71 & Thông báo lịch làm & Schedule Announcement & The activity of notifying all staff of the finalized next week schedule after approval by the Schedule Manager. \\ \hline
+72 & Tình trạng đến muộn & Late Arrival & An employee checks in after the official start time of their assigned shift, resulting in absence time being deducted from weekly wages. \\ \hline
+73 & Tình trạng về sớm & Early Leave & An employee checks out before the official end time of their assigned shift, resulting in absence time being deducted from weekly wages. \\ \hline
+74 & Truy vấn thông tin & Query & The activity of searching for or calculating information from available data. \\ \hline
+75 & Báo lỗi truy vấn & Query Error Announce & The activity of informing users about query errors. \\ \hline
+76 & Nhập thông tin tìm kiếm nhân viên & Enter Search Keyword & The activity where Registration Staff types an employee's name into the search field and clicks Search to retrieve a matching list. \\ \hline
+77 & Lựa chọn nhân viên đăng ký & Select Employee for Registration & The activity where Registration Staff selects the correct employee from the search result list to proceed with shift registration. \\ \hline
+78 & Lựa chọn lịch cho tuần tới & Select Next Week Shifts & The activity where Registration Staff checks the boxes corresponding to the shifts the employee wishes to work in the next week. \\ \hline
+79 & Lưu lịch đăng ký ca làm nhân viên & Save Employee Shift Registration & The activity of saving the selected shift registrations for an employee into the system for use in next week's scheduling. \\ \hline
+80 & Lựa chọn nhân viên cho ca làm & Select Employee for Shift & The activity where the Schedule Manager picks suitable employees from the registered list to fill a specific shift slot for the next week. \\ \hline
+81 & Lưu danh sách nhân viên đã được duyệt & Save Assigned Schedule & The activity of saving the finalized shift assignments for the next week after the Schedule Manager completes all selections. \\ \hline
+82 & Thống kê nhân viên xuất sắc & Statistics of Best Employees & The activity performed by the Executive Manager to generate a ranked report of employees sorted by total late/early hours over a specified period. \\ \hline
+83 & Nhập kỳ tính toán & Enter Calculation Period & The activity of inputting the start date and end date to define the time range for wage calculation or employee statistics. \\ \hline
+84 & Xem chi tiết thống kê nhân viên & View Employee Statistics Detail & The activity of selecting an employee from the statistics list to view their detailed shift-by-shift performance data for the specified period. \\ \hline
+85 & Tìm kiếm nhân viên & Search Employee & The action performed by staff of entering an employee name keyword and clicking Search so the system returns a list of employees whose names contain the keyword. \\ \hline
+86 & Chọn nhân viên & Select Employee & The action of designating a specific employee from the search result list to proceed with shift registration. \\ \hline
+87 & Quét thẻ & Card Scan & The action to confirm that an employee has started or ended a working shift. \\ \hline
+88 & Quét thẻ vào ca & Check-in Card Scan & The activity where an employee scans their check-in card at the start of a shift to record their actual arrival time in the system. \\ \hline
+89 & Quét thẻ ra ca & Check-out Card Scan & The activity where an employee scans their check-out card at the end of a shift to record their actual departure time in the system. \\ \hline
+90 & Tính lương tuần & Calculate Weekly Wages & The activity performed by the Financial Manager to compute the total wages for all employees over a specified period based on actual working hours. \\ \hline
+91 & Xem chi tiết lương ca & View Shift Wage Detail & The activity of selecting an employee from the weekly wage list to view the detailed wage breakdown for each of their individual shifts. \\ \hline
+92 & Xem chi tiết hiệu suất nhân viên & View Employee Performance Detail & The activity of viewing the detailed shift-by-shift working history of a selected employee, including check-in/out times, actual hours, and fines during the statistics period. \\ \hline
+
+% ==================== GROUP 4 ====================
+\multicolumn{4}{c|}{\textbf{Concepts related to rules}} \\ \hline
+93 & Xếp lịch ưu tiên & Priority Scheduling Rule & When the number of registered employees for a shift exceeds the required number N, priority is given to employees with fewer total scheduled hours for the next week. \\ \hline
+94 & Ưu tiên hiển thị nhân viên & Employee List Display Order & In the shift selection screen, registered employees are listed in ascending order of total scheduled hours for the next week to support the Priority Scheduling Rule. Applied in the "Schedule Next Week" module. \\ \hline
+95 & Quy tắc tính lương & Wage Calculation Rule & The rule for calculating wages for all part-time employees based on parameters such as actual working hours, hourly rate, violations, etc. \\ \hline
+96 & Quy tắc tính tăng ca & Overtime Calculation Rule & If an employee works more than 8 hours in a shift, the excess time is classified as overtime and compensated at the overtime rate. Applied in the "Calculate Weekly Wages" module. \\ \hline
+97 & Quy tắc khấu trừ vi phạm & Violation Deduction Rule & The rule defining how late arrival and early departure time is measured and deducted from the employee's wages for the corresponding shift. Applied in the "Calculate Weekly Wages" module. \\ \hline
+98 & Quy tắc sắp xếp A–Z & Alphabetical Sorting Rule & The employee wage list is displayed sorted alphabetically by employee name. Applied in the "Calculate Weekly Wages" module. \\ \hline
+99 & Quy tắc sắp xếp vi phạm tăng dần & Ascending Violations Sort Rule & The employee list is sorted in ascending order of total late/early hours. Applied in the "Statistics of Best Employees" module. \\ \hline
+100 & Mức lương theo giờ & Hourly Rate & The fixed wage rate applied equally to all hourly employees, used as the base multiplier for computing shift wages and overtime compensation. \\ \hline
+101 & Ngưỡng số ca tối thiểu mỗi tuần & Minimum Shift Threshold Rule & The minimum number of shifts an employee must register per week. This threshold may change on a weekly basis before scheduling begins. \\ \hline
+102 & Số nhân viên tối thiểu mỗi ca (N) & Required Employees per Shift Rule (N) & The minimum number N of employees that must be assigned to each shift. Every shift in the next week schedule must meet this requirement. \\ \hline
+\end{longtable}
+

@@ -1,0 +1,394 @@
+\chapter{Business model by Natural Language}
+\section{Object is scope of the system}
+
+\begin{itemize}
+    \item Object: The system manages Part-time Employee contracts, Registration Schedule, Next Week Schedule, Actual Working Hours (via Card Scan), and the computation of Weekly Wages and Statistics.
+    \item Scope: A desktop-based or centralized System enabling the management of schedules, working hours, and payroll within a Restaurant Chain.
+    \item Users: Registration Staff, Schedule Manager, Financial Manager, Executive Manager, and Parttime Employees.
+    \item Functions: Managing employee shift registrations, scheduling shifts based on requirements and priority, controlling daily check-in/check-out data, calculating wages with overtime/deductions, and generating performance statistics.
+\end{itemize}
+
+\section{Who?What could do?}
+\begin{itemize}
+    \item Registration Staff: Performs Select Employee for Registration.
+    \item Schedule Manager: Performs Select Employee for Shift from the List of Registered Employees and issues the Schedule Announcement.
+    \item Financial Manager: Performs Calculate Weekly Wages.
+    \item Executive Manager: Performs Statistics of Best Employees.
+
+\end{itemize}
+
+\section{How does the function work?}
+\subsection{Function 1: Register for next week}
+\begin{itemize}
+    \item Parttime Employee wants to register the next week schedule.
+    \item Registration Staff accesses and opens the next week’s schedule from the system’s homepage.
+    \begin{itemize}
+        \item   The Employee Search Interface apppears, which includes a search text field and a search button.
+        \item	Parttime Employee inform the Employee Name to Registration Staff, Registration Staff then Enter Search Keyword (Entering the string from the Parttime Employee’s information) into the search field - which contains a pre-set placeholder and click the search button to initiate the process.
+        \item If Registration Staff clicks the search button without any input’s string:
+        \begin{itemize}
+            \item The system interface displays the alert: “Please entering the search keyword”.
+            \item Registration Staff asks the Parttime Employee to reinform.
+            \begin{itemize}
+                \item If Parttime Employee refuses to reprovide\\
+                → Finish.
+                \item If Parttime Staff reprovide:\\
+                → Return to filling search information step.
+            \end{itemize}
+        \end{itemize}
+        \item If the input string is not empty:
+        \begin{itemize}
+            \item The system starts to Search Employee, the system queries the database and updates the Employee Search Interface to display a list of valid employees whose names contain the entered keyword (showing Employee Code, Name, and Phone number).
+            \item If the results after querying is empty, the system displays a message on the Employee Search Interface: "No employee found.", Registration Staff asks Parttime Employee to reinform the input information:
+            \begin{itemize}
+                \item If the Parttime Employee doesn’t provide the information:\\
+                → Finish.
+                \item If the Parttime Employee provide the information:\\
+                → Return to filling search information step.
+            \end{itemize}
+            \item If the results after querying is not empty
+            \begin{itemize}
+                \item The system filters out and shows the list of Parttime Employees that appeared in Employee Search Result List - including Employee code, Employee name, phone number
+                \item If the Parttime Employee has appeared in Employee Search Result List:\\
+            → Registration Staff choose the exact Parttime Employee.\\
+            → The registration interface pops up. This interface displays: The selected employee's information, a registration table with 7 rows representing the 7 days of the next week and 2 columns containing checkboxes (representing the available shifts per day) \\
+            → Registration Staff asks the Parttime Employee to provide the register schedule that he wants to register for the next week and then Select Next Week Shifts by ticking the checkboxes into the table.\\
+            → Verifying and Storing: The system Save Employee Shift Registration. It counts the sum of the ticked checkboxes and compares to the Minimum Shift Threshold.
+            \begin{quote}
+                \item • If the sum of the ticked checkboxes is less than Minimum Shift Threshold\\
+                → Alerting the announcement requiring supplement shift for reaching the Minimum \\
+                \item • If the sum of the ticked checkboxes is greater or equal compare to Minimum Shifts Threshold. The system accepts the valid input and update to database. Finally, there’s a full Registration Schedule. \\
+                → The system verifies the input, saves the shift registration data to the database, and displays a success notification.\\ → Finish. 
+            \end{quote}
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsection{Function 2: Schedule next week}
+\begin{itemize}
+    \item A schedule manager want to generate the schedule for the next week:
+    \item The schedule manager select the function Schedule next week from homepage’s system.
+        \begin{itemize}
+        \item The scheduling interface appears:
+            \begin{itemize}
+                \item A table with 7 lines corresponding to 7 days of the next week, each row has 2 columns corresponding to 2 shifts of the day.
+                \item Each column contains the names of employees registered for that shift.
+            \end{itemize}
+        \item The staff clicks on a shift for reviewing the registered employee for the specific shift:
+            \begin{itemize}
+                \item System queries the database for identifying the registered employee for the selected shift.
+                \item The interface shows a list of employees who have registered to that shift and have not been assigned to that shift, one employee per line: name, phone number, total scheduled hours for next week, sort in ascending order of total scheduled hours for next week.
+                \item If the number of register is lower than the Minimum Shifts Threshold:
+                    \begin{itemize}
+                        \item The system alerts to the schedule manager and return to the scheduling table interface
+                        \item If the schedule manager does not want to schedule any other shift:\\
+                        → Finish
+                        \item If the schedule manager want to schedule another shift.\\
+                        → Return to review the registered employee step.
+                    \end{itemize}
+                \item If the number of register greater or equal comparing to the Minimum Shifts Threshold:
+                    \begin{itemize}
+                        \item The schedule manager clicks on some employee and clicks the select button to confirm the employee successfully assigned to the registered shift.\\
+                        → If the selected parttime employee is lower than the Minimum Shifts Threshold, system alert the schedule manager and ask to select more.
+                        \item If the schedule manager does not choose any other parttime employee\\
+                        → Finish
+                        \item If the schedule manager chooses some more parttime employees.\\
+                        → Repeat from the selecting employee for a shift step
+                    \end{itemize}
+            \end{itemize}
+        \end{itemize}
+\end{itemize}
+
+\subsection{Function 3: Calculate weekly wages}
+
+Financial Manager selects the \textbf{"Calculate Weekly Wages"} function from the home page\\
+$\rightarrow$ \textbf{Wage Calculation Interface} appears on the screen, the interface includes:
+
+\begin{itemize}
+    \item Two input fields labeled \textbf{"Starting Date"} and \textbf{"End Date"}.
+    \item A \textbf{"Calculate"} button.
+\end{itemize}
+
+\textbf{Financial Manager enters the calculation period:} The manager enters directly or uses a date picker to select the Starting Date and End Date of the period to be calculated.
+
+\textbf{Financial Manager clicks the "Calculate" button}\\
+$\rightarrow$ The result interface appears:
+
+\begin{itemize}
+    \item If Starting Date or End Date has not been entered:
+    \begin{itemize}
+        \item The system clears all entered data
+    \end{itemize}
+    $\rightarrow$ displays the message \textit{"Please enter the calculation period!"} below the date input fields.
+
+    \item If the Financial Manager does not re-enter\\
+    $\rightarrow$ Finish.
+
+    \item If the Financial Manager re-enters\\
+    $\rightarrow$ Repeat from the step of entering the calculation period.
+
+    \item If Starting Date is greater than End Date:
+    \begin{itemize}
+        \item The system clears all entered data
+    \end{itemize}
+    $\rightarrow$ displays the message \textit{"Starting Date must be less than or equal to End Date!"} below the date input fields.
+
+    \item If the Financial Manager does not re-enter\\
+    $\rightarrow$ Finish.
+
+    \item If the Financial Manager re-enters\\
+    $\rightarrow$ Repeat from the step of entering the calculation period.
+
+    \item If the Starting Date equal to or lower compare to Ending Date $\rightarrow$ The system begins querying and calculating:
+    \begin{itemize}
+        \item \textbf{The system queries the database:}
+        \begin{itemize}
+            \item The system retrieves all attendance records (Check-in Time, Check-out Time) with dates greater than or equal to the Starting Date AND less than or equal to the End Date. This includes data of all Parttime Employees across the entire Restaurant Chain.
+        \end{itemize}
+        
+        \item \textbf{The system aggregates and calculates wages for each employee:}
+        \begin{itemize}
+            \item For the purpose of violation calculation, the official shift times are referenced from Shift 1 (8:00 AM -- 4:00 PM) and Shift 2 (4:00 PM -- 12:00 AM).
+            \item For each Parttime Employee found in the records, the system calculates for each Shift:
+            \begin{itemize}
+                \item Actual Working Hours of the shift = Check-out Time $-$ Check-in Time.
+                \item Shift Base Pay = Actual Working Hours $\times$ Hourly Rate \textit{(applying \textbf{Hourly Wage Calculation Rule}).}
+                \item Applying \textbf{Overtime Calculation Rule}:
+                \begin{itemize}
+                    \item if Actual Working Hours $>$ 8 hours $\rightarrow$ Overtime Hours = Actual Working Hours $-$ 8 $\rightarrow$ Overtime Amount = Overtime Hours $\times$ (Overtime Rate $-$ Hourly Rate).
+                    \item If Actual Working Hours $\leq$ 8 hours $\rightarrow$ \textbf{Overtime Hours = 0, Overtime Amount = 0.}
+                \end{itemize}
+                \item Applying \textbf{Violation Deduction Rule}:
+                \begin{itemize}
+                    \item Calculate Hours Late/Early as the sum of: time between Check-in Time and Shift Start Time (if Check-in Time is later than Shift Start Time), and time between Shift End Time and Check-out Time (if Check-out Time is earlier than Shift End Time).
+                    \item Shift Fine = Hours Late/Early $\times$ Penalty Rate.
+                    \item If Hours Late/Early = 0 $\rightarrow$ \textbf{Shift Fine = 0} (no deduction applied).
+                \end{itemize}
+                \item Net Pay per Shift = Shift Base Pay + Overtime Amount $-$ Shift Fine.
+                \item Then aggregate for the entire period for each employee:
+                \begin{itemize}
+                    \item Total Actual Working Hours (Week) = sum of Actual Working Hours of all shifts.
+                    \item Total Shift Base Pay (Week) = sum of Shift Base Pay of all shifts.
+                    \item Total Overtime Hours (Week) = sum of Overtime Hours of all shifts.
+                    \item Total Late/Early Hours (Week) = sum of Hours Late/Early of all shifts.
+                    \item Total Fines (Week) = sum of Shift Fine of all shifts.
+                    \item Total Net Pay (Week) = sum of Net Pay per Shift of all shifts.
+                \end{itemize}
+            \end{itemize}
+        \end{itemize}
+        
+        \item \textbf{The system sorts the results:} The employee list is sorted according to the \textbf{Alphabetical Sorting Rule} (A--Z by Employee Name)
+    \end{itemize}
+    $\rightarrow$ \textbf{The system displays the Weekly Wage Table} on screen: The table displays one row per employee, showing: Employee Code, Employee Name, Employee Phone Number, Total Actual Working Hours (Week), Total Shift Base Pay (Week), Total Overtime Amount Hours (Week), Total Late/Early Hours (Week), Total Fines (Week), Total Net Pay (Week).
+
+    \item \textbf{Financial Manager reviews the list:}
+    \begin{itemize}
+        \item If the Financial Manager \textbf{does not want to view details} of any employee
+    \end{itemize}
+    $\rightarrow$ Finish.
+
+    \item If the Financial Manager \textbf{wants to view details} of an employee: Financial Manager clicks on that employee's row\\
+    $\rightarrow$ \textbf{The system displays the Shift Wage Detail Table:}
+
+    \item The detail table displays the wage records shift by shift for the selected employee during that period. Each row corresponds to one working shift, displaying: Day of Week, Date, Shift (Shift 1 or Shift 2), Check-in Time, Check-out Time, Actual Working Hours, Shift Base Pay, Overtime Hours, Overtime Amount, Hours Late/Early, Shift Fine, Net Pay per Shift. An \textbf{'x'} button is located in the top right corner to close. Financial Manager reads the detailed wage for each shift. When finished reading, Financial Manager clicks outside the table area or clicks the \textbf{'x'} button\\
+    $\rightarrow$ Returns to viewing the \textbf{Weekly Wage Table}.
+
+    \item If the Financial Manager has finished viewing\\
+    $\rightarrow$ The system sends the \textbf{Payslip} to the Parttime Employee.
+
+    The \textbf{Payslip} contains the following information:
+        \textbf{Identification Information:} Employee Code, Employee Name, Employee Phone Number, Payroll Period (Starting Date -- End Date).
+        \textbf{Wage Summary:} Total Actual Working Hours (Week), Total Shift Base Pay (Week), Total Overtime Hours (Week), Total Overtime Amount, Total Late/Early Hours (Week), Total Fines (Week), Total Net Pay (Week).
+        \textbf{Shift-by-Shift Detail:} Day of Week, Date, Shift, Check-in Time, Check-out Time, Actual Working Hours, Shift Base Pay, Overtime Hours, Overtime Amount, Hours Late/Early, Shift Fine, Net Pay per Shift.
+
+    \begin{itemize}
+        \item If the Parttime Employee has \textbf{no complaints}\\
+        $\rightarrow$ Finish.
+
+        \item If the Parttime Employee has a \textbf{complaint}\\
+        $\rightarrow$ The employee submits a \textbf{Correction Request} to the Financial Manager.
+        \begin{itemize}
+            \item If the complaint is \textbf{not valid}:\\
+            $\rightarrow$ Finish.
+            \item If the complaint is \textbf{valid}:\\
+            $\rightarrow$ The complaint is recorded and acknowledged.
+        \end{itemize}
+    \end{itemize}
+
+    \item If the Financial Manager has not finished\\
+    $\rightarrow$ Repeat from the step of reviewing the Weekly Wage Table.
+\end{itemize}
+
+\subsection{Function 4: Statistics for best employees}
+\begin{itemize}
+    \item The Executive Manager want to generate a statistic for a specific period.
+    \begin{itemize}
+        \item The staff member selects 'Statistics of Best Employees' from the home page. The statistical interface appears on screen.
+        \item The period selection interface appears: 
+        \begin{itemize}
+            \item Two input fields labeled 'Start Date' and 'End Date'
+            \item Search button
+            \item Done button
+        \end{itemize}
+    \end{itemize}
+    \item Executive Manager enters the reporting period: The staff member types or uses a date picker to enter the start date and end date of the period they want to analyze.
+    \item Executive Manager clicks the search/generate button:
+    \begin{itemize}
+        \item The result interface appears:
+        \begin{itemize}
+            \item If the start date or end date has not been filled yet:
+            \begin{itemize}
+                \item The system clear all input data and inform  “Please enter the reporting period!” below the date input field. If the Executive Manager does not reenter input information.\\
+                → Finish
+                \item If the Executive Manager reenter input information:\\
+                → Repeat from the entering the reporting period.
+            \end{itemize}
+            \item If the start date is greater than the end date:
+            \begin{itemize}
+                \item The system clear all input data and inform  “The start date must be lower or equal to the end date!” below the date input field. If the Executive Manager does not reenter input information:\\
+                → Finish
+                \item If the Executive Manager reenter input information\\
+                → Repeat from the entering the reporting period.
+            \end{itemize}
+            \item If the input period is valid, the system to begin querying and computing:
+            \begin{itemize}
+                \item System queries attendance records: The system fetches all attendance records (from the attendance database) where the date is greater than or equal to the start date AND less than or equal to the end date. Records from all employees in the restaurant are included.
+                \item System aggregates data per employee: For each distinct employee found in the fetched records, the system calculates:\\
+                → Total actual hours worked = sum of 'actual working hours' across all shift records for that employee within the period.\\
+                → Total money received = sum of 'amount actually received' across all shift records for that employee within the period.\\
+                → Total late/early hours = sum of 'hours late/early' across all shift records for that employee within the period.\\
+                → Total fines = sum of 'fine amount' across all shift records for that employee within the period.\\
+                \item System sorts the results: The list of employees with their aggregated metrics is sorted in ascending order by total late/early hours. Employees with 0 late/early hours appear first; those with the most late/early time appear last.
+                \item System displays the summary list: A table is rendered on screen with one row per employee. Each row shows: Employee Code, Employee Name, Phone Number, Total Actual Hours Worked, Total Money Received, Total Late/Early Hours, Total Fines.
+                \item Executive Manager reviews the list: The Executive Manager reads the summary. They can see at a glance which employees were most punctual (top of the list) and which had the most attendance issues (bottom).
+                \begin{quote}
+                    → If the Executive Manager does not want to view any employee detail\\
+                    • Finish\\
+                    → If the Executive Manager want to view any employee detail.\\
+                    • Executive Manager clicks on an employee row: The Executive Manager selects one employee from the list to see their individual shift records.\\
+                    • System displays the detail view: A detailed panel or dashboard view appears, showing the shift-by-shift attendance records for the selected employee during the selected period. Each row in this detail view corresponds to one shift the employee worked and shows: Day of the week (e.g., Monday), Date, Shift (1st shift or 2nd shift), Check-in time, Check-out time, Actual working hours for that shift, Amount actually received for that shift, Hours late/early for that shift, Fine amount for that shift. On the top-right conner is the x button to exit.\\
+                    • Executive Manager reads the detail.\\
+                    • When finished reading Executive Manager can click to the outside of panel or dashboard view or the x button to back to the list view step.
+                \end{quote}
+                \item If the Executive Manager finishes reading the statistic\\
+                → Finish
+                \item If the Executive Manager has not finished reading the statistic\\
+                → Repeat from the reviews the list step.
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\section{What Information Needed?}
+
+Based on the entire Function Work process (from Module 1 to Module 4) of the Part-time Employee Management system, the system needs to store and transfer the following core information flows (Data Entities) to ensure smooth business operations:
+
+\subsection{Employee Profiles Data}
+This is a static dataset storing the basic information of each individual working at the restaurant. Used as the authentication basis for ALL modules.
+\begin{itemize}
+    \item \textbf{Employee Code}: The unique identifier string (ID) of each employee in the system.
+    \item \textbf{Employee Name}: Full name serving the Enter Search Keyword function (Module 1).
+    \item \textbf{Employee Phone Number}: Provides contact information, displayed in search result lists and consolidated reports.
+    \item \textbf{Check-in Time}: The recorded time when an employee starts a shift.
+    \item \textbf{Check-out Time}: The recorded time when an employee ends a shift.
+\end{itemize}
+
+\subsection{Scheduling Data}
+Data arising from the interaction of Register Staff and Schedule Manager in Module 1 \& 2.
+\begin{itemize}
+    \item \textbf{Available Working Time}: Data array of checkboxes (equivalent to 14 Checkboxes for 7 days x 2 shifts) registered as free by the employee.
+    \item \textbf{Registration Schedule}: Draft data file recording the shifts employees have registered waiting for approval.
+    \item \textbf{Next Week Schedule}: Schedule that has been approved and fixed (Assigned) by the Schedule Manager for each personnel in each specific shift.
+\end{itemize}
+
+\subsection{Attendance Logs / Tracking Data}
+Data generated daily thanks to the Check-in / Check-out (Hardware) operations of the Parttime Employee, used as direct Input for Module 3 \& 4.
+\begin{itemize}
+    \item \textbf{Date \& Shift}: Identifies the time milestone when the working session occurs.
+    \item \textbf{Check-in Time}: The start time of work.
+    \item \textbf{Check-out Time}: The end time of work.
+    \item \textbf{Actual Working Hours}: Calculated by Check-out Time minus Check-in Time.
+    \item \textbf{Hours Late/Early}: Calculated by the difference between actual Check-in/out compared to standard Timeframes of Shifts.
+\end{itemize}
+
+\subsection{Financial \& Statistical Aggregates}
+Output data is consolidated (Aggregated) and calculated automatically thanks to Module 3 and Module 4 through query operators.
+
+\subsubsection{Per Shift Data}
+\begin{itemize}
+    \item \textbf{Shift Base Pay}: = Actual Working Hours $\times$ Hourly Rate.
+    \item \textbf{Overtime Hours}: = Max(Actual Working Hours - 8, 0).
+    \item \textbf{Overtime Amount}: = Overtime Hours $\times$ (Overtime Rate - Hourly Rate).
+    \item \textbf{Shift Fine}: = Hours Late/Early $\times$ Penalty Rate.
+    \item \textbf{Net Pay per Shift}: = Shift Base Pay + Overtime Amount - Shift Fine.
+\end{itemize}
+
+\subsubsection{Per Week / Period Aggregates Data}
+\begin{itemize}
+    \item \textbf{Total Actual Working Hours (Week/Period)}: Total actual working hours of all shifts.
+    \item \textbf{Total Overtime Hours / Amount (Week/Period)}: Total Overtime time and money for the whole period.
+    \item \textbf{Total Late/Early Hours \& Fines (Week/Period)}: Total violation time and total penalty money deducted for the whole period.
+    \item \textbf{Total Net Pay (Week) / Total Money Received (Period)}: Final take-home income of the employee after adding and subtracting all items.
+    \item \textbf{Actual Working Hours}: Calculated by Check-out Time minus Check-in Time.
+    \item \textbf{Total Actual Working Hours (Week)}: Accumulated actual hours for the week.
+    \item \textbf{Total Late/Early Hours (Week)}: Accumulated late/early hours for the week.
+    \item \textbf{Total Fine (Week)}: Accumulated fines for the week.
+    \item \textbf{Total Net Pay (Week)}: Total final pay for the week.
+    \item \textbf{Overtime Hours}: Total aggregated overtime hours.
+    \item \textbf{Overtime Amount}: Total aggregated overtime amount.
+    \item \textbf{Shift Fine}: Total aggregated shift fines.
+    \item \textbf{Net Pay per Shift}: Reference mapping to net pay entries.
+    \item \textbf{Hours Late/Early}: Calculated by the difference between actual Check-in/out compared to standard Timeframes of Shifts.
+    \item \textbf{Total Scheduled Hours}: Continuously updated to serve as a reference for Priority Scheduling Rule (Module 2) - Prioritize those with fewer working hours.
+\end{itemize}
+
+
+\section{Relationship Among Information}
+
+\subsection{Organizational Hierarchy}
+Initializing the workspace platform structure.
+
+\begin{itemize}
+    \item \textbf{Restaurant Chain $\leftrightarrow$ Restaurant}:
+    \begin{itemize}
+        \item \textbf{Relationship type}: 1 - n (One-to-Many).
+        \item \textbf{Meaning}: One Chain (Parent company) can own and operate multiple subsidiary Restaurant branches. All personnel and financial data in Module 3 \& 4 are rolled up for the Chain.
+    \end{itemize}
+    
+    \item \textbf{Restaurant $\leftrightarrow$ Parttime Employee \& Contract}:
+    \begin{itemize}
+        \item \textbf{Relationship type}: 1 - n (One-to-Many).
+        \item \textbf{Meaning}: The foreign key \texttt{Restaurant\_ID} is attached directly to the Employee Profile. One Restaurant simultaneously manages the biometric list of multiple employees and the corresponding Contract repository. The condition \texttt{Contract Status = Active} is a Mandatory Constraint to generate data across the entire system.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Scheduling Logic (Module 1 \& 2)}
+Initializing the future shift allocation time structure. The core rule is breaking down Day (Working Day) into static Shift (Shift).
+
+\begin{itemize}
+    \item \textbf{Working Day $\leftrightarrow$ Shift}:
+    \begin{itemize}
+        \item \textbf{Relationship type}: 1 - 2 (Composition - Strict aggregation).
+        \item \textbf{Meaning}: The system imposes a static constraint dividing one day (from Monday to Sunday) into exactly 2 shifts: Shift 1 (8am-4pm) and Shift 2 (4pm-12am). A third shift cannot exist.
+    \end{itemize}
+
+    \item \textbf{Parttime Employee $\leftrightarrow$ Registration Schedule (Available Working Time array)}:
+    \begin{itemize}
+        \item \textbf{Relationship type}: 1 - 1 (One-to-One) / Week Session.
+        \item \textbf{Meaning}: In Module 1, each Employee creates only One Registration Schedule per week (consisting of 14 checkboxes). The action of Updating the registration schedule will overwrite the old record (Update) rather than creating a new one.
+    \end{itemize}
+
+    \item \textbf{Registration Schedule $\leftrightarrow$ Minimum Shift Threshold}:
+    \begin{itemize}
+        \item \textbf{Relationship type}: Validation Dependency.
+        \item \textbf{Meaning}: The registration schedule is only successfully finalized into the ``Saved successfully'' status (Pass-case) if and only if Sum Checkbox (Available Working Time) $\geq$ Minimum Shift Threshold.
+    \end{itemize}
+
+    \item \textbf{Next Week Schedule (Weekly official working shift) $\leftrightarrow$ Assigned Employees}:
+    \begin{itemize}
+        \item \textbf{Relationship type}: 1 - n (One-to-Many) with Check Constraint.
+        \item \textbf{Meaning}: In Module 2, a specific Time slot on the Official Schedule (e.g., Shift 1 - Next Wednesday Morning) must be assigned to $n$ employees. In which, the personnel quantity $n$ must reach or exceed the environment variable Required Number of Employees per Shift.
+    \end{itemize}
+\end{itemize}
+

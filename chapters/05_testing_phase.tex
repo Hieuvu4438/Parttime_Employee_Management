@@ -1,0 +1,259 @@
+\chapter{Testing Phase}
+
+\section{Black-Box Test Plan}
+
+Black-box testing is used to verify the behavior of the selected module from the user's point of view. The tester does not need to know the internal implementation of the program. Instead, each test case is designed based on the input data, user actions, expected interface responses, and expected database results.
+
+For this project, the selected module is \textit{Register for next week}. The main purpose of this module is to allow the Registration Staff to search for a part-time employee, select the shifts requested by that employee for the next week, validate the minimum number of selected shifts, and save the registration data into the system.
+
+The black-box test plan for this module is shown in Table~\ref{tab:blackbox-test-plan}.
+
+\begin{longtable}{|p{0.08\textwidth}|p{0.28\textwidth}|p{0.55\textwidth}|}
+\hline
+\textbf{No.} & \textbf{Module} & \textbf{Test case} \\
+\hline
+\endfirsthead
+\hline
+\textbf{No.} & \textbf{Module} & \textbf{Test case} \\
+\hline
+\endhead
+1 & Register for next week & Employee exists, total registered shifts are greater than or equal to the minimum threshold. This is the standard test case. \\
+\hline
+2 & Register for next week & Employee exists, but total registered shifts are less than the minimum threshold. \\
+\hline
+3 & Register for next week & Employee does not exist, so the search function returns no result. \\
+\hline
+4 & Register for next week & Employee already has existing registrations for next week and the registration data is overwritten. \\
+\hline
+5 & Register for next week & Registration Staff searches with an empty keyword. \\
+\hline
+6 & Register for next week & Registration Staff logs in with an incorrect username or password. \\
+\hline
+\caption{Black-box test plan for Register for next week module}\label{tab:blackbox-test-plan}
+\end{longtable}
+
+\section{Standard Black-Box Test Case with Full Test Data}
+
+\subsection{Test Case Description}
+
+The standard test case is Test Case No. 1 in the black-box test plan. In this test case, the employee exists in the system, the Registration Staff successfully searches and selects the employee, registers shifts for next week with the total number of selected shifts meeting the minimum threshold, and saves the registration successfully.
+
+The selected employee in this test case is Nguyen Van Cuong. The Registration Staff searches by the keyword \texttt{Nguyen Van}, selects Nguyen Van Cuong from the search result, and registers five shifts for the next week. The minimum shift threshold is four shifts per week. Therefore, the selected shifts are valid because the total number of selected shifts is greater than or equal to the minimum threshold.
+
+\subsection{Database Before Testing}
+
+Before executing the standard test case, the database contains the following data.
+
+\subsubsection*{tblUser}
+
+\begin{longtable}{|p{0.08\textwidth}|p{0.18\textwidth}|p{0.18\textwidth}|p{0.24\textwidth}|p{0.22\textwidth}|}
+\hline
+\textbf{ID} & \textbf{username} & \textbf{password} & \textbf{role} & \textbf{description} \\
+\hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{username} & \textbf{password} & \textbf{role} & \textbf{description} \\
+\hline
+\endhead
+1 & staff01 & staff01 & registration\_staff & Registration Staff \\
+\hline
+2 & schedule01 & schedule01 & schedule\_manager & Schedule Manager \\
+\hline
+3 & finance01 & finance01 & financial\_manager & Financial Manager \\
+\hline
+\caption{Data in tblUser before testing}\label{tab:testing-user-before}
+\end{longtable}
+
+\subsubsection*{tblRestaurant}
+
+\begin{longtable}{|p{0.08\textwidth}|p{0.24\textwidth}|p{0.38\textwidth}|p{0.20\textwidth}|}
+\hline
+\textbf{ID} & \textbf{restaurantName} & \textbf{address} & \textbf{description} \\
+\hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{restaurantName} & \textbf{address} & \textbf{description} \\
+\hline
+\endhead
+1 & Pho Viet Ha Noi & 15 Tran Duy Hung, Ha Noi & Main branch \\
+\hline
+\caption{Data in tblRestaurant before testing}\label{tab:testing-restaurant-before}
+\end{longtable}
+
+\subsubsection*{tblEmployee}
+
+\begin{longtable}{|p{0.04\textwidth}|p{0.08\textwidth}|p{0.15\textwidth}|p{0.11\textwidth}|p{0.08\textwidth}|p{0.10\textwidth}|p{0.12\textwidth}|p{0.12\textwidth}|}
+\hline
+\textbf{ID} & \textbf{code} & \textbf{fullName} & \textbf{phoneNumber} & \textbf{email} & \textbf{dob} & \textbf{contractDate} & \textbf{restaurantID} \\
+\hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{code} & \textbf{fullName} & \textbf{phoneNumber} & \textbf{email} & \textbf{dob} & \textbf{contractDate} & \textbf{restaurantID} \\
+\hline
+\endhead
+1 & EMP001 & Nguyen Van An & 0901111111 & an@ & 2000-01-15 & 2025-09-01 & 1 \\
+\hline
+2 & EMP002 & Nguyen Van Binh & 0902222222 & binh@ & 2001-03-20 & 2025-10-01 & 1 \\
+\hline
+3 & EMP003 & Nguyen Van Cuong & 0903333333 & cuong@ & 1999-07-10 & 2025-08-15 & 1 \\
+\hline
+4 & EMP004 & Tran Thi Dao & 0904444444 & dao@ & 2002-11-05 & 2025-11-01 & 1 \\
+\hline
+5 & EMP005 & Le Hoang Em & 0905555555 & em@ & 2000-05-25 & 2026-01-10 & 1 \\
+\hline
+\caption{Data in tblEmployee before testing}\label{tab:testing-employee-before}
+\end{longtable}
+
+\subsubsection*{tblShift}
+
+\begin{longtable}{|p{0.06\textwidth}|p{0.14\textwidth}|p{0.11\textwidth}|p{0.19\textwidth}|p{0.19\textwidth}|p{0.19\textwidth}|}
+\hline
+\textbf{ID} & \textbf{date} & \textbf{shiftNumber} & \textbf{startDate} & \textbf{endDate} & \textbf{description} \\
+\hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{date} & \textbf{shiftNumber} & \textbf{startDate} & \textbf{endDate} & \textbf{description} \\
+\hline
+\endhead
+1 & 2026-05-18 & 1 & 2026-05-18 08:00 & 2026-05-18 16:00 & Mon Shift 1 \\
+\hline
+2 & 2026-05-18 & 2 & 2026-05-18 16:00 & 2026-05-19 00:00 & Mon Shift 2 \\
+\hline
+3 & 2026-05-19 & 1 & 2026-05-19 08:00 & 2026-05-19 16:00 & Tue Shift 1 \\
+\hline
+4 & 2026-05-19 & 2 & 2026-05-19 16:00 & 2026-05-20 00:00 & Tue Shift 2 \\
+\hline
+5 & 2026-05-20 & 1 & 2026-05-20 08:00 & 2026-05-20 16:00 & Wed Shift 1 \\
+\hline
+6 & 2026-05-20 & 2 & 2026-05-20 16:00 & 2026-05-21 00:00 & Wed Shift 2 \\
+\hline
+7 & 2026-05-21 & 1 & 2026-05-21 08:00 & 2026-05-21 16:00 & Thu Shift 1 \\
+\hline
+8 & 2026-05-21 & 2 & 2026-05-21 16:00 & 2026-05-22 00:00 & Thu Shift 2 \\
+\hline
+9 & 2026-05-22 & 1 & 2026-05-22 08:00 & 2026-05-22 16:00 & Fri Shift 1 \\
+\hline
+10 & 2026-05-22 & 2 & 2026-05-22 16:00 & 2026-05-23 00:00 & Fri Shift 2 \\
+\hline
+11 & 2026-05-23 & 1 & 2026-05-23 08:00 & 2026-05-23 16:00 & Sat Shift 1 \\
+\hline
+12 & 2026-05-23 & 2 & 2026-05-23 16:00 & 2026-05-24 00:00 & Sat Shift 2 \\
+\hline
+13 & 2026-05-24 & 1 & 2026-05-24 08:00 & 2026-05-24 16:00 & Sun Shift 1 \\
+\hline
+14 & 2026-05-24 & 2 & 2026-05-24 16:00 & 2026-05-25 00:00 & Sun Shift 2 \\
+\hline
+\caption{Data in tblShift before testing}\label{tab:testing-shift-before}
+\end{longtable}
+
+\subsubsection*{tblRegistrationShift}
+
+\begin{longtable}{|p{0.06\textwidth}|p{0.18\textwidth}|p{0.13\textwidth}|p{0.14\textwidth}|p{0.14\textwidth}|p{0.10\textwidth}|p{0.09\textwidth}|}
+\hline
+\textbf{ID} & \textbf{registeredTime} & \textbf{status} & \textbf{description} & \textbf{employeeID} & \textbf{shiftID} & \textbf{userID} \\
+\hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{registeredTime} & \textbf{status} & \textbf{description} & \textbf{employeeID} & \textbf{shiftID} & \textbf{userID} \\
+\hline
+\endhead
+1 & 2026-05-15 09:00 & confirmed & & 1 & 1 & 1 \\
+\hline
+2 & 2026-05-15 09:00 & confirmed & & 1 & 3 & 1 \\
+\hline
+3 & 2026-05-15 09:30 & confirmed & & 2 & 2 & 1 \\
+\hline
+4 & 2026-05-15 09:30 & confirmed & & 2 & 5 & 1 \\
+\hline
+5 & 2026-05-15 09:30 & confirmed & & 2 & 7 & 1 \\
+\hline
+6 & 2026-05-15 09:30 & confirmed & & 2 & 10 & 1 \\
+\hline
+\caption{Data in tblRegistrationShift before testing}\label{tab:testing-registration-before}
+\end{longtable}
+
+Employees 1 and 2 already have registrations for the next week. Employee 3, Nguyen Van Cuong, has no registration yet. The minimum shift threshold is four shifts per week.
+
+\subsection{Testing Scenario and Expected Results}
+
+The detailed scenario and expected results of the standard test case are shown in Table~\ref{tab:testing-scenario-standard}.
+
+\begin{longtable}{|p{0.08\textwidth}|p{0.42\textwidth}|p{0.42\textwidth}|}
+\hline
+\textbf{Step} & \textbf{Action} & \textbf{Expected result} \\
+\hline
+\endfirsthead
+\hline
+\textbf{Step} & \textbf{Action} & \textbf{Expected result} \\
+\hline
+\endhead
+1 & Start the application. & The system displays the login interface. \\
+\hline
+2 & Enter username \texttt{staff01}, password \texttt{staff01}, and click the login button. & The system validates the account and displays the Registration Staff home interface. The home interface contains the \textit{Register for next week} function. \\
+\hline
+3 & Click the \textit{Register for next week} function. & The system displays the search employee interface. \\
+\hline
+4 & Enter the keyword \texttt{Nguyen Van} and click the search button. & The system displays three matching employees: Nguyen Van An, Nguyen Van Binh, and Nguyen Van Cuong. \\
+\hline
+5 & Select the row of Nguyen Van Cuong. & The system displays the register shift interface for Nguyen Van Cuong. The next-week shift table is displayed with all checkboxes unchecked because this employee has no registration yet. \\
+\hline
+6 & Tick Monday Shift 2, Tuesday Shift 1, Thursday Shift 1, Thursday Shift 2, and Friday Shift 2. & The system shows that five shifts are selected. \\
+\hline
+7 & Click the save button. & The system validates the selected shifts. The total number of selected shifts is five, and five is greater than or equal to the minimum threshold of four shifts per week. \\
+\hline
+8 & Confirm the save action. & The system saves the registration records and displays the message \textit{Registration saved successfully!}. \\
+\hline
+9 & Click OK on the success message. & The system returns to the Registration Staff home interface. \\
+\hline
+\caption{Standard black-box test case scenario}\label{tab:testing-scenario-standard}
+\end{longtable}
+
+\subsection{Database After Testing}
+
+After the standard test case is executed successfully, the tables \texttt{tblUser}, \texttt{tblRestaurant}, \texttt{tblEmployee}, and \texttt{tblShift} remain unchanged. The table \texttt{tblRegistrationShift} is updated with five new records for Nguyen Van Cuong. The database state of \texttt{tblRegistrationShift} after testing is shown in Table~\ref{tab:testing-registration-after}.
+
+\begin{longtable}{|p{0.06\textwidth}|p{0.18\textwidth}|p{0.13\textwidth}|p{0.14\textwidth}|p{0.14\textwidth}|p{0.10\textwidth}|p{0.09\textwidth}|}
+\hline
+\textbf{ID} & \textbf{registeredTime} & \textbf{status} & \textbf{description} & \textbf{employeeID} & \textbf{shiftID} & \textbf{userID} \\
+\hline
+\endfirsthead
+\hline
+\textbf{ID} & \textbf{registeredTime} & \textbf{status} & \textbf{description} & \textbf{employeeID} & \textbf{shiftID} & \textbf{userID} \\
+\hline
+\endhead
+1 & 2026-05-15 09:00 & confirmed & & 1 & 1 & 1 \\
+\hline
+2 & 2026-05-15 09:00 & confirmed & & 1 & 3 & 1 \\
+\hline
+3 & 2026-05-15 09:30 & confirmed & & 2 & 2 & 1 \\
+\hline
+4 & 2026-05-15 09:30 & confirmed & & 2 & 5 & 1 \\
+\hline
+5 & 2026-05-15 09:30 & confirmed & & 2 & 7 & 1 \\
+\hline
+6 & 2026-05-15 09:30 & confirmed & & 2 & 10 & 1 \\
+\hline
+7 & 2026-05-16 10:15 & confirmed & & 3 & 2 & 1 \\
+\hline
+8 & 2026-05-16 10:15 & confirmed & & 3 & 3 & 1 \\
+\hline
+9 & 2026-05-16 10:15 & confirmed & & 3 & 7 & 1 \\
+\hline
+10 & 2026-05-16 10:15 & confirmed & & 3 & 8 & 1 \\
+\hline
+11 & 2026-05-16 10:15 & confirmed & & 3 & 10 & 1 \\
+\hline
+\caption{Data in tblRegistrationShift after testing}\label{tab:testing-registration-after}
+\end{longtable}
+
+The five new records have the following meanings:
+
+\begin{itemize}
+    \item Record 7 links employee 3 with shift 2, which is Monday 18/05/2026 Shift 2.
+    \item Record 8 links employee 3 with shift 3, which is Tuesday 19/05/2026 Shift 1.
+    \item Record 9 links employee 3 with shift 7, which is Thursday 21/05/2026 Shift 1.
+    \item Record 10 links employee 3 with shift 8, which is Thursday 21/05/2026 Shift 2.
+    \item Record 11 links employee 3 with shift 10, which is Friday 22/05/2026 Shift 2.
+\end{itemize}
+
+As a result, the standard black-box test case is passed. The module correctly supports login, employee search, employee selection, shift selection, minimum shift threshold validation, registration saving, success notification, and returning to the home interface.

@@ -1,0 +1,44 @@
+# LaTeX build output
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+*.xdv
+*.pdf
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE/editor local files
+.idea/
+.vscode/
+*.iml
+
+# Claude local settings
+.claude/settings.local.json
+
+# Java build output
+*.class
+bin/
+build/
+out/
+target/
+
+# Temporary/archive editor files
+*.tmp
+*.bak
+~$*
