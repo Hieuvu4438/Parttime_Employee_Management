@@ -82,24 +82,24 @@ Before executing the standard test case, the database contains the following dat
 
 \subsubsection*{tblEmployee}
 
-\begin{longtable}{|p{0.04\textwidth}|p{0.08\textwidth}|p{0.15\textwidth}|p{0.11\textwidth}|p{0.08\textwidth}|p{0.10\textwidth}|p{0.12\textwidth}|p{0.12\textwidth}|}
+\begin{longtable}{|p{0.04\textwidth}|p{0.12\textwidth}|p{0.08\textwidth}|p{0.15\textwidth}|p{0.11\textwidth}|p{0.08\textwidth}|p{0.10\textwidth}|p{0.12\textwidth}|}
 \hline
-\textbf{ID} & \textbf{code} & \textbf{fullName} & \textbf{phoneNumber} & \textbf{email} & \textbf{dob} & \textbf{contractDate} & \textbf{restaurantID} \\
+\textbf{ID} & \textbf{restaurantID} & \textbf{code} & \textbf{fullName} & \textbf{phoneNumber} & \textbf{email} & \textbf{dob} & \textbf{contractDate} \\
 \hline
 \endfirsthead
 \hline
-\textbf{ID} & \textbf{code} & \textbf{fullName} & \textbf{phoneNumber} & \textbf{email} & \textbf{dob} & \textbf{contractDate} & \textbf{restaurantID} \\
+\textbf{ID} & \textbf{restaurantID} & \textbf{code} & \textbf{fullName} & \textbf{phoneNumber} & \textbf{email} & \textbf{dob} & \textbf{contractDate} \\
 \hline
 \endhead
-1 & EMP001 & Nguyen Van An & 0901111111 & an@ & 2000-01-15 & 2025-09-01 & 1 \\
+1 & 1 & EMP001 & Nguyen Van An & 0901111111 & an@ & 2000-01-15 & 2025-09-01 \\
 \hline
-2 & EMP002 & Nguyen Van Binh & 0902222222 & binh@ & 2001-03-20 & 2025-10-01 & 1 \\
+2 & 1 & EMP002 & Nguyen Van Binh & 0902222222 & binh@ & 2001-03-20 & 2025-10-01 \\
 \hline
-3 & EMP003 & Nguyen Van Cuong & 0903333333 & cuong@ & 1999-07-10 & 2025-08-15 & 1 \\
+3 & 1 & EMP003 & Nguyen Van Cuong & 0903333333 & cuong@ & 1999-07-10 & 2025-08-15 \\
 \hline
-4 & EMP004 & Tran Thi Dao & 0904444444 & dao@ & 2002-11-05 & 2025-11-01 & 1 \\
+4 & 1 & EMP004 & Tran Thi Dao & 0904444444 & dao@ & 2002-11-05 & 2025-11-01 \\
 \hline
-5 & EMP005 & Le Hoang Em & 0905555555 & em@ & 2000-05-25 & 2026-01-10 & 1 \\
+5 & 1 & EMP005 & Le Hoang Em & 0905555555 & em@ & 2000-05-25 & 2026-01-10 \\
 \hline
 \caption{Data in tblEmployee before testing}\label{tab:testing-employee-before}
 \end{longtable}
@@ -148,26 +148,26 @@ Before executing the standard test case, the database contains the following dat
 
 \subsubsection*{tblRegistrationShift}
 
-\begin{longtable}{|p{0.06\textwidth}|p{0.18\textwidth}|p{0.13\textwidth}|p{0.14\textwidth}|p{0.14\textwidth}|p{0.10\textwidth}|p{0.09\textwidth}|}
+\begin{longtable}{|p{0.06\textwidth}|p{0.13\textwidth}|p{0.10\textwidth}|p{0.09\textwidth}|p{0.18\textwidth}|p{0.13\textwidth}|p{0.14\textwidth}|}
 \hline
-\textbf{ID} & \textbf{registeredTime} & \textbf{status} & \textbf{description} & \textbf{employeeID} & \textbf{shiftID} & \textbf{userID} \\
+\textbf{ID} & \textbf{employeeID} & \textbf{shiftID} & \textbf{userID} & \textbf{registeredTime} & \textbf{status} & \textbf{description} \\
 \hline
 \endfirsthead
 \hline
-\textbf{ID} & \textbf{registeredTime} & \textbf{status} & \textbf{description} & \textbf{employeeID} & \textbf{shiftID} & \textbf{userID} \\
+\textbf{ID} & \textbf{employeeID} & \textbf{shiftID} & \textbf{userID} & \textbf{registeredTime} & \textbf{status} & \textbf{description} \\
 \hline
 \endhead
-1 & 2026-05-15 09:00 & confirmed & & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 2026-05-15 09:00 & confirmed & \\
 \hline
-2 & 2026-05-15 09:00 & confirmed & & 1 & 3 & 1 \\
+2 & 1 & 3 & 1 & 2026-05-15 09:00 & confirmed & \\
 \hline
-3 & 2026-05-15 09:30 & confirmed & & 2 & 2 & 1 \\
+3 & 2 & 2 & 1 & 2026-05-15 09:30 & confirmed & \\
 \hline
-4 & 2026-05-15 09:30 & confirmed & & 2 & 5 & 1 \\
+4 & 2 & 5 & 1 & 2026-05-15 09:30 & confirmed & \\
 \hline
-5 & 2026-05-15 09:30 & confirmed & & 2 & 7 & 1 \\
+5 & 2 & 7 & 1 & 2026-05-15 09:30 & confirmed & \\
 \hline
-6 & 2026-05-15 09:30 & confirmed & & 2 & 10 & 1 \\
+6 & 2 & 10 & 1 & 2026-05-15 09:30 & confirmed & \\
 \hline
 \caption{Data in tblRegistrationShift before testing}\label{tab:testing-registration-before}
 \end{longtable}
@@ -212,36 +212,36 @@ The detailed scenario and expected results of the standard test case are shown i
 
 After the standard test case is executed successfully, the tables \texttt{tblUser}, \texttt{tblRestaurant}, \texttt{tblEmployee}, and \texttt{tblShift} remain unchanged. The table \texttt{tblRegistrationShift} is updated with five new records for Nguyen Van Cuong. The database state of \texttt{tblRegistrationShift} after testing is shown in Table~\ref{tab:testing-registration-after}.
 
-\begin{longtable}{|p{0.06\textwidth}|p{0.18\textwidth}|p{0.13\textwidth}|p{0.14\textwidth}|p{0.14\textwidth}|p{0.10\textwidth}|p{0.09\textwidth}|}
+\begin{longtable}{|p{0.06\textwidth}|p{0.13\textwidth}|p{0.10\textwidth}|p{0.09\textwidth}|p{0.18\textwidth}|p{0.13\textwidth}|p{0.14\textwidth}|}
 \hline
-\textbf{ID} & \textbf{registeredTime} & \textbf{status} & \textbf{description} & \textbf{employeeID} & \textbf{shiftID} & \textbf{userID} \\
+\textbf{ID} & \textbf{employeeID} & \textbf{shiftID} & \textbf{userID} & \textbf{registeredTime} & \textbf{status} & \textbf{description} \\
 \hline
 \endfirsthead
 \hline
-\textbf{ID} & \textbf{registeredTime} & \textbf{status} & \textbf{description} & \textbf{employeeID} & \textbf{shiftID} & \textbf{userID} \\
+\textbf{ID} & \textbf{employeeID} & \textbf{shiftID} & \textbf{userID} & \textbf{registeredTime} & \textbf{status} & \textbf{description} \\
 \hline
 \endhead
-1 & 2026-05-15 09:00 & confirmed & & 1 & 1 & 1 \\
+1 & 1 & 1 & 1 & 2026-05-15 09:00 & confirmed & \\
 \hline
-2 & 2026-05-15 09:00 & confirmed & & 1 & 3 & 1 \\
+2 & 1 & 3 & 1 & 2026-05-15 09:00 & confirmed & \\
 \hline
-3 & 2026-05-15 09:30 & confirmed & & 2 & 2 & 1 \\
+3 & 2 & 2 & 1 & 2026-05-15 09:30 & confirmed & \\
 \hline
-4 & 2026-05-15 09:30 & confirmed & & 2 & 5 & 1 \\
+4 & 2 & 5 & 1 & 2026-05-15 09:30 & confirmed & \\
 \hline
-5 & 2026-05-15 09:30 & confirmed & & 2 & 7 & 1 \\
+5 & 2 & 7 & 1 & 2026-05-15 09:30 & confirmed & \\
 \hline
-6 & 2026-05-15 09:30 & confirmed & & 2 & 10 & 1 \\
+6 & 2 & 10 & 1 & 2026-05-15 09:30 & confirmed & \\
 \hline
-7 & 2026-05-16 10:15 & confirmed & & 3 & 2 & 1 \\
+7 & 3 & 2 & 1 & 2026-05-16 10:15 & confirmed & \\
 \hline
-8 & 2026-05-16 10:15 & confirmed & & 3 & 3 & 1 \\
+8 & 3 & 3 & 1 & 2026-05-16 10:15 & confirmed & \\
 \hline
-9 & 2026-05-16 10:15 & confirmed & & 3 & 7 & 1 \\
+9 & 3 & 7 & 1 & 2026-05-16 10:15 & confirmed & \\
 \hline
-10 & 2026-05-16 10:15 & confirmed & & 3 & 8 & 1 \\
+10 & 3 & 8 & 1 & 2026-05-16 10:15 & confirmed & \\
 \hline
-11 & 2026-05-16 10:15 & confirmed & & 3 & 10 & 1 \\
+11 & 3 & 10 & 1 & 2026-05-16 10:15 & confirmed & \\
 \hline
 \caption{Data in tblRegistrationShift after testing}\label{tab:testing-registration-after}
 \end{longtable}
