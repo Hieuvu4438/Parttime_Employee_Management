@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://schema.omg.org/spec/UML/2.1">
+  <uml:Model xmi:id="model_parttime_employee_management" name="Parttime Employee Management">
+    <ownedComment xmi:id="comment_import_note">
+      <body>This XMI exports the UML interaction model for Visual Paradigm import. Graphical layout may need manual arrangement after import because XMI interchange for sequence diagram layout is tool-dependent.</body>
+    </ownedComment>
+    <packagedElement xmi:type="uml:Actor" xmi:id="type_pe" name="Parttime Employee"/>
+    <packagedElement xmi:type="uml:Actor" xmi:id="type_staff" name="Registration Staff"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="type_login" name="LoginFrm"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="type_home" name="HomeFrm"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="type_search" name="SearchEmployeeFrm"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="type_register" name="RegisterShiftFrm"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="type_userdao" name="UserDAO"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="type_empdao" name="EmployeeDAO"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="type_shiftdao" name="ShiftDAO"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="type_regdao" name="RegistrationShiftDAO"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="type_user" name="User"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="type_employee" name="Employee"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="type_shift" name="Shift"/>
+    <packagedElement xmi:type="uml:Class" xmi:id="type_regshift" name="RegistrationShift"/>
+    <packagedElement xmi:type="uml:Collaboration" xmi:id="collab_register_next_week" name="Register for next week collaboration">
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_pe" name="Parttime_Employee" type="type_pe"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_staff" name="Registration_Staff" type="type_staff"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_login" name="LoginFrm" type="type_login"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_home" name="HomeFrm" type="type_home"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_search" name="SearchEmployeeFrm" type="type_search"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_register" name="RegisterShiftFrm" type="type_register"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_userdao" name="UserDAO" type="type_userdao"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_empdao" name="EmployeeDAO" type="type_empdao"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_shiftdao" name="ShiftDAO" type="type_shiftdao"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_regdao" name="RegistrationShiftDAO" type="type_regdao"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_user" name="User" type="type_user"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_employee" name="Employee" type="type_employee"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_shift" name="Shift" type="type_shift"/>
+      <ownedAttribute xmi:type="uml:Property" xmi:id="part_regshift" name="RegistrationShift" type="type_regshift"/>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Interaction" xmi:id="interaction_register_next_week_design" name="Design Sequence Diagram - Register for next week">
+      <lifeline xmi:id="lifeline_pe" name="Parttime Employee" represents="part_pe"/>
+      <lifeline xmi:id="lifeline_staff" name="Registration Staff" represents="part_staff"/>
+      <lifeline xmi:id="lifeline_login" name="LoginFrm" represents="part_login"/>
+      <lifeline xmi:id="lifeline_home" name="HomeFrm" represents="part_home"/>
+      <lifeline xmi:id="lifeline_search" name="SearchEmployeeFrm" represents="part_search"/>
+      <lifeline xmi:id="lifeline_register" name="RegisterShiftFrm" represents="part_register"/>
+      <lifeline xmi:id="lifeline_userdao" name="UserDAO" represents="part_userdao"/>
+      <lifeline xmi:id="lifeline_empdao" name="EmployeeDAO" represents="part_empdao"/>
+      <lifeline xmi:id="lifeline_shiftdao" name="ShiftDAO" represents="part_shiftdao"/>
+      <lifeline xmi:id="lifeline_regdao" name="RegistrationShiftDAO" represents="part_regdao"/>
+      <lifeline xmi:id="lifeline_user" name="User" represents="part_user"/>
+      <lifeline xmi:id="lifeline_employee" name="Employee" represents="part_employee"/>
+      <lifeline xmi:id="lifeline_shift" name="Shift" represents="part_shift"/>
+      <lifeline xmi:id="lifeline_regshift" name="RegistrationShift" represents="part_regshift"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_1" name="send 1" covered="lifeline_pe" message="msg_1"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_1" name="receive 1" covered="lifeline_staff" message="msg_1"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_2" name="send 2" covered="lifeline_staff" message="msg_2"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_2" name="receive 2" covered="lifeline_login" message="msg_2"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_3" name="send 3" covered="lifeline_login" message="msg_3"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_3" name="receive 3" covered="lifeline_login" message="msg_3"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_4" name="send 4" covered="lifeline_login" message="msg_4"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_4" name="receive 4" covered="lifeline_user" message="msg_4"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_5" name="send 5" covered="lifeline_user" message="msg_5"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_5" name="receive 5" covered="lifeline_user" message="msg_5"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_6" name="send 6" covered="lifeline_user" message="msg_6"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_6" name="receive 6" covered="lifeline_login" message="msg_6"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_7" name="send 7" covered="lifeline_login" message="msg_7"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_7" name="receive 7" covered="lifeline_userdao" message="msg_7"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_8" name="send 8" covered="lifeline_userdao" message="msg_8"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_8" name="receive 8" covered="lifeline_userdao" message="msg_8"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_9" name="send 9" covered="lifeline_userdao" message="msg_9"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_9" name="receive 9" covered="lifeline_user" message="msg_9"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_10" name="send 10" covered="lifeline_user" message="msg_10"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_10" name="receive 10" covered="lifeline_user" message="msg_10"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_11" name="send 11" covered="lifeline_user" message="msg_11"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_11" name="receive 11" covered="lifeline_userdao" message="msg_11"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_12" name="send 12" covered="lifeline_userdao" message="msg_12"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_12" name="receive 12" covered="lifeline_login" message="msg_12"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_13" name="send 13" covered="lifeline_login" message="msg_13"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_13" name="receive 13" covered="lifeline_home" message="msg_13"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_14" name="send 14" covered="lifeline_home" message="msg_14"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_14" name="receive 14" covered="lifeline_home" message="msg_14"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_15" name="send 15" covered="lifeline_home" message="msg_15"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_15" name="receive 15" covered="lifeline_staff" message="msg_15"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_16" name="send 16" covered="lifeline_staff" message="msg_16"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_16" name="receive 16" covered="lifeline_home" message="msg_16"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_17" name="send 17" covered="lifeline_home" message="msg_17"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_17" name="receive 17" covered="lifeline_home" message="msg_17"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_18" name="send 18" covered="lifeline_home" message="msg_18"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_18" name="receive 18" covered="lifeline_search" message="msg_18"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_19" name="send 19" covered="lifeline_search" message="msg_19"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_19" name="receive 19" covered="lifeline_search" message="msg_19"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_20" name="send 20" covered="lifeline_search" message="msg_20"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_20" name="receive 20" covered="lifeline_staff" message="msg_20"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_21" name="send 21" covered="lifeline_staff" message="msg_21"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_21" name="receive 21" covered="lifeline_pe" message="msg_21"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_22" name="send 22" covered="lifeline_pe" message="msg_22"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_22" name="receive 22" covered="lifeline_staff" message="msg_22"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_23" name="send 23" covered="lifeline_staff" message="msg_23"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_23" name="receive 23" covered="lifeline_search" message="msg_23"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_24" name="send 24" covered="lifeline_search" message="msg_24"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_24" name="receive 24" covered="lifeline_search" message="msg_24"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_25" name="send 25" covered="lifeline_search" message="msg_25"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_25" name="receive 25" covered="lifeline_empdao" message="msg_25"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_26" name="send 26" covered="lifeline_empdao" message="msg_26"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_26" name="receive 26" covered="lifeline_empdao" message="msg_26"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_27" name="send 27" covered="lifeline_empdao" message="msg_27"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_27" name="receive 27" covered="lifeline_employee" message="msg_27"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_28" name="send 28" covered="lifeline_employee" message="msg_28"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_28" name="receive 28" covered="lifeline_employee" message="msg_28"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_29" name="send 29" covered="lifeline_employee" message="msg_29"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_29" name="receive 29" covered="lifeline_empdao" message="msg_29"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_30" name="send 30" covered="lifeline_empdao" message="msg_30"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_30" name="receive 30" covered="lifeline_search" message="msg_30"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_31" name="send 31" covered="lifeline_search" message="msg_31"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_31" name="receive 31" covered="lifeline_staff" message="msg_31"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_32" name="send 32" covered="lifeline_staff" message="msg_32"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_32" name="receive 32" covered="lifeline_search" message="msg_32"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_33" name="send 33" covered="lifeline_search" message="msg_33"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_33" name="receive 33" covered="lifeline_search" message="msg_33"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_34" name="send 34" covered="lifeline_search" message="msg_34"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_34" name="receive 34" covered="lifeline_register" message="msg_34"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_35" name="send 35" covered="lifeline_register" message="msg_35"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_35" name="receive 35" covered="lifeline_register" message="msg_35"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_36" name="send 36" covered="lifeline_register" message="msg_36"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_36" name="receive 36" covered="lifeline_shiftdao" message="msg_36"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_37" name="send 37" covered="lifeline_shiftdao" message="msg_37"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_37" name="receive 37" covered="lifeline_shiftdao" message="msg_37"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_38" name="send 38" covered="lifeline_shiftdao" message="msg_38"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_38" name="receive 38" covered="lifeline_shift" message="msg_38"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_39" name="send 39" covered="lifeline_shift" message="msg_39"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_39" name="receive 39" covered="lifeline_shift" message="msg_39"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_40" name="send 40" covered="lifeline_shift" message="msg_40"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_40" name="receive 40" covered="lifeline_shiftdao" message="msg_40"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_41" name="send 41" covered="lifeline_shiftdao" message="msg_41"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_41" name="receive 41" covered="lifeline_register" message="msg_41"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_42" name="send 42" covered="lifeline_register" message="msg_42"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_42" name="receive 42" covered="lifeline_staff" message="msg_42"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_43" name="send 43" covered="lifeline_staff" message="msg_43"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_43" name="receive 43" covered="lifeline_pe" message="msg_43"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_44" name="send 44" covered="lifeline_pe" message="msg_44"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_44" name="receive 44" covered="lifeline_staff" message="msg_44"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_45" name="send 45" covered="lifeline_staff" message="msg_45"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_45" name="receive 45" covered="lifeline_register" message="msg_45"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_46" name="send 46" covered="lifeline_register" message="msg_46"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_46" name="receive 46" covered="lifeline_register" message="msg_46"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_47" name="send 47" covered="lifeline_register" message="msg_47"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_47" name="receive 47" covered="lifeline_regshift" message="msg_47"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_48" name="send 48" covered="lifeline_regshift" message="msg_48"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_48" name="receive 48" covered="lifeline_regshift" message="msg_48"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_49" name="send 49" covered="lifeline_regshift" message="msg_49"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_49" name="receive 49" covered="lifeline_register" message="msg_49"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_50" name="send 50" covered="lifeline_register" message="msg_50"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_50" name="receive 50" covered="lifeline_regdao" message="msg_50"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_51" name="send 51" covered="lifeline_regdao" message="msg_51"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_51" name="receive 51" covered="lifeline_regdao" message="msg_51"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_52" name="send 52" covered="lifeline_regdao" message="msg_52"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_52" name="receive 52" covered="lifeline_register" message="msg_52"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_53" name="send 53" covered="lifeline_register" message="msg_53"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_53" name="receive 53" covered="lifeline_staff" message="msg_53"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_54" name="send 54" covered="lifeline_staff" message="msg_54"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_54" name="receive 54" covered="lifeline_pe" message="msg_54"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_55" name="send 55" covered="lifeline_staff" message="msg_55"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_55" name="receive 55" covered="lifeline_register" message="msg_55"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_56" name="send 56" covered="lifeline_register" message="msg_56"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_56" name="receive 56" covered="lifeline_register" message="msg_56"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_57" name="send 57" covered="lifeline_register" message="msg_57"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_57" name="receive 57" covered="lifeline_home" message="msg_57"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="send_58" name="send 58" covered="lifeline_home" message="msg_58"/>
+      <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="recv_58" name="receive 58" covered="lifeline_staff" message="msg_58"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_login_main" name="login_main" covered="lifeline_login" start="recv_2" finish="send_15"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_login_action" name="login_action" covered="lifeline_login" start="recv_3" finish="send_12"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_user_ctor" name="user_ctor" covered="lifeline_user" start="recv_4" finish="send_6"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_user_self_ctor" name="user_self_ctor" covered="lifeline_user" start="recv_5" finish="send_6"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_userdao_check" name="userdao_check" covered="lifeline_userdao" start="recv_7" finish="send_12"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_userdao_self_check" name="userdao_self_check" covered="lifeline_userdao" start="recv_8" finish="send_12"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_user_setter" name="user_setter" covered="lifeline_user" start="recv_9" finish="send_11"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_user_self_setter" name="user_self_setter" covered="lifeline_user" start="recv_10" finish="send_11"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_home_ctor" name="home_ctor" covered="lifeline_home" start="recv_13" finish="send_15"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_home_self_ctor" name="home_self_ctor" covered="lifeline_home" start="recv_14" finish="send_15"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_home_register" name="home_register" covered="lifeline_home" start="recv_16" finish="send_20"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_home_action" name="home_action" covered="lifeline_home" start="recv_17" finish="send_20"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_search_ctor" name="search_ctor" covered="lifeline_search" start="recv_18" finish="send_20"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_search_self_ctor" name="search_self_ctor" covered="lifeline_search" start="recv_19" finish="send_20"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_search_search" name="search_search" covered="lifeline_search" start="recv_23" finish="send_31"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_search_action_search" name="search_action_search" covered="lifeline_search" start="recv_24" finish="send_31"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_empdao_search" name="empdao_search" covered="lifeline_empdao" start="recv_25" finish="send_30"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_empdao_self_search" name="empdao_self_search" covered="lifeline_empdao" start="recv_26" finish="send_30"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_employee_pack" name="employee_pack" covered="lifeline_employee" start="recv_27" finish="send_29"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_employee_self_ctor" name="employee_self_ctor" covered="lifeline_employee" start="recv_28" finish="send_29"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_search_select" name="search_select" covered="lifeline_search" start="recv_32" finish="send_42"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_search_action_select" name="search_action_select" covered="lifeline_search" start="recv_33" finish="send_42"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_register_ctor" name="register_ctor" covered="lifeline_register" start="recv_34" finish="send_42"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_register_self_ctor" name="register_self_ctor" covered="lifeline_register" start="recv_35" finish="send_42"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_shiftdao_get" name="shiftdao_get" covered="lifeline_shiftdao" start="recv_36" finish="send_41"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_shiftdao_self_get" name="shiftdao_self_get" covered="lifeline_shiftdao" start="recv_37" finish="send_41"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_shift_pack" name="shift_pack" covered="lifeline_shift" start="recv_38" finish="send_40"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_shift_self_ctor" name="shift_self_ctor" covered="lifeline_shift" start="recv_39" finish="send_40"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_register_save" name="register_save" covered="lifeline_register" start="recv_45" finish="send_53"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_register_action_save" name="register_action_save" covered="lifeline_register" start="recv_46" finish="send_53"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_regshift_pack" name="regshift_pack" covered="lifeline_regshift" start="recv_47" finish="send_49"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_regshift_self_ctor" name="regshift_self_ctor" covered="lifeline_regshift" start="recv_48" finish="send_49"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_regdao_save" name="regdao_save" covered="lifeline_regdao" start="recv_50" finish="send_52"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_regdao_self_save" name="regdao_self_save" covered="lifeline_regdao" start="recv_51" finish="send_52"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_register_ok" name="register_ok" covered="lifeline_register" start="recv_55" finish="send_58"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_register_action_ok" name="register_action_ok" covered="lifeline_register" start="recv_56" finish="send_58"/>
+      <fragment xmi:type="uml:BehaviorExecutionSpecification" xmi:id="exec_home_return" name="home_return" covered="lifeline_home" start="recv_57" finish="send_58"/>
+      <message xmi:type="uml:Message" xmi:id="msg_1" name="1. request" messageSort="synchCall" sendEvent="send_1" receiveEvent="recv_1"/>
+      <message xmi:type="uml:Message" xmi:id="msg_2" name="2. login" messageSort="synchCall" sendEvent="send_2" receiveEvent="recv_2"/>
+      <message xmi:type="uml:Message" xmi:id="msg_3" name="3. actionPerformed()" messageSort="synchCall" sendEvent="send_3" receiveEvent="recv_3"/>
+      <message xmi:type="uml:Message" xmi:id="msg_4" name="4. call" messageSort="synchCall" sendEvent="send_4" receiveEvent="recv_4"/>
+      <message xmi:type="uml:Message" xmi:id="msg_5" name="5. User()" messageSort="synchCall" sendEvent="send_5" receiveEvent="recv_5"/>
+      <message xmi:type="uml:Message" xmi:id="msg_6" name="6. return" messageSort="reply" sendEvent="send_6" receiveEvent="recv_6"/>
+      <message xmi:type="uml:Message" xmi:id="msg_7" name="7. call" messageSort="synchCall" sendEvent="send_7" receiveEvent="recv_7"/>
+      <message xmi:type="uml:Message" xmi:id="msg_8" name="8. checkLogin()" messageSort="synchCall" sendEvent="send_8" receiveEvent="recv_8"/>
+      <message xmi:type="uml:Message" xmi:id="msg_9" name="9. call" messageSort="synchCall" sendEvent="send_9" receiveEvent="recv_9"/>
+      <message xmi:type="uml:Message" xmi:id="msg_10" name="10. setter()" messageSort="synchCall" sendEvent="send_10" receiveEvent="recv_10"/>
+      <message xmi:type="uml:Message" xmi:id="msg_11" name="11. return" messageSort="reply" sendEvent="send_11" receiveEvent="recv_11"/>
+      <message xmi:type="uml:Message" xmi:id="msg_12" name="12. return" messageSort="reply" sendEvent="send_12" receiveEvent="recv_12"/>
+      <message xmi:type="uml:Message" xmi:id="msg_13" name="13. call" messageSort="synchCall" sendEvent="send_13" receiveEvent="recv_13"/>
+      <message xmi:type="uml:Message" xmi:id="msg_14" name="14. HomeFrm()" messageSort="synchCall" sendEvent="send_14" receiveEvent="recv_14"/>
+      <message xmi:type="uml:Message" xmi:id="msg_15" name="15. display" messageSort="reply" sendEvent="send_15" receiveEvent="recv_15"/>
+      <message xmi:type="uml:Message" xmi:id="msg_16" name="16. click register" messageSort="synchCall" sendEvent="send_16" receiveEvent="recv_16"/>
+      <message xmi:type="uml:Message" xmi:id="msg_17" name="17. actionPerformed()" messageSort="synchCall" sendEvent="send_17" receiveEvent="recv_17"/>
+      <message xmi:type="uml:Message" xmi:id="msg_18" name="18. call" messageSort="synchCall" sendEvent="send_18" receiveEvent="recv_18"/>
+      <message xmi:type="uml:Message" xmi:id="msg_19" name="19. SearchEmployeeFrm()" messageSort="synchCall" sendEvent="send_19" receiveEvent="recv_19"/>
+      <message xmi:type="uml:Message" xmi:id="msg_20" name="20. display" messageSort="reply" sendEvent="send_20" receiveEvent="recv_20"/>
+      <message xmi:type="uml:Message" xmi:id="msg_21" name="21. ask name" messageSort="synchCall" sendEvent="send_21" receiveEvent="recv_21"/>
+      <message xmi:type="uml:Message" xmi:id="msg_22" name="22. response name" messageSort="reply" sendEvent="send_22" receiveEvent="recv_22"/>
+      <message xmi:type="uml:Message" xmi:id="msg_23" name="23. enter name + search" messageSort="synchCall" sendEvent="send_23" receiveEvent="recv_23"/>
+      <message xmi:type="uml:Message" xmi:id="msg_24" name="24. actionPerformed()" messageSort="synchCall" sendEvent="send_24" receiveEvent="recv_24"/>
+      <message xmi:type="uml:Message" xmi:id="msg_25" name="25. call" messageSort="synchCall" sendEvent="send_25" receiveEvent="recv_25"/>
+      <message xmi:type="uml:Message" xmi:id="msg_26" name="26. searchEmployee()" messageSort="synchCall" sendEvent="send_26" receiveEvent="recv_26"/>
+      <message xmi:type="uml:Message" xmi:id="msg_27" name="27. call" messageSort="synchCall" sendEvent="send_27" receiveEvent="recv_27"/>
+      <message xmi:type="uml:Message" xmi:id="msg_28" name="28. Employee()" messageSort="synchCall" sendEvent="send_28" receiveEvent="recv_28"/>
+      <message xmi:type="uml:Message" xmi:id="msg_29" name="29. return" messageSort="reply" sendEvent="send_29" receiveEvent="recv_29"/>
+      <message xmi:type="uml:Message" xmi:id="msg_30" name="30. return" messageSort="reply" sendEvent="send_30" receiveEvent="recv_30"/>
+      <message xmi:type="uml:Message" xmi:id="msg_31" name="31. display" messageSort="reply" sendEvent="send_31" receiveEvent="recv_31"/>
+      <message xmi:type="uml:Message" xmi:id="msg_32" name="32. click employee" messageSort="synchCall" sendEvent="send_32" receiveEvent="recv_32"/>
+      <message xmi:type="uml:Message" xmi:id="msg_33" name="33. actionPerformed()" messageSort="synchCall" sendEvent="send_33" receiveEvent="recv_33"/>
+      <message xmi:type="uml:Message" xmi:id="msg_34" name="34. call" messageSort="synchCall" sendEvent="send_34" receiveEvent="recv_34"/>
+      <message xmi:type="uml:Message" xmi:id="msg_35" name="35. RegisterShiftFrm(e, u)" messageSort="synchCall" sendEvent="send_35" receiveEvent="recv_35"/>
+      <message xmi:type="uml:Message" xmi:id="msg_36" name="36. call" messageSort="synchCall" sendEvent="send_36" receiveEvent="recv_36"/>
+      <message xmi:type="uml:Message" xmi:id="msg_37" name="37. getShiftNextWeek()" messageSort="synchCall" sendEvent="send_37" receiveEvent="recv_37"/>
+      <message xmi:type="uml:Message" xmi:id="msg_38" name="38. call" messageSort="synchCall" sendEvent="send_38" receiveEvent="recv_38"/>
+      <message xmi:type="uml:Message" xmi:id="msg_39" name="39. Shift()" messageSort="synchCall" sendEvent="send_39" receiveEvent="recv_39"/>
+      <message xmi:type="uml:Message" xmi:id="msg_40" name="40. return" messageSort="reply" sendEvent="send_40" receiveEvent="recv_40"/>
+      <message xmi:type="uml:Message" xmi:id="msg_41" name="41. return" messageSort="reply" sendEvent="send_41" receiveEvent="recv_41"/>
+      <message xmi:type="uml:Message" xmi:id="msg_42" name="42. display" messageSort="reply" sendEvent="send_42" receiveEvent="recv_42"/>
+      <message xmi:type="uml:Message" xmi:id="msg_43" name="43. ask shifts" messageSort="synchCall" sendEvent="send_43" receiveEvent="recv_43"/>
+      <message xmi:type="uml:Message" xmi:id="msg_44" name="44. response shifts" messageSort="reply" sendEvent="send_44" receiveEvent="recv_44"/>
+      <message xmi:type="uml:Message" xmi:id="msg_45" name="45. tick + save" messageSort="synchCall" sendEvent="send_45" receiveEvent="recv_45"/>
+      <message xmi:type="uml:Message" xmi:id="msg_46" name="46. actionPerformed()" messageSort="synchCall" sendEvent="send_46" receiveEvent="recv_46"/>
+      <message xmi:type="uml:Message" xmi:id="msg_47" name="47. call" messageSort="synchCall" sendEvent="send_47" receiveEvent="recv_47"/>
+      <message xmi:type="uml:Message" xmi:id="msg_48" name="48. RegistrationShift()" messageSort="synchCall" sendEvent="send_48" receiveEvent="recv_48"/>
+      <message xmi:type="uml:Message" xmi:id="msg_49" name="49. return" messageSort="reply" sendEvent="send_49" receiveEvent="recv_49"/>
+      <message xmi:type="uml:Message" xmi:id="msg_50" name="50. call" messageSort="synchCall" sendEvent="send_50" receiveEvent="recv_50"/>
+      <message xmi:type="uml:Message" xmi:id="msg_51" name="51. saveRegistration()" messageSort="synchCall" sendEvent="send_51" receiveEvent="recv_51"/>
+      <message xmi:type="uml:Message" xmi:id="msg_52" name="52. return" messageSort="reply" sendEvent="send_52" receiveEvent="recv_52"/>
+      <message xmi:type="uml:Message" xmi:id="msg_53" name="53. show success" messageSort="reply" sendEvent="send_53" receiveEvent="recv_53"/>
+      <message xmi:type="uml:Message" xmi:id="msg_54" name="54. inform success" messageSort="synchCall" sendEvent="send_54" receiveEvent="recv_54"/>
+      <message xmi:type="uml:Message" xmi:id="msg_55" name="55. click OK" messageSort="synchCall" sendEvent="send_55" receiveEvent="recv_55"/>
+      <message xmi:type="uml:Message" xmi:id="msg_56" name="56. actionPerformed()" messageSort="synchCall" sendEvent="send_56" receiveEvent="recv_56"/>
+      <message xmi:type="uml:Message" xmi:id="msg_57" name="57. call" messageSort="synchCall" sendEvent="send_57" receiveEvent="recv_57"/>
+      <message xmi:type="uml:Message" xmi:id="msg_58" name="58. display" messageSort="reply" sendEvent="send_58" receiveEvent="recv_58"/>
+    </packagedElement>
+  </uml:Model>
+</xmi:XMI>
