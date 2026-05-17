@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(update-config)",
+      "Skill(module-1-java-swing-coder)"
+    ]
+  }
+}
