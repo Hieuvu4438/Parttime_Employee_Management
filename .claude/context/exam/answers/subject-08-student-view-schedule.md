@@ -1,35 +1,124 @@
 # Subject No. 08 — Student Results — Module "View Student's schedule"
 
 > **Domain:** Student Results Management
-> **Entity classes:** Student, Subject, Class, Registration, Grade, User
+> **Entity classes:** Student, Subject, Class, Registration, TimeSlot, User
 
 ---
 
-## Câu 1: Scenario — Xem thời khóa biểu
+## Câu 1: Scenario — Xem thời khóa biểu sinh viên
 
-| Bước | Diễn biến |
-|------|-----------|
-| 1 | Student đăng nhập vào hệ thống. |
-| 2 | Student chọn chức năng **View schedule**. |
-| 3 | Hệ thống hiển thị hộp chọn cách xem: theo tuần (week) hoặc theo học kỳ (semester). |
-| 4 | Student chọn **Weekly view**. |
-| 5 | Hệ thống hiển thị thời khóa biểu tuần hiện tại: bảng 7 cột (Thứ 2-CN), 6 dòng (6 kíp). Mỗi ô hiển thị tên môn, phòng học, tên lớp. |
-| 6 | Student nhấn vào ô "Thứ 2, Kíp 1" (Nhap mon CNPM). |
-| 7 | Hệ thống hiển thị chi tiết: mã môn INT1340, tên môn Nhap mon CNPM, mã lớp L01, tên lớp Lop 01, phòng A101, GV Nguyen A, giờ bắt đầu 7:30, giờ kết thúc 9:30. |
-| 8 | Student nhấn Back. |
+### Kịch bản chính
+
+| Bước | Diễn biến | Giao diện hiển thị |
+|------|-----------|---------------------|
+| 1 | Student mở ứng dụng. Giao diện Login xuất hiện với ô nhập username, password và nút Login. | **LoginFrm** |
+| 2 | Student nhập username `sv01`, password `******`, nhấn nút Login. | **LoginFrm** |
+| 3 | Hệ thống xác thực thành công. Giao diện Home xuất hiện với các menu: Register, View schedule, Statistics. | **HomeFrm** |
+| 4 | Student chọn menu **View schedule**. | **HomeFrm** |
+| 5 | Giao diện View Schedule xuất hiện với hộp chọn (combobox) cách xem thời khóa biểu: "Theo tuần" (Weekly) và "Theo học kỳ" (Semester). Mặc định chưa chọn gì. | **ViewScheduleFrm** |
+| 6 | Student chọn "Theo tuần" (Weekly) từ combobox. | **ViewScheduleFrm** |
+| 7 | Hệ thống hiển thị thời khóa biểu tuần hiện tại. Bảng có 7 cột (Thứ 2, Thứ 3, Thứ 4, Thứ 5, Thứ 6, Thứ 7, Chủ nhật) và 6 dòng (Kíp 1 đến Kíp 6). Mỗi ô chứa tên môn, phòng học, tên lớp tương ứng. | **ViewScheduleFrm** — bảng 7x6 |
+| 8 | Student xem bảng: Thứ 2 Kíp 1 = "Nhap mon CNPM / A101 / L01", Thứ 3 Kíp 3 = "Toan cao cap / B202 / L03", Thứ 5 Kíp 2 = "Tieng Anh / C301 / L05", các ô khác trống. | **ViewScheduleFrm** — bảng 7x6 |
+| 9 | Student nhấn vào ô "Thứ 2, Kíp 1" (Nhap mon CNPM). | **ViewScheduleFrm** |
+| 10 | Hệ thống hiển thị chi tiết kíp học: Mã môn INT1340, Tên môn Nhap mon CNPM, Mã lớp L01, Tên lớp Lop 01, Phòng A101, Giảng viên Nguyen Van A, Giờ bắt đầu 7:30, Giờ kết thúc 9:30, Thứ 2. | **ViewScheduleFrm** — panel chi tiết |
+| 11 | Student nhấn nút **Back** để quay lại bảng thời khóa biểu. | **ViewScheduleFrm** — bảng 7x6 |
+| 12 | Student nhấn nút **Back** để quay về giao diện Home. | **HomeFrm** |
+
+### Kịch bản ngoại lệ
+
+| Mã | Tình huống | Diễn biến |
+|----|-----------|-----------|
+| EL1 | Sinh viên chưa đăng ký môn nào trong học kỳ | Hệ thống hiển thị bảng thời khóa biểu 7x6 toàn bộ ô trống và thông báo "Ban chua dang ky mon hoc nao trong hoc ky nay". |
+| EL2 | Tuần hiện tại nằm ngoài thời gian học kỳ (kỳ nghỉ) | Hệ thống thông báo "Tuan hien tai khong nam trong hoc ky" và không hiển thị bảng. |
+| EL3 | Sinh viên nhấn vào ô trống trong bảng thời khóa biểu | Hệ thống không hiển thị chi tiết, không có phản ứng gì (ô trống không có sự kiện click). |
 
 ---
 
 ## Câu 2: Entity Class Diagram
 
-Cùng entity classes. Thêm class hiển thị:
+### Bước 1: Mô tả hệ thống bằng ngôn ngữ tự nhiên
 
-**ScheduleSlot:**
-- `day: String`
-- `slot: int`
-- `subject: Subject`
-- `classRoom: String`
-- `className: String`
+Hệ thống quản lý kết quả học tập của sinh viên. Sinh viên đăng nhập để xem thời khóa biểu cá nhân. Mỗi sinh viên đăng ký nhiều lớp học (Class) trong một học kỳ. Mỗi lớp thuộc về một môn học (Subject). Mỗi lớp có một khung giờ (TimeSlot) cụ thể và một phòng học. Thời khóa biểu của sinh viên được tạo từ các Registration (đăng ký) liên kết sinh viên với lớp học.
+
+### Bước 2: Trích xuất danh từ
+
+| Danh từ | Phân loại | Lý do |
+|---------|-----------|-------|
+| Student (Sinh viên) | Entity class | Đối tượng chính, xem thời khóa biểu |
+| Subject (Môn học) | Entity class | Đối tượng được học, có mã, tên, tín chỉ |
+| Class (Lớp học) | Entity class | Lớp cụ thể của môn học, có phòng, khung giờ |
+| Registration (Đăng ký) | Entity class | Liên kết sinh viên với lớp học trong học kỳ |
+| TimeSlot (Khung giờ) | Entity class | Thời gian cụ thể (thứ, kíp) của mỗi lớp |
+| User (Người dùng) | Entity class | Tài khoản đăng nhập của sinh viên và nhân viên |
+| Thời khóa biểu | Không phải class | Là kết quả truy vấn, không phải entity độc lập |
+| Phòng học | Thuộc tính | Thuộc tính của Class |
+| Học kỳ | Thuộc tính | Thuộc tính của Registration |
+| Tín chỉ | Thuộc tính | Thuộc tính của Subject |
+
+### Bước 3: Xác định quan hệ
+
+| Quan hệ | Kiểu | Giải thích |
+|----------|------|------------|
+| Student → Registration | 1..* | Một sinh viên có nhiều đăng ký |
+| Class → Registration | 1..* | Một lớp có nhiều sinh viên đăng ký |
+| Subject → Class | 1..* | Một môn học có nhiều lớp |
+| TimeSlot → Class | 1..* | Một khung giờ có thể dùng cho nhiều lớp |
+| Student → User | 1..1 | Mỗi sinh viên có một tài khoản User |
+
+### Bước 4: Class Diagram
+
+```
++------------------+          +-------------------+
+|      User        |          |     Student       |
++------------------+          +-------------------+
+| -username: String|    1  1  | -id: int          |
+| -password: String|<-------->| -studentCode: String|
+| -role: String    |          | -name: String     |
++------------------+          | -dob: Date        |
+                              | -course: String   |
+                              | -address: String  |
+                              +-------------------+
+                              | +getSchedule()    |
+                              +-------------------+
+                                       | 1
+                                       |
+                                       | *
+                              +-------------------+        +-------------------+
+                              |   Registration    |        |     Subject       |
+                              +-------------------+        +-------------------+
+                              | -id: int          |   *  1 | -id: int          |
+                              | -semester: String |------->| -code: String     |
+                              | -regDate: Date    |        | -name: String     |
+                              | -status: String   |        | -credits: int     |
+                              +-------------------+        +-------------------+
+                                       | *                         | 1
+                                       |                           |
+                                       | 1                         | *
+                              +-------------------+        +-------------------+
+                              |      Class        |<-------|                   |
+                              +-------------------+        +-------------------+
+                              | -id: int          |
+                              | -classCode: String|        +-------------------+
+                              | -className: String|        |     TimeSlot      |
+                              | -classroom: String|        +-------------------+
+                              | -maxStudents: int |   *  1 | -id: int          |
+                              | -day: String      |------->| -dayOfWeek: String|
+                              | -startPeriod: int |        | -startPeriod: int |
+                              | -endPeriod: int   |        | -endPeriod: int   |
+                              +-------------------+        | -startTime: String|
+                                                           | -endTime: String  |
+                                                           +-------------------+
+```
+
+### Bước 5: Bảng quan hệ chi tiết
+
+| Entity 1 | Entity 2 | Mối quan hệ | Đa thực thể | Khóa ngoại | Giải thích |
+|-----------|----------|-------------|-------------|------------|------------|
+| Student | User | kế thừa / liên kết 1-1 | 1:1 | studentID trong tblUser | Mỗi SV có 1 tài khoản User |
+| Student | Registration | sở hữu | 1:N | studentID trong tblRegistration | 1 SV có nhiều đăng ký |
+| Class | Registration | được đăng ký | 1:N | classID trong tblRegistration | 1 lớp có nhiều SV đăng ký |
+| Subject | Class | chứa | 1:N | subjectID trong tblClass | 1 môn có nhiều lớp |
+| TimeSlot | Class | gán cho | 1:N | timeSlotID trong tblClass | 1 khung giờ cho nhiều lớp |
 
 ---
 
@@ -37,47 +126,332 @@ Cùng entity classes. Thêm class hiển thị:
 
 ### View classes
 
+**LoginFrm:**
+- `inUsername`: TextField nhập tên đăng nhập (String)
+- `inPassword`: PasswordField nhập mật khẩu (String)
+- `subLogin`: Button "Login"
+
+**HomeFrm:**
+- `menuRegister`: MenuItem "Register"
+- `menuViewSchedule`: MenuItem "View schedule"
+- `menuStatistics`: MenuItem "Statistics"
+- `menuLogout`: MenuItem "Logout"
+
 **ViewScheduleFrm:**
-- `inViewType`: combobox chọn cách xem (week/semester)
-- `outScheduleTable`: bảng thời khóa biểu 7×6
-- `outSlotDetail`: chi tiết kíp học (ẩn, hiện khi click)
+- `inViewType`: ComboBox chọn cách xem (String) — giá trị: "Weekly", "Semester"
+- `outScheduleTable`: Table hiển thị thời khóa biểu 7x6 (JTable)
+- `outDayHeaders`: Label[] tiêu đề 7 cột: "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
+- `outPeriodLabels`: Label[] tiêu đề 6 dòng: "Kip 1", "Kip 2", "Kip 3", "Kip 4", "Kip 5", "Kip 6"
+- `outSlotDetail`: Panel chi tiết kíp học (ẩn mặc định, hiện khi click ô)
+- `outSubjectCode`: Label hiển thị mã môn (String)
+- `outSubjectName`: Label hiển thị tên môn (String)
+- `outClassCode`: Label hiển thị mã lớp (String)
+- `outClassName`: Label hiển thị tên lớp (String)
+- `outClassroom`: Label hiển thị phòng học (String)
+- `outTeacher`: Label hiển thị giảng viên (String)
+- `outStartTime`: Label hiển thị giờ bắt đầu (String)
+- `outEndTime`: Label hiển thị giờ kết thúc (String)
+- `subBack`: Button "Back"
 
 ### DAO classes
 
-| DAO | Phương thức | Mô tả |
-|-----|-------------|-------|
-| RegistrationDAO | `getScheduleByWeek(studentId, week): List<ScheduleSlot>` | TKB theo tuần |
-| ClassDAO | `getClassDetail(classId): Class` | Chi tiết lớp |
+| DAO | Phương thức | Kiểu trả về | Mô tả |
+|-----|-------------|-------------|-------|
+| UserDAO | `login(username: String, password: String): User` | `User` hoặc `null` | Xác thực đăng nhập |
+| RegistrationDAO | `getScheduleByWeek(studentId: int, weekStart: Date, weekEnd: Date): List<Registration>` | `List<Registration>` | Lấy danh sách đăng ký trong tuần |
+| RegistrationDAO | `getScheduleBySemester(studentId: int, semester: String): List<Registration>` | `List<Registration>` | Lấy danh sách đăng ký theo học kỳ |
+| ClassDAO | `getClassDetail(classId: int): Class` | `Class` | Lấy chi tiết lớp (phòng, GV, giờ) |
+| ClassDAO | `getClassesBySubject(subjectId: int): List<Class>` | `List<Class>` | Lấy danh sách lớp theo môn |
+| SubjectDAO | `getSubjectById(subjectId: int): Subject` | `Subject` | Lấy thông tin môn học |
+
+### Entity classes
+
+**User:**
+| Thuộc tính | Kiểu | Mô tả |
+|------------|------|-------|
+| username | String | Tên đăng nhập |
+| password | String | Mật khẩu |
+| role | String | Vai trò: "student", "staff" |
+
+**Student:**
+| Thuộc tính | Kiểu | Mô tả |
+|------------|------|-------|
+| id | int | Khóa chính |
+| studentCode | String | Mã sinh viên |
+| name | String | Họ tên |
+| dob | Date | Ngày sinh |
+| course | String | Khóa học |
+| address | String | Địa chỉ |
+
+**Subject:**
+| Thuộc tính | Kiểu | Mô tả |
+|------------|------|-------|
+| id | int | Khóa chính |
+| code | String | Mã môn |
+| name | String | Tên môn |
+| credits | int | Số tín chỉ |
+
+**Class:**
+| Thuộc tính | Kiểu | Mô tả |
+|------------|------|-------|
+| id | int | Khóa chính |
+| classCode | String | Mã lớp |
+| className | String | Tên lớp |
+| classroom | String | Phòng học |
+| maxStudents | int | Sĩ số tối đa |
+| subjectID | int | FK -> tblSubject.ID |
+| timeSlotID | int | FK -> tblTimeSlot.ID |
+
+**TimeSlot:**
+| Thuộc tính | Kiểu | Mô tả |
+|------------|------|-------|
+| id | int | Khóa chính |
+| dayOfWeek | String | Thứ trong tuần |
+| startPeriod | int | Kíp bắt đầu |
+| endPeriod | int | Kíp kết thúc |
+| startTime | String | Giờ bắt đầu |
+| endTime | String | Giờ kết thúc |
+
+**Registration:**
+| Thuộc tính | Kiểu | Mô tả |
+|------------|------|-------|
+| id | int | Khóa chính |
+| semester | String | Học kỳ |
+| regDate | Date | Ngày đăng ký |
+| status | String | Trạng thái |
+| studentID | int | FK -> tblStudent.ID |
+| classID | int | FK -> tblClass.ID |
+
+### Database Design
+
+**tblUser:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK, AUTO_INCREMENT |
+| username | varchar(50) | UNIQUE, NOT NULL |
+| password | varchar(100) | NOT NULL |
+| role | varchar(20) | NOT NULL |
+
+**tblStudent:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK, AUTO_INCREMENT |
+| studentCode | varchar(20) | UNIQUE, NOT NULL |
+| name | varchar(100) | NOT NULL |
+| dob | date | |
+| course | varchar(20) | |
+| address | varchar(200) | |
+| userID | int | FK -> tblUser.ID |
+
+**tblSubject:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK, AUTO_INCREMENT |
+| code | varchar(20) | UNIQUE, NOT NULL |
+| name | varchar(100) | NOT NULL |
+| credits | int | NOT NULL |
+
+**tblTimeSlot:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK, AUTO_INCREMENT |
+| dayOfWeek | varchar(20) | NOT NULL |
+| startPeriod | int | NOT NULL |
+| endPeriod | int | NOT NULL |
+| startTime | varchar(10) | |
+| endTime | varchar(10) | |
+
+**tblClass:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK, AUTO_INCREMENT |
+| classCode | varchar(20) | UNIQUE, NOT NULL |
+| className | varchar(100) | NOT NULL |
+| classroom | varchar(50) | |
+| maxStudents | int | |
+| subjectID | int | FK -> tblSubject.ID, NOT NULL |
+| timeSlotID | int | FK -> tblTimeSlot.ID, NOT NULL |
+
+**tblRegistration:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK, AUTO_INCREMENT |
+| semester | varchar(20) | NOT NULL |
+| regDate | date | |
+| status | varchar(20) | DEFAULT 'active' |
+| studentID | int | FK -> tblStudent.ID, NOT NULL |
+| classID | int | FK -> tblClass.ID, NOT NULL |
+
+### Hướng dẫn Visual Paradigm
+
+1. Mở Visual Paradigm -> File -> New Project -> đặt tên "StudentViewSchedule".
+2. Vào Diagram -> Class Diagram -> tạo class diagram mới.
+3. Tạo 6 class: User, Student, Subject, Class, TimeSlot, Registration.
+4. Với mỗi class, click chuột phải -> Add Attribute -> nhập thuộc tính theo bảng Entity classes ở trên.
+5. Kéo connector "Association" từ Student đến Registration (1:N).
+6. Kéo connector "Association" từ Class đến Registration (1:N).
+7. Kéo connector "Association" từ Subject đến Class (1:N).
+8. Kéo connector "Association" từ TimeSlot đến Class (1:N).
+9. Kéo connector "Association" từ Student đến User (1:1).
+10. Đặt tên và đa thực thể cho mỗi mối quan hệ.
 
 ---
 
 ## Câu 4: Sequence Diagram
 
-**Visual Paradigm — Các bước vẽ:**
+### Hướng dẫn Visual Paradigm — Các bước vẽ
 
-1. Tạo lifeline: `Student`, `LoginFrm`, `ViewScheduleFrm`, `RegistrationDAO`, `ClassDAO`.
-2. Message flow:
-   - Student → ViewScheduleFrm: select View schedule
-   - Student → ViewScheduleFrm: select "Weekly view"
-   - ViewScheduleFrm → RegistrationDAO: getScheduleByWeek(studentId, currentWeek)
-   - RegistrationDAO → ViewScheduleFrm: return List<ScheduleSlot>
-   - ViewScheduleFrm: display 7×6 table
-   - Student → ViewScheduleFrm: click cell "Mon, Slot 1"
-   - ViewScheduleFrm → ClassDAO: getClassDetail(classId)
-   - ClassDAO → ViewScheduleFrm: return Class detail
-   - ViewScheduleFrm: display slot detail
+1. Mở Visual Paradigm -> Diagram -> Sequence Diagram.
+2. Tạo các lifeline (đối tượng): `:Student`, `:LoginFrm`, `:HomeFrm`, `:ViewScheduleFrm`, `:RegistrationDAO`, `:ClassDAO`, `:SubjectDAO`.
+3. Kéo message từ `:Student` đến `:LoginFrm`: "login(username, password)".
+4. Kéo return message: "return User".
+5. Kéo message từ `:Student` đến `:HomeFrm`: "selectViewSchedule()".
+6. Kéo message từ `:HomeFrm` đến `:ViewScheduleFrm`: "open()".
+7. Kéo message từ `:Student` đến `:ViewScheduleFrm`: "selectViewType('Weekly')".
+8. Kéo message từ `:ViewScheduleFrm` đến `:RegistrationDAO`: "getScheduleByWeek(studentId, weekStart, weekEnd)".
+9. Kéo return message: "return List<Registration>".
+10. Với mỗi Registration, vẽ loop fragment gọi `:ClassDAO.getClassDetail(classId)` và `:SubjectDAO.getSubjectById(subjectId)`.
+11. Kéo message từ `:Student` đến `:ViewScheduleFrm`: "clickCell(day='Mon', period=1)".
+12. Kéo message từ `:ViewScheduleFrm` đến `:ClassDAO`: "getClassDetail(classId)".
+13. Kéo return message: "return Class".
+14. Kéo message self trên `:ViewScheduleFrm`: "displaySlotDetail(class)".
+
+### Sequence Diagram (ASCII)
+
+```
+Student       LoginFrm      HomeFrm      ViewScheduleFrm    RegistrationDAO    ClassDAO     SubjectDAO
+   |              |             |               |                  |                |              |
+   |---login------>|             |               |                  |                |              |
+   |<--return User-|             |               |                  |                |              |
+   |              |             |               |                  |                |              |
+   |---selectViewSchedule()---->|               |                  |                |              |
+   |              |             |---open()----->|                  |                |              |
+   |              |             |               |                  |                |              |
+   |---selectViewType('Weekly')>|               |                  |                |              |
+   |              |             |               |                  |                |              |
+   |              |             |               |---getScheduleByWeek------------->|              |
+   |              |             |               |<--return List<Reg>---------------|              |
+   |              |             |               |                  |                |              |
+   |              |             |               | [loop: each Registration]        |              |
+   |              |             |               |---getClassDetail(classId)-------->|              |
+   |              |             |               |<--return Class-------------------|              |
+   |              |             |               |---getSubjectById(subjectId)------|------------->|
+   |              |             |               |<--return Subject-----------------|--------------|
+   |              |             |               |                  |                |              |
+   |              |             |               | [display 7x6 table]              |              |
+   |              |             |               |                  |                |              |
+   |---clickCell('Mon',1)------>|               |                  |                |              |
+   |              |             |               |---getClassDetail(classId)-------->|              |
+   |              |             |               |<--return Class-------------------|              |
+   |              |             |               |                  |                |              |
+   |              |             |               |---getSubjectById(subjectId)------|------------->|
+   |              |             |               |<--return Subject-----------------|--------------|
+   |              |             |               |                  |                |              |
+   |              |             |               | [displaySlotDetail]              |              |
+   |<---show detail panel------|               |                  |                |              |
+   |              |             |               |                  |                |              |
+   |---clickBack->|             |               |                  |                |              |
+   |              |             |               | [hide detail, show table]        |              |
+```
+
+### Bảng giải thích chi tiết
+
+| Bước | Từ | Đến | Message | Giải thích |
+|------|-----|------|---------|------------|
+| 1 | Student | LoginFrm | `login("sv01", "******")` | Sinh viên nhập thông tin đăng nhập |
+| 2 | LoginFrm | Student | `return User` | Trả về đối tượng User sau khi xác thực |
+| 3 | Student | HomeFrm | `selectViewSchedule()` | SV chọn chức năng xem thời khóa biểu từ menu |
+| 4 | HomeFrm | ViewScheduleFrm | `open()` | Mở giao diện xem thời khóa biểu |
+| 5 | Student | ViewScheduleFrm | `selectViewType("Weekly")` | SV chọn kiểu xem "Theo tuần" |
+| 6 | ViewScheduleFrm | RegistrationDAO | `getScheduleByWeek(studentId, weekStart, weekEnd)` | Truy vấn danh sách đăng ký trong tuần |
+| 7 | RegistrationDAO | ViewScheduleFrm | `return List<Registration>` | Trả về danh sách đăng ký |
+| 8 | ViewScheduleFrm | ClassDAO | `getClassDetail(classId)` | Lấy chi tiết lớp cho mỗi đăng ký |
+| 9 | ClassDAO | ViewScheduleFrm | `return Class` | Trả về thông tin lớp (phòng, giờ, GV) |
+| 10 | ViewScheduleFrm | SubjectDAO | `getSubjectById(subjectId)` | Lấy thông tin môn học |
+| 11 | SubjectDAO | ViewScheduleFrm | `return Subject` | Trả về tên môn, mã môn |
+| 12 | ViewScheduleFrm | ViewScheduleFrm | `displayScheduleTable(scheduleData)` | Hiển thị bảng 7x6 với dữ liệu |
+| 13 | Student | ViewScheduleFrm | `clickCell(day="Mon", period=1)` | SV click vào ô Thứ 2 Kíp 1 |
+| 14 | ViewScheduleFrm | ClassDAO | `getClassDetail(classId)` | Lấy chi tiết lớp cho ô được click |
+| 15 | ClassDAO | ViewScheduleFrm | `return Class` | Trả về chi tiết lớp |
+| 16 | ViewScheduleFrm | SubjectDAO | `getSubjectById(subjectId)` | Lấy thông tin môn học |
+| 17 | SubjectDAO | ViewScheduleFrm | `return Subject` | Trả về thông tin môn |
+| 18 | ViewScheduleFrm | ViewScheduleFrm | `displaySlotDetail(class, subject)` | Hiển thị panel chi tiết kíp học |
+| 19 | ViewScheduleFrm | Student | `showDetailPanel()` | Hiển thị chi tiết cho SV xem |
+| 20 | Student | ViewScheduleFrm | `clickBack()` | SV nhấn nút Back |
+| 21 | ViewScheduleFrm | ViewScheduleFrm | `hideSlotDetail()` | Ẩn panel chi tiết |
+| 22 | ViewScheduleFrm | Student | `showScheduleTable()` | Hiển thị lại bảng thời khóa biểu |
 
 ---
 
 ## Câu 5: Blackbox Testcase
 
-### TC01: Xem thời khóa biểu có dữ liệu
+### Test Plan
+
+| TC | Tên test case | Mô tả | Kết quả mong đợi |
+|----|---------------|-------|------------------|
+| TC01 | Xem TKB tuần có dữ liệu | SV đăng ký 3 môn, xem TKB tuần | Bảng 7x6 hiển thị 3 môn tại đúng ô |
+| TC02 | Xem TKB tuần khi chưa đăng ký | SV chưa đăng ký môn nào | Bảng trống, thông báo "Ban chua dang ky" |
+| TC03 | Click ô có môn học | Nhấn vào ô có môn | Hiển thị chi tiết kíp học |
+| TC04 | Click ô trống | Nhấn vào ô trống | Không có phản ứng |
+| TC05 | Chọn kiểu xem Semester | Chọn "Theo học kỳ" | Hiển thị TKB cả học kỳ |
+
+### TC01: Xem thời khóa biểu tuần có dữ liệu
+
+**Database trước khi test:**
+
+**tblUser:**
+| ID | username | password | role |
+|----|----------|----------|------|
+| 1 | sv01 | pass123 | student |
+
+**tblStudent:**
+| ID | studentCode | name | dob | course | address | userID |
+|----|-------------|------|-----|--------|---------|--------|
+| 1 | SV2021001 | Nguyen Van A | 2003-05-15 | K65 | Ha Noi | 1 |
+
+**tblSubject:**
+| ID | code | name | credits |
+|----|------|------|---------|
+| 1 | INT1340 | Nhap mon CNPM | 3 |
+| 2 | MAT1042 | Toan cao cap | 4 |
+| 3 | ENG1024 | Tieng Anh | 3 |
+
+**tblTimeSlot:**
+| ID | dayOfWeek | startPeriod | endPeriod | startTime | endTime |
+|----|-----------|-------------|-----------|-----------|---------|
+| 1 | Mon | 1 | 2 | 7:30 | 9:30 |
+| 2 | Wed | 3 | 4 | 13:00 | 15:00 |
+| 3 | Fri | 2 | 3 | 9:30 | 11:30 |
+
+**tblClass:**
+| ID | classCode | className | classroom | maxStudents | subjectID | timeSlotID |
+|----|-----------|-----------|-----------|-------------|-----------|------------|
+| 1 | L01 | Lop 01 | A101 | 40 | 1 | 1 |
+| 2 | L03 | Lop 03 | B202 | 35 | 2 | 2 |
+| 3 | L05 | Lop 05 | C301 | 30 | 3 | 3 |
+
+**tblRegistration:**
+| ID | semester | regDate | status | studentID | classID |
+|----|----------|---------|--------|-----------|---------|
+| 1 | 20251 | 2025-08-20 | active | 1 | 1 |
+| 2 | 20251 | 2025-08-20 | active | 1 | 2 |
+| 3 | 20251 | 2025-08-20 | active | 1 | 3 |
+
+### Kịch bản test TC01
 
 | Bước | Kịch bản | Kết quả mong đợi |
 |------|----------|------------------|
-| 1 | SV đăng nhập, chọn View schedule | Hộp chọn cách xem |
-| 2 | Chọn Weekly view | Bảng TKB: Thứ 2 Kíp 1 = CNPM (A101), Thứ 4 Kíp 2 = Toan (B201) |
-| 3 | Nhấn Thứ 2 Kíp 1 | Chi tiết: INT1340, Nhap mon CNPM, L01, A101, GV Nguyen A, 7:30-9:30 |
-| 4 | Nhấn Back | Quay về bảng TKB |
+| 1 | Mở ứng dụng. Giao diện Login xuất hiện. | Hiển thị ô username, password, nút Login |
+| 2 | Nhập username `sv01`, password `pass123`, nhấn Login. | Chuyển sang giao diện Home với menu: Register, View schedule, Statistics |
+| 3 | Chọn menu **View schedule**. | Giao diện ViewScheduleFrm xuất hiện với combobox chọn cách xem |
+| 4 | Chọn "Theo tuần" (Weekly) từ combobox. | Bảng 7x6 xuất hiện |
+| 5 | Kiểm tra ô Thứ 2 (Mon), Kíp 1-2: hiển thị "Nhap mon CNPM / A101 / L01". | Đúng dữ liệu |
+| 6 | Kiểm tra ô Thứ 4 (Wed), Kíp 3-4: hiển thị "Toan cao cap / B202 / L03". | Đúng dữ liệu |
+| 7 | Kiểm tra ô Thứ 6 (Fri), Kíp 2-3: hiển thị "Tieng Anh / C301 / L05". | Đúng dữ liệu |
+| 8 | Kiểm tra các ô còn lại: trống (không có dữ liệu). | Ô trống |
+| 9 | Nhấn vào ô Thứ 2 (Mon), Kíp 1-2. | Panel chi tiết xuất hiện: Mã môn INT1340, Tên môn Nhap mon CNPM, Mã lớp L01, Tên lớp Lop 01, Phòng A101, Giờ 7:30-9:30, Thứ 2 |
+| 10 | Nhấn nút Back. | Panel chi tiết ẩn, quay về bảng TKB |
 
-**Database sau:** Không thay đổi.
+### Database sau khi test
+
+Không thay đổi. Đây là chức năng chỉ đọc (read-only), không có INSERT/UPDATE/DELETE.

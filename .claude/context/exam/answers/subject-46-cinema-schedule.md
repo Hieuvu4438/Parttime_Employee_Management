@@ -4,122 +4,590 @@
 
 ---
 
-## Câu 1: Scenario — Quản lý lịch chiếu
+## Cau 1: Scenario — Quan ly lich chieu
 
-| Bước | Diễn biến |
+### Mo ta he thong bang ngon ngu tu nhien
+
+He thong quan ly chuoi rap chieu phim. Moi rap chieu phim (ma rap, ten rap, dia chi, gioi thieu) co nhieu phong chieu (ma phong, so ghe, dac diem phong). Moi phim (ma phim, ten phim, the loai, nam san xuat, mo ta) co the duoc chieu o nhieu rap, nhieu khung gio khac nhau. Tai mot thoi diem, trong mot phong chieu chi chieu mot phim voi mot gia ve co dinh. Cung mot phim, cung phong chieu, nhung khung gio/ngay khac nhau co the co gia ve khac nhau. Cung mot suat chieu, cac ghe khac nhau co the co gia ve khac nhau.
+
+### Scenario chinh
+
+| Buoc | Dien bien |
 |------|-----------|
-| 1 | Staff đăng nhập, chọn **Showtime management** → **Add showtime**. |
-| 2 | Giao diện: combobox chọn phim, combobox chọn phòng chiếu, ô nhập giờ chiếu, ô nhập giá vé, nút Add. |
-| 3 | Staff chọn phim "Avengers", chọn phòng "P1", nhập giờ "19:00", ngày "15/07/2026", giá vé 80,000đ. |
-| 4 | Staff nhấn **Add**. Hệ thống kiểm tra phòng P1 lúc 19:00 ngày 15/07 trống. |
-| 5 | Hệ thống hiển thị giao diện giá vé mặc định cho tất cả ghế của suất chiếu. |
-| 6 | Staff chọn ghế VIP (A1, A2) đặt giá 120,000đ, các ghế còn lại giữ mặc định 80,000đ. |
-| 7 | Staff nhấn **Confirm**. Hệ thống lưu suất chiếu + giá vé từng ghế vào database. |
+| 1 | Staff dang nhap vao he thong. Giao dien Login xuat hien voi o nhap Username, Password va nut Login. |
+| 2 | Staff nhap username `staff01`, password `******` va nhan Login. |
+| 3 | Giao dien Home xuat hien voi cac chuc nang: Sell tickets, Schedule showing, Selling food, Revenue Statistics. |
+| 4 | Staff chon chuc nang **Showtime management**. |
+| 5 | Giao dien quan ly suat chieu xuat hien voi: combobox chon phim, combobox chon phong chieu, o nhap ngay chieu, o nhap gio chieu, o nhap gia ve mac dinh, nut Add. |
+| 6 | Staff chon phim "Avengers: Endgame" tu combobox. |
+| 7 | Staff chon phong chieu "P01 - Phong IMAX 1" tu combobox. |
+| 8 | Staff nhap ngay chieu `15/07/2026` va gio chieu `19:00`. |
+| 9 | Staff nhap gia ve mac dinh `80000` vao o gia ve. |
+| 10 | Staff nhan nut **Add**. He thong kiem tra phong P01 luc 19:00 ngay 15/07/2026 co trong (chua co suat chieu trung gio). |
+| 11 | He thong hien thi giao dien gia ve tung ghe cua suat chieu vua tao: bang gom cot So ghe, Gia ve. Tat ca ghe mac dinh 80,000d. |
+| 12 | Staff chon ghe VIP A1, A2, A3 va sua gia thanh `120000` cho tung ghe. Cac ghe con lai giu nguyen 80,000d. |
+| 13 | Staff nhan nut **Confirm**. He thong luu suat chieu va bang gia tung ghe vao database. |
+| 14 | He thong thong bao "Them lich chieu thanh cong" va lam moi bang danh sach suat chieu. |
+
+### Kich ban ngoai le
+
+- **EL1:** Phong da co suat chieu trung gio/ngay → He thong thong bao "Phong da co lich chieu vao gio nay".
+- **EL2:** Phim khong ton tai trong he thong → He thong thong bao "Phim khong ton tai".
+- **EL3:** Gia ve mac dinh <= 0 → He thong thong bao "Gia ve khong hop le".
+- **EL4:** Ngay chieu la ngay trong qua khu → He thong thong bao "Ngay chieu khong hop le".
 
 ---
 
-## Câu 2: Entity Class Diagram
+## Cau 2: Entity Class Diagram
 
-| Entity | Attributes |
-|--------|------------|
-| Cinema | id, code, name, address, intro |
-| ScreenRoom | id, cinemaId, code, numSeats, characteristics |
-| Movie | id, code, title, type, year, description |
-| Showtime | id, movieId, screenRoomId, time, date, ticketPrice |
-| Seat | id, screenRoomId, seatNumber |
-| SeatPrice | id, showtimeId, seatId, price |
-| User | id, username, password, role |
+### Buoc 1: Mo ta he thong bang ngon ngu tu nhien
 
-### Quan hệ
+He thong quan ly chuoi rap chieu phim. Moi rap chieu phim (ma rap, ten rap, dia chi, gioi thieu) co nhieu phong chieu (ma phong, so ghe, dac diem phong). Moi phong chieu co nhieu ghe (so ghe, loai ghe). Moi phim (ma phim, ten phim, the loai, nam san xuat, mo ta) co the chieu o nhieu phong, nhieu khung gio khac nhau. Moi suat chieu lien ket mot phim voi mot phong tai mot thoi diem cu the, voi gia ve mac dinh. Cung mot suat chieu, cac ghe khac nhau co the co gia ve khac nhau (ghe VIP gia cao hon). Nguoi dung (staff) dang nhap he thong de quan ly lich chieu.
+
+### Buoc 2: Trich xuat danh tu
+
+| Danh tu | Phan loai | Ly do |
+|---------|-----------|-------|
+| Rap chieu phim (Cinema) | Entity class | Doi tuong quan ly chinh — chuoi rap |
+| Phong chieu (ScreenRoom) | Entity class | Thuoc mot rap, chua nhieu ghe |
+| Ghe (Seat) | Entity class | Thuoc mot phong, duoc gan gia theo suat chieu |
+| Phim (Movie) | Entity class | Doi tuong duoc chieu tai nhieu rap |
+| Suat chieu (Showtime) | Entity class | Lien ket phim voi phong tai mot thoi diem |
+| Gia ghe (SeatPricing) | Entity class | Gia ve rieng biet cho tung ghe trong mot suat chieu |
+| Nguoi dung (User) | Entity class | Nhan vien thao tac he thong |
+| Ma rap, ten rap, dia chi | Thuoc tinh | Thuoc tinh cua Cinema |
+| Ma phong, so ghe, dac diem | Thuoc tinh | Thuoc tinh cua ScreenRoom |
+| So ghe, loai ghe | Thuoc tinh | Thuoc tinh cua Seat |
+| Ma phim, ten phim, the loai, nam | Thuoc tinh | Thuoc tinh cua Movie |
+| Ngay chieu, gio chieu, gia ve mac dinh | Thuoc tinh | Thuoc tinh cua Showtime |
+| Gia rieng | Thuoc tinh | Thuoc tinh cua SeatPricing |
+
+### Buoc 3: Xac dinh quan he
 
 ```
 Cinema 1 --- n ScreenRoom
-Movie 1 --- n Showtime n --- 1 ScreenRoom
+```
+- Mot rap co nhieu phong chieu.
+- Moi phong chieu thuoc mot rap.
+
+```
 ScreenRoom 1 --- n Seat
-Showtime 1 --- n SeatPrice n --- 1 Seat
+```
+- Mot phong co nhieu ghe.
+- Moi ghe thuoc mot phong.
+
+```
+Movie 1 --- n Showtime
+```
+- Mot phim co nhieu suat chieu.
+- Moi suat chieu lien ket mot phim.
+
+```
+ScreenRoom 1 --- n Showtime
+```
+- Mot phong co nhieu suat chieu.
+- Moi suat chieu lien ket mot phong.
+
+```
+Showtime 1 --- n SeatPricing
+```
+- Mot suat chieu co nhieu ban gia ghe.
+- Moi ban gia ghe thuoc mot suat chieu.
+
+```
+Seat 1 --- n SeatPricing
+```
+- Mot ghe co ban gia o nhieu suat chieu khac nhau.
+- Moi ban gia ghe lien ket mot ghe.
+
+```
+User 1 --- n Showtime
+```
+- Mot nhan vien tao nhieu suat chieu.
+- Moi suat chieu duoc tao boi mot nhan vien.
+
+### Buoc 4: Class Diagram (Analysis)
+
+```
++------------------+       +------------------+
+|     Cinema       |       |   ScreenRoom     |
++------------------+       +------------------+
+| -code: String    |       | -code: String    |
+| -name: String    |       | -numSeats: int   |
+| -address: String |       | -characteristics: String|
+| -intro: String   |       +------------------+
++------------------+               | 1
+         | 1                       |
+         |                         | n
+         | n                       v
+         +----------------->+------------------+
+                            |      Seat        |
+                            +------------------+
+                            | -seatNumber: String|
+                            | -seatType: String |
+                            +------------------+
+
++------------------+       +------------------+       +------------------+
+|     Movie        |       |    Showtime      |       |  SeatPricing     |
++------------------+       +------------------+       +------------------+
+| -code: String    |       | -time: String    |       | -price: float    |
+| -title: String   |       | -date: Date      |       +------------------+
+| -type: String    |       | -ticketPrice: float|              ^
+| -year: int       |       +------------------+               |
+| -description: String|           | 1                    | 1
++------------------+              |                        |
+         | 1                      | n                      |
+         |                        v                        |
+         | n               +------------------+            |
+         +---------------->|                  |------------+
+                            |                  |
+                            +------------------+
+                                    | n
+                                    |
+                                    v
+                            +------------------+
+                            |      Seat        |
+                            +------------------+
+
+
++------------------+
+|      User        |
++------------------+
+| -username: String|
+| -password: String|
+| -role: String    |
++------------------+
+| +checkLogin()    |
++------------------+
 ```
 
+### Bang quan he chi tiet
+
+| Quan he | Kieu | Giai thich |
+|----------|------|------------|
+| Cinema → ScreenRoom | 1-n (Composition) | Mot rap co nhieu phong, phong khong ton tai neu khong co rap |
+| ScreenRoom → Seat | 1-n (Composition) | Mot phong co nhieu ghe, ghe khong ton tai neu khong co phong |
+| Movie → Showtime | 1-n (Association) | Mot phim co nhieu suat chieu |
+| ScreenRoom → Showtime | 1-n (Association) | Mot phong co nhieu suat chieu |
+| Showtime → SeatPricing | 1-n (Composition) | Mot suat chieu co nhieu ban gia ghe |
+| Seat → SeatPricing | 1-n (Association) | Mot ghe co ban gia o nhieu suat chieu |
+| User → Showtime | 1-n (Association) | Mot nhan vien tao nhieu suat chieu |
+| Movie → ScreenRoom | n-n (qua Showtime) | Phim chieu o nhieu phong, phong chieu nhieu phim |
+
 ---
 
-## Câu 3: Thiết kế tĩnh
+## Cau 3: Thiet ke tinh — Giao dien va class diagram chi tiet
 
-### View classes
+### Buoc 1: Xac dinh cac View class (Form class)
+
+| View class | Mo ta |
+|------------|-------|
+| LoginFrm | Giao dien dang nhap |
+| HomeFrm | Giao dien chinh |
+| ScheduleShowtimeFrm | Giao dien quan ly lich chieu (chinh) |
+| SeatPricingFrm | Giao dien thiet lap gia ve tung ghe |
+
+### Buoc 2: Xac dinh cac phan tu giao dien
+
+**LoginFrm:**
+- `inUsername`: o nhap username
+- `inPassword`: o nhap password
+- `subLogin`: nut Login
+
+**HomeFrm:**
+- `subSellTickets`: nut chon Sell tickets
+- `subScheduleShowing`: nut chon Schedule showing
+- `subSellingFood`: nut chon Selling food
+- `subRevenueStatistics`: nut chon Revenue Statistics
 
 **ScheduleShowtimeFrm:**
-- `inMovie`: combobox chọn phim
-- `inScreenRoom`: combobox chọn phòng chiếu
-- `inTime`: ô nhập giờ chiếu
-- `inDate`: ô nhập ngày chiếu
-- `inTicketPrice`: ô nhập giá vé mặc định
-- `outSeatPriceTable`: bảng giá vé từng ghế (editable)
-- `subAdd`: nút Add
-- `subConfirm`: nút Confirm
+- `inMovie`: combobox chon phim
+- `inScreenRoom`: combobox chon phong chieu
+- `inDate`: o nhap ngay chieu
+- `inTime`: o nhap gio chieu
+- `inTicketPrice`: o nhap gia ve mac dinh
+- `subAdd`: nut Add
+- `outsubShowtimeTable`: bang danh sach suat chieu (click duoc)
 
-### DAO classes
+**SeatPricingFrm:**
+- `outShowtimeInfo`: thong tin suat chieu (phim, phong, ngay, gio, gia mac dinh)
+- `outsubSeatTable`: bang gia ve tung ghe (co the edit gia)
+- `subConfirm`: nut Confirm
 
-| DAO | Phương thức |
-|-----|-------------|
-| MovieDAO | `getAllMovies(): List<Movie>` |
-| ScreenRoomDAO | `getAllScreenRooms(): List<ScreenRoom>` |
-| ShowtimeDAO | `addShowtime(showtime): boolean` |
-| SeatDAO | `getSeatsByRoom(screenRoomId): List<Seat>` |
-| SeatPriceDAO | `addSeatPrice(seatPrice): boolean` |
+### Buoc 3: Xac dinh DAO class
 
-### Database
+| DAO class | Phuong thuc | Mo ta |
+|-----------|-------------|-------|
+| UserDAO | `checkLogin(username, password): boolean` | Kiem tra dang nhap |
+| MovieDAO | `getAllMovies(): List<Movie>` | Lay danh sach phim |
+| ScreenRoomDAO | `getAllScreenRooms(): List<ScreenRoom>` | Lay danh sach phong chieu |
+| ShowtimeDAO | `checkConflict(screenRoomId, date, time): boolean` | Kiem tra trung lich |
+| ShowtimeDAO | `addShowtime(showtime): int` | Them suat chieu moi, tra ve ID |
+| SeatDAO | `getSeatsByRoom(screenRoomId): List<Seat>` | Lay danh sach ghe theo phong |
+| SeatPricingDAO | `addSeatPricing(seatPricing): boolean` | Them gia ve tung ghe |
 
-**tblShowtime:** id (PK), movieId (FK), screenRoomId (FK), time, date, ticketPrice
+### Buoc 4: Xac dinh Entity class (Design phase)
 
-**tblSeatPrice:** id (PK), showtimeId (FK), seatId (FK), price
+**Cinema:**
+- `id: int` (PK)
+- `code: String`
+- `name: String`
+- `address: String`
+- `intro: String`
+
+**ScreenRoom:**
+- `id: int` (PK)
+- `code: String`
+- `numSeats: int`
+- `characteristics: String`
+- `cinemaId: int` (FK → Cinema)
+
+**Seat:**
+- `id: int` (PK)
+- `seatNumber: String`
+- `seatType: String`
+- `screenRoomId: int` (FK → ScreenRoom)
+
+**Movie:**
+- `id: int` (PK)
+- `code: String`
+- `title: String`
+- `type: String`
+- `year: int`
+- `description: String`
+
+**Showtime:**
+- `id: int` (PK)
+- `time: String`
+- `date: Date`
+- `ticketPrice: float`
+- `movieId: int` (FK → Movie)
+- `screenRoomId: int` (FK → ScreenRoom)
+- `userId: int` (FK → User)
+
+**SeatPricing:**
+- `id: int` (PK)
+- `price: float`
+- `showtimeId: int` (FK → Showtime)
+- `seatId: int` (FK → Seat)
+
+**User:**
+- `id: int` (PK)
+- `username: String`
+- `password: String`
+- `role: String`
+
+### Buoc 5: Database Design
+
+**tblCinema:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK |
+| code | varchar | |
+| name | varchar | |
+| address | varchar | |
+| intro | varchar | |
+
+**tblScreenRoom:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK |
+| code | varchar | |
+| numSeats | int | |
+| characteristics | varchar | |
+| cinemaID | int | FK → tblCinema.ID |
+
+**tblSeat:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK |
+| seatNumber | varchar | |
+| seatType | varchar | |
+| screenRoomID | int | FK → tblScreenRoom.ID |
+
+**tblMovie:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK |
+| code | varchar | |
+| title | varchar | |
+| type | varchar | |
+| year | int | |
+| description | varchar | |
+
+**tblShowtime:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK |
+| time | varchar | |
+| date | date | |
+| ticketPrice | float | |
+| movieID | int | FK → tblMovie.ID |
+| screenRoomID | int | FK → tblScreenRoom.ID |
+| userID | int | FK → tblUser.ID |
+
+**tblSeatPricing:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK |
+| price | float | |
+| showtimeID | int | FK → tblShowtime.ID |
+| seatID | int | FK → tblSeat.ID |
+
+**tblUser:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PK |
+| username | varchar | |
+| password | varchar | |
+| role | varchar | |
+
+### Buoc 6: Mo ta cach ve Class Diagram (Design phase) bang Visual Paradigm
+
+**Cac buoc ve:**
+
+1. Mo Visual Paradigm → chon **Class Diagram** trong danh muc Diagrams.
+2. Tao cac class:
+   - View classes: `LoginFrm`, `HomeFrm`, `ScheduleShowtimeFrm`, `SeatPricingFrm`
+   - DAO classes: `UserDAO`, `MovieDAO`, `ScreenRoomDAO`, `ShowtimeDAO`, `SeatDAO`, `SeatPricingDAO`
+   - Entity classes: `Cinema`, `ScreenRoom`, `Seat`, `Movie`, `Showtime`, `SeatPricing`, `User`
+
+3. Ve View classes (Form):
+   - Ve hinh chu nhat 3 ngan cho `ScheduleShowtimeFrm`:
+     - Ngan 1 (ten): `<<boundary>> ScheduleShowtimeFrm`
+     - Ngan 2 (thuoc tinh): `-inMovie: JComboBox`, `-inScreenRoom: JComboBox`, `-inDate: JTextField`, `-inTime: JTextField`, `-inTicketPrice: JTextField`, `-subAdd: JButton`
+     - Ngan 3 (phuong thuc): khong co
+   - Tuong tu cho `SeatPricingFrm`: `-outShowtimeInfo: JLabel`, `-outsubSeatTable: JTable`, `-subConfirm: JButton`
+
+4. Ve DAO classes:
+   - Ve hinh chu nhat 3 ngan cho `ShowtimeDAO`:
+     - Ngan 1: `<<control>> ShowtimeDAO`
+     - Ngan 2: khong co thuoc tinh
+     - Ngan 3: `+checkConflict(screenRoomId: int, date: Date, time: String): boolean`, `+addShowtime(showtime: Showtime): int`
+
+5. Ve Entity classes:
+   - Ve hinh chu nhat 3 ngan cho `Showtime`:
+     - Ngan 1: `<<entity>> Showtime`
+     - Ngan 2: `-id: int`, `-time: String`, `-date: Date`, `-ticketPrice: float`
+     - Ngan 3: getter/setter
+
+6. Ve cac duong ket noi:
+
+| Tu | Den | Loai duong | Kieu quan he | Giai thich |
+|----|-----|-----------|---------------|------------|
+| ScheduleShowtimeFrm | MovieDAO | Duong lien net, mui tam giac rong | Dependency | Frm su dung MovieDAO |
+| ScheduleShowtimeFrm | ScreenRoomDAO | Duong lien net, mui tam giac rong | Dependency | Frm su dung ScreenRoomDAO |
+| ScheduleShowtimeFrm | ShowtimeDAO | Duong lien net, mui tam giac rong | Dependency | Frm su dung ShowtimeDAO |
+| SeatPricingFrm | SeatDAO | Duong lien net, mui tam giac rong | Dependency | Frm su dung SeatDAO |
+| SeatPricingFrm | SeatPricingDAO | Duong lien net, mui tam giac rong | Dependency | Frm su dung SeatPricingDAO |
+| Cinema → ScreenRoom | Duong lien net, dau kim cuong filled | Composition 1-n | ScreenRoom khong ton tai neu khong co Cinema |
+| ScreenRoom → Seat | Duong lien net, dau kim cuong filled | Composition 1-n | Seat khong ton tai neu khong co ScreenRoom |
+| Showtime → SeatPricing | Duong lien net, dau kim cuong filled | Composition 1-n | SeatPricing khong ton tai neu khong co Showtime |
+| Movie → Showtime | Duong lien net, mui tam giac rong | Association 1-n | Movie tham chieu den Showtime |
+| ScreenRoom → Showtime | Duong lien net, mui tam giac rong | Association 1-n | ScreenRoom tham chieu den Showtime |
+| Seat → SeatPricing | Duong lien net, mui tam giac rong | Association 1-n | Seat tham chieu den SeatPricing |
 
 ---
 
-## Câu 4: Sequence Diagram
+## Cau 4: Thiet ke dong — Xay dung sequence diagram
 
-### Mô tả bằng Visual Paradigm
+### Mo ta cach ve Sequence Diagram bang Visual Paradigm
 
-**Lifelines:**
-1. `:Staff` — actor
-2. `:ScheduleShowtimeFrm` — boundary
-3. `:ShowtimeDAO` — control
-4. `:SeatDAO` — control
-5. `:SeatPriceDAO` — control
+**Cac buoc ve:**
 
-**Message flow:**
+1. Mo Visual Paradigm → chon **Sequence Diagram**.
+2. Tao cac lifeline (doi tuong):
+   - Actor: `Staff` (loai Actor)
+   - Boundary: `LoginFrm`, `HomeFrm`, `ScheduleShowtimeFrm`, `SeatPricingFrm`
+   - Control: `UserDAO`, `MovieDAO`, `ScreenRoomDAO`, `ShowtimeDAO`, `SeatDAO`, `SeatPricingDAO`
 
-1. Staff → ScheduleShowtimeFrm: `selectMovie(movie)` + `selectRoom(room)` + `enterTime("19:00")` + `enterDate("15/07/2026")` + `enterPrice(80000)`
-2. Staff → ScheduleShowtimeFrm: `clickAdd()`
-3. ScheduleShowtimeFrm → ShowtimeDAO: `addShowtime(showtime)`
-4. ShowtimeDAO: INSERT INTO tblShowtime
-5. ShowtimeDAO → ScheduleShowtimeFrm: return `showtimeId`
-6. ScheduleShowtimeFrm → SeatDAO: `getSeatsByRoom(screenRoomId)`
-7. SeatDAO → ScheduleShowtimeFrm: return `List<Seat>`
-8. ScheduleShowtimeFrm: display seat price table (default 80,000đ)
-9. Staff → ScheduleShowtimeFrm: edit VIP seats A1, A2 → 120,000đ
-10. Staff → ScheduleShowtimeFrm: `clickConfirm()`
-11. ScheduleShowtimeFrm → SeatPriceDAO: `addSeatPrice(listSeatPrice)`
-12. SeatPriceDAO: INSERT INTO tblSeatPrice (each seat)
+3. Ve cac message (mui ten net lien) theo thu tu tu tren xuong duoi.
+
+### Sequence Diagram — Quan ly lich chieu (Scenario version 3)
+
+```
+Staff     LoginFrm   UserDAO   HomeFrm   ScheduleShowtimeFrm  MovieDAO  ScreenRoomDAO  ShowtimeDAO  SeatPricingFrm  SeatDAO  SeatPricingDAO
+  |          |          |         |              |                |            |              |             |            |            |
+  |--login-->|          |         |              |                |            |              |             |            |            |
+  |          |--checkL->|         |              |                |            |              |             |            |            |
+  |          |<-true----|         |              |                |            |              |             |            |            |
+  |          |--open----|-------->|              |                |            |              |             |            |            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |--select--|--------------------->            |                |            |              |             |            |            |
+  |          |          |         |--open------->|                |            |              |             |            |            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |          |          |         |              |--getAllMovies()->|            |              |             |            |            |
+  |          |          |         |              |<-List<Movie>----|            |              |             |            |            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |          |          |         |              |--getAllRooms()-->|----------->|              |             |            |            |
+  |          |          |         |              |<-List<Room>-----|<-----------|              |             |            |            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |          |          |         |              |--display combos |            |              |             |            |            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |--select movie, room, enter date/time/price->|                |            |              |             |            |            |
+  |--click Add--------->|         |              |                |            |              |             |            |            |
+  |          |          |         |              |--checkConflict()|------------|------------->|             |            |            |
+  |          |          |         |              |                |            |              |--query DB   |            |            |
+  |          |          |         |              |                |            |              |<-false------|            |            |
+  |          |          |         |              |<-false(trong)---|------------|--------------|             |            |            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |          |          |         |              |--addShowtime()--|------------|------------->|             |            |            |
+  |          |          |         |              |                |            |              |--INSERT DB  |            |            |
+  |          |          |         |              |                |            |              |<-return id--|            |            |
+  |          |          |         |              |<-showtimeId-----|------------|--------------|             |            |            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |          |          |         |              |---open----------|-------------------------------------->|            |            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |          |          |         |              |                |            |              |    SeatPricingFrm       |            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |          |          |         |              |                |            |              |             |--getSeats()->|            |
+  |          |          |         |              |                |            |              |             |<-List<Seat>--|            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |          |          |         |              |                |            |              |             |--display    |            |
+  |          |          |         |              |                |            |              |             | table 80k   |            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |--edit A1,A2,A3=120k|         |              |                |            |              |             |            |            |
+  |--click Confirm----->|         |              |                |            |              |             |            |            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |          |          |         |              |                |            |              |             |--addPricing|----------->|
+  |          |          |         |              |                |            |              |             |            |--INSERT DB |
+  |          |          |         |              |                |            |              |             |            |<-true------|
+  |          |          |         |              |                |            |              |             |<-true-------|            |
+  |          |          |         |              |                |            |              |             |            |            |
+  |          |          |         |              |                |            |              |             |--show success           |
+  |<--success|          |         |              |                |            |              |             |            |            |
+```
+
+### Giai thich tung buoc
+
+| # | Message | Tu | Den | Mo ta |
+|---|---------|----|-----|-------|
+| 1 | login | Staff | LoginFrm | Staff nhap username/password, nhan Login |
+| 2 | checkLogin() | LoginFrm | UserDAO | Goi UserDAO.checkLogin("staff01", "******") |
+| 3 | query DB | UserDAO | Database | Truy van tblUser |
+| 4 | return true | UserDAO | LoginFrm | Tra ve true neu dang nhap hop le |
+| 5 | open | LoginFrm | HomeFrm | Mo giao dien Home |
+| 6 | select Schedule | Staff | HomeFrm | Staff chon chuc nang Schedule showing |
+| 7 | open | HomeFrm | ScheduleShowtimeFrm | Mo giao dien quan ly lich chieu |
+| 8 | getAllMovies() | ScheduleShowtimeFrm | MovieDAO | Goi MovieDAO.getAllMovies() |
+| 9 | query DB | MovieDAO | Database | Truy van tblMovie |
+| 10 | return List<Movie> | MovieDAO | ScheduleShowtimeFrm | Tra ve danh sach phim |
+| 11 | getAllScreenRooms() | ScheduleShowtimeFrm | ScreenRoomDAO | Goi ScreenRoomDAO.getAllScreenRooms() |
+| 12 | query DB | ScreenRoomDAO | Database | Truy van tblScreenRoom |
+| 13 | return List<ScreenRoom> | ScreenRoomDAO | ScheduleShowtimeFrm | Tra ve danh sach phong |
+| 14 | display combos | ScheduleShowtimeFrm | UI | Hien thi combobox phim va phong |
+| 15 | select + enter | Staff | ScheduleShowtimeFrm | Staff chon phim, phong, nhap ngay, gio, gia |
+| 16 | click Add | Staff | ScheduleShowtimeFrm | Staff nhan nut Add |
+| 17 | checkConflict() | ScheduleShowtimeFrm | ShowtimeDAO | Kiem tra trung lich phong |
+| 18 | query DB | ShowtimeDAO | Database | Truy van tblShowtime |
+| 19 | return false | ShowtimeDAO | ScheduleShowtimeFrm | Phong trong, khong trung |
+| 20 | addShowtime() | ScheduleShowtimeFrm | ShowtimeDAO | Them suat chieu moi |
+| 21 | INSERT DB | ShowtimeDAO | Database | INSERT INTO tblShowtime |
+| 22 | return showtimeId | ShowtimeDAO | ScheduleShowtimeFrm | Tra ve ID suat chieu vua tao |
+| 23 | open | ScheduleShowtimeFrm | SeatPricingFrm | Mo giao dien gia ve tung ghe |
+| 24 | getSeatsByRoom() | SeatPricingFrm | SeatDAO | Lay danh sach ghe cua phong |
+| 25 | query DB | SeatDAO | Database | Truy van tblSeat |
+| 26 | return List<Seat> | SeatDAO | SeatPricingFrm | Tra ve danh sach ghe |
+| 27 | display table | SeatPricingFrm | UI | Hien thi bang gia ghe (mac dinh 80k) |
+| 28 | edit VIP seats | Staff | SeatPricingFrm | Staff sua gia ghe A1, A2, A3 thanh 120k |
+| 29 | click Confirm | Staff | SeatPricingFrm | Staff nhan nut Confirm |
+| 30 | addSeatPricing() | SeatPricingFrm | SeatPricingDAO | Luu gia tung ghe (loop moi ghe) |
+| 31 | INSERT DB | SeatPricingDAO | Database | INSERT INTO tblSeatPricing |
+| 32 | return true | SeatPricingDAO | SeatPricingFrm | Tra ve true |
+| 33 | show success | SeatPricingFrm | UI | Hien thi "Them lich chieu thanh cong" |
+| 34 | return | SeatPricingFrm | ScheduleShowtimeFrm | Quay ve giao dien quan ly |
 
 ---
 
-## Câu 5: Blackbox Testcase
+## Cau 5: Viet testcase blackbox chuan
 
-### TC01: Thêm suất chiếu thành công
+### Test Plan — Danh sach testcase
 
-**Database trước:**
-- tblShowtime: 0 dòng
-- tblSeatPrice: 0 dòng
+| STT | Module | Test case |
+|-----|--------|-----------|
+| 1 | Schedule showing | Them suat chieu thanh cong voi phim, phong hop le, khong trung lich |
+| 2 | Schedule showing | Phong da co suat chieu trung gio/ngay |
+| 3 | Schedule showing | Gia ve mac dinh khong hop le (<= 0) |
+| 4 | Schedule showing | Them gia rieng cho ghe VIP thanh cong |
 
-| Bước | Kết quả mong đợi |
-|------|------------------|
-| 1 | Chọn Avengers, P1, 19:00, 15/07, 80,000đ → Add | Bảng giá vé: tất cả ghế = 80,000đ |
-| 2 | Sửa A1, A2 = 120,000đ → Confirm | "Them lich chieu thanh cong" |
+### Testcase chi tiet — TC01: Them suat chieu thanh cong
 
-**Database sau:**
-- tblShowtime: thêm 1 dòng (movieId=Avengers, screenRoomId=P1, time=19:00, date=15/07/2026, ticketPrice=80000)
-- tblSeatPrice: thêm N dòng (mỗi ghế 1 dòng, A1=120000, A2=120000, còn lại=80000)
+**Muc dich:** Kiem tra chuc nang them lich chieu hoat dong dung khi phim ton tai, phong chieu trong, va gia ve hop le.
 
-### TC02: Phòng đã có suất chiếu trùng giờ
+**Database truoc khi test:**
 
-| Bước | Kết quả mong đợi |
-|------|------------------|
-| 1 | Chọn Avengers, P1, 19:00, 15/07 → Add | "Phong da co lich chieu vao gio nay" |
+**tblUser:**
+| ID | username | password | role |
+|----|----------|----------|------|
+| 1 | staff01 | 123456 | staff |
+
+**tblCinema:**
+| ID | code | name | address | intro |
+|----|------|------|---------|-------|
+| 1 | C01 | CGV Vincom | Ha Noi | Rap chieu phim CGV |
+
+**tblScreenRoom:**
+| ID | code | numSeats | characteristics | cinemaID |
+|----|------|----------|-----------------|----------|
+| 1 | P01 | 120 | IMAX | 1 |
+| 2 | P02 | 80 | Standard | 1 |
+
+**tblSeat:**
+| ID | seatNumber | seatType | screenRoomID |
+|----|------------|----------|--------------|
+| 1 | A1 | VIP | 1 |
+| 2 | A2 | VIP | 1 |
+| 3 | A3 | VIP | 1 |
+| 4 | B1 | Standard | 1 |
+| 5 | B2 | Standard | 1 |
+| ... | ... | ... | 1 |
+
+**tblMovie:**
+| ID | code | title | type | year | description |
+|----|------|-------|------|------|-------------|
+| 1 | M01 | Avengers: Endgame | Action | 2019 | Phim sieu anh hung |
+| 2 | M02 | Spider-Man: No Way Home | Action | 2021 | Phim sieu anh hung |
+
+**tblShowtime:** (rong)
+
+**tblSeatPricing:** (rong)
+
+### Kich ban test va ket qua mong doi
+
+| Buoc | Kich ban | Ket qua mong doi |
+|------|----------|------------------|
+| 1 | Khoi dong ung dung | Giao dien Login xuat hien voi o Username, o Password, nut Login |
+| 2 | Nhap username `staff01`, password `123456`, nhan Login | Giao dien Home xuat hien voi cac chuc nang: Sell tickets, Schedule showing, Selling food, Revenue Statistics |
+| 3 | Chon chuc nang Schedule showing | Giao dien quan ly lich chieu xuat hien voi combobox phim, combobox phong, o ngay, o gio, o gia, nut Add |
+| 4 | Chon phim "Avengers: Endgame" tu combobox | Combobox phim hien thi "Avengers: Endgame" |
+| 5 | Chon phong "P01 - IMAX" tu combobox, nhap ngay `15/07/2026`, gio `19:00`, gia `80000` | Cac o duoc dien day du |
+| 6 | Nhan nut Add | He thong kiem tra P01 luc 19:00 ngay 15/07 chua co suat chieu. Giao dien gia ve tung ghe xuat hien: bang gom cot So ghe, Gia ve. Tat ca ghe = 80,000d |
+| 7 | Sua ghe A1, A2, A3 thanh 120,000d | Bang cap nhat: A1=120,000d, A2=120,000d, A3=120,000d, cac ghe con lai=80,000d |
+| 8 | Nhan nut Confirm | He thong thong bao "Them lich chieu thanh cong". Bang gia ghe bien mat, quay ve giao dien quan ly lich chieu |
+
+### Database sau khi test
+
+**tblShowtime:** (them 1 dong)
+| ID | time | date | ticketPrice | movieID | screenRoomID | userID |
+|----|------|------|-------------|---------|--------------|--------|
+| 1 | 19:00 | 15/07/2026 | 80000 | 1 | 1 | 1 |
+
+**tblSeatPricing:** (them N dong, moi ghe 1 dong)
+| ID | price | showtimeID | seatID |
+|----|-------|------------|--------|
+| 1 | 120000 | 1 | 1 |
+| 2 | 120000 | 1 | 2 |
+| 3 | 120000 | 1 | 3 |
+| 4 | 80000 | 1 | 4 |
+| 5 | 80000 | 1 | 5 |
+| ... | 80000 | 1 | ... |
+
+**tblUser:** (khong thay doi)
+
+**tblCinema:** (khong thay doi)
+
+**tblScreenRoom:** (khong thay doi)
+
+**tblSeat:** (khong thay doi)
+
+**tblMovie:** (khong thay doi)

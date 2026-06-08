@@ -4,156 +4,291 @@
 
 ---
 
-## Câu 1: Scenario — Thanh toán cho đối tác
+## Cau 1: Scenario — Thanh toan cho doi tac
 
-| Bước | Diễn biến |
+### Mo ta he thong bang ngon ngu tu nhien
+
+He thong quan ly tra gop hoat dong voi cac doi tac (Partner) la cac cua hang ban le. Khi khach hang mua hang tra gop, cong ty tru tien tu doi tac va thanh toan cho doi tac sau. Nhan vien (Staff) su dung chuc nang "Payment to partners" de tao phieu thanh toan cho doi tac, ghi nhan cac hop dong ma cong ty chua tra tien cho doi tac.
+
+### Chuong trinh chinh (Main scenario)
+
+| Buoc | Dien bien |
 |------|-----------|
-| 1 | Staff đăng nhập vào hệ thống, chọn chức năng **Payment to partners** |
-| 2 | Hệ thống hiển thị giao diện tìm kiếm đối tác với ô nhập tên đối tác và nút **Search** |
-| 3 | Staff nhập tên đối tác "FPT Shop" vào ô tìm kiếm, nhấn nút **Search** |
-| 4 | Hệ thống hiển thị danh sách đối tác có tên chứa từ khóa "FPT Shop" |
-| 5 | Staff click chọn đối tác **FPT Shop** |
-| 6 | Hệ thống hiển thị danh sách hợp đồng của khách hàng mua từ FPT Shop mà công ty chưa thanh toán cho đối tác. Mỗi hợp đồng trên 1 dòng: mã hợp đồng, tên khách hàng, tổng sản phẩm, tổng tiền khách hàng, số tiền cần trả cho đối tác |
-| 7 | Staff tick chọn hợp đồng **HD001** (Nguyen Van A, 2 sản phẩm, 30,000,000đ, cần trả FPT: 28,000,000đ) và **HD003** (Le Thi C, 1 sản phẩm, 15,000,000đ, cần trả FPT: 14,000,000đ), nhấn **Next** |
-| 8 | Hệ thống hiển thị hóa đơn thanh toán cho đối tác với đầy đủ thông tin: đối tác FPT Shop, danh sách hợp đồng đã chọn, tổng thanh toán 42,000,000đ |
-| 9 | Staff xác nhận thông tin, nhấn **Save** |
-| 10 | Hệ thống lưu phiếu thanh toán đối tác vào cơ sở dữ liệu, in hóa đơn cho đối tác ký, staff lưu hóa đơn |
+| 1 | Nhan vien dang nhap he thong voi tai khoan `staff01` / `matkhau123` |
+| 2 | He thong hien thi trang chu, nhan vien click chuc nang **Payment to partners** |
+| 3 | He thong hien thi giao diem tim kiem doi tac gom: o nhap ten doi tac (`inPartnerName`), nut **Search** (`subSearch`), vung danh sach ket qua (`outPartnerList`) |
+| 4 | Nhan vien nhap ten doi tac `"FPT Shop"` vao o `inPartnerName`, nhan nut **Search** |
+| 5 | He thong truy van CSDL, hien thi danh sach doi tac co ten chua tu khoa "FPT Shop": 1 dong — `P001 | FPT Shop | 123 Le Loi, Q.1, HCM | 0901111111` |
+| 6 | Nhan vien click chon dong doi tac **FPT Shop** |
+| 7 | He thong hien thi danh sach hop dong chua thanh toan cho doi tac FPT Shop trong bang `outContractList`. Moi hop dong tren 1 dong: o checkbox, ma hop dong, ten khach hang, tong san pham, tong tien khach hang, so tien can tra cho doi tac. Du lieu cu the: |
+| | — HD001 | Nguyen Van A | 2 SP | 30,000,000d | can tra 28,000,000d |
+| | — HD003 | Le Thi C | 1 SP | 15,000,000d | can tra 14,000,000d |
+| 8 | Nhan vien tick checkbox chon hop dong **HD001** va **HD003**, nhan nut **Next** (`subNext`) |
+| 9 | He thong tinh toan va hien thi hoa don thanh toan doi tac (`outPaymentInvoice`): doi tac FPT Shop, danh sach hop dong da chon, tong thanh toan **42,000,000d** |
+| 10 | Nhan vien xac nhan thong tin chinh xac, nhan nut **Save** (`subSave`) |
+| 11 | He thong luu phieu thanh toan doi tac vao bang `tblPartnerPayment` va chi tiet vao bang `tblPartnerPaymentDetail`, cap nhat trang thai cac hop dong thanh "Paid to Partner" |
+| 12 | He thong in hoa don cho doi tac ky, hien thi thong bao "Thanh toan thanh cong cho doi tac FPT Shop, tong: 42,000,000d" |
+
+### Ngoai le
+
+| Ngoai le | Xu ly |
+|----------|-------|
+| E1: Khong tim thay doi tac | He thong hien thi thong bao `"Khong tim thay doi tac phu hop"`, nhan vien nhap lai tu khoa |
+| E2: Doi tac khong co hop dong nao chua thanh toan | He thong hien thi `"Doi tac nay khong co hop dong nao can thanh toan"` |
+| E3: Nhan vien khong tick hop dong nao ma nhan Next | He thong hien thi `"Vui long chon it nhat 1 hop dong de thanh toan"` |
+| E4: Luu that bai do loi ket noi CSDL | He thong hien thi loi `"Khong the luu phieu thanh toan, vui long thu lai"`, khong thay doi du lieu |
 
 ---
 
-## Câu 2: Entity Class Diagram
+## Cau 2: Entity Class Diagram
 
-| Entity | Attributes |
-|--------|------------|
-| Customer | customerId (PK), customerName, phoneNumber, address, idCard |
-| Partner | partnerId (PK), partnerName, address, phoneNumber, branch |
-| Product | productId (PK), productName, unitPrice, description |
-| Contract | contractId (PK), customerId (FK), partnerId (FK), signingDate, totalLoanAmount, status |
-| ContractItem | contractItemId (PK), contractId (FK), productId (FK), quantity, unitPrice, amount |
-| PaymentSchedule | scheduleId (PK), contractId (FK), periodNumber, dueDate, amount, status |
-| Payment | paymentId (PK), scheduleId (FK), paymentDate, amountPaid, method |
-| PartnerPayment | partnerPaymentId (PK), partnerId (FK), userId (FK), paymentDate, totalAmount, status |
-| User | userId (PK), username, password, fullName, role |
+### Mo ta he thong bang ngon ngu tu nhien
 
-### Quan hệ
+He thong quan ly tra gop ghi nhan khach hang (Customer) mua san pham (Product) tu doi tac (Partner) theo hop dong (Contract). Moi hop dong co nhieu chi tiet san pham (ContractItem). Khach hang tra tien theo ky han (PaymentSchedule), moi ky co ban ghi thanh toan (Payment). Cong ty thanh toan cho doi tac qua phieu thanh toan doi tac (PartnerPayment). Nguoi dung he thong (User) la nhan vien thuc hien cac giao dich.
+
+### Trich xuat danh tu
+
+| Danh tu | Phan loai | Ly do |
+|---------|-----------|-------|
+| Customer | Entity | Doi tuong trung tam, co thuoc tinh rieng |
+| Partner | Entity | Doi tuong doi tac cua cong ty |
+| Product | Entity | San pham duoc ban tra gop |
+| Contract | Entity | Hop dong giua khach hang va cong ty |
+| ContractItem | Entity | Chi tiet san pham trong hop dong |
+| PaymentSchedule | Entity | Lich thanh toan theo ky han |
+| Payment | Entity | Ban ghi thanh toan tung ky |
+| PartnerPayment | Entity | Phieu thanh toan cho doi tac |
+| User | Entity | Nguoi dung he thong |
+| customerId, partnerId, productId | Attribute | Thuoc tinh dinh danh |
+| customerName, phoneNumber, address | Attribute | Thuoc tinh cua Customer |
+| signingDate, totalLoanAmount, status | Attribute | Thuoc tinh cua Contract |
+| quantity, unitPrice, amount | Attribute | Thuoc tinh cua ContractItem |
+| periodNumber, dueDate | Attribute | Thuoc tinh cua PaymentSchedule |
+| paymentDate, amountPaid | Attribute | Thuoc tinh cua Payment |
+| he thong, giao diem, nut bam | Rejected | Khong phai doi tuong nghiep vu |
+
+### Quan he so luong
 
 ```
-Customer 1 --- n Contract
-Partner 1 --- n Contract
-Contract 1 --- n ContractItem
-Product 1 --- n ContractItem
-Contract 1 --- n PaymentSchedule
-PaymentSchedule 1 --- n Payment
-Partner 1 --- n PartnerPayment
-User 1 --- n PartnerPayment
+Customer 1 --- n Contract        (1 KH co nhieu hop dong)
+Partner 1 --- n Contract         (1 doi tac co nhieu hop dong)
+Contract 1 --- n ContractItem    (1 hop dong co nhieu chi tiet SP)
+Product 1 --- n ContractItem     (1 san pham xuat hien nhieu chi tiet)
+Contract 1 --- n PaymentSchedule (1 hop dong co nhieu ky thanh toan)
+PaymentSchedule 1 --- n Payment  (1 ky co nhieu ban ghi thanh toan)
+Partner 1 --- n PartnerPayment   (1 doi tac co nhieu phieu thanh toan)
+User 1 --- n PartnerPayment      (1 nhan vien tao nhieu phieu thanh toan)
 ```
+
+### Quan he doi tuong
+
+```
+Customer 1 --- n Contract        (association)
+Partner 1 --- n Contract         (association)
+Contract 1 --- * ContractItem    (composition — ContractItem ton tai khi Contract ton tai)
+Product 1 --- n ContractItem     (association)
+Contract 1 --- * PaymentSchedule (composition)
+PaymentSchedule 1 --- * Payment  (composition)
+Partner 1 --- n PartnerPayment   (association)
+User 1 --- n PartnerPayment      (association)
+```
+
+### Bang quan he (Database Schema)
+
+| Bang | Cot PK | Cot FK | Cac cot khac |
+|------|--------|--------|--------------|
+| tblCustomer | customerId | — | customerName, phoneNumber, address, idCard |
+| tblPartner | partnerId | — | partnerName, address, phoneNumber, branch |
+| tblProduct | productId | — | productName, unitPrice, description |
+| tblContract | contractId | customerId → tblCustomer, partnerId → tblPartner | signingDate, totalLoanAmount, status |
+| tblContractItem | contractItemId | contractId → tblContract, productId → tblProduct | quantity, unitPrice, amount |
+| tblPaymentSchedule | scheduleId | contractId → tblContract | periodNumber, dueDate, amount, status |
+| tblPayment | paymentId | scheduleId → tblPaymentSchedule | paymentDate, amountPaid, method |
+| tblPartnerPayment | partnerPaymentId | partnerId → tblPartner, userId → tblUser | paymentDate, totalAmount, status |
+| tblPartnerPaymentDetail | detailId | partnerPaymentId → tblPartnerPayment, contractId → tblContract | amount |
+| tblUser | userId | — | username, password, fullName, role |
 
 ---
 
-## Câu 3: Thiết kế tĩnh
+## Cau 3: Thiet ke tinh
 
 ### View classes
 
-**PayPartnerFrm:**
-- `inPartnerName`: Ô nhập tên đối tác cần tìm kiếm
-- `subSearchPartner`: Nút tìm kiếm đối tác
-- `outPartnerList`: Danh sách đối tác kết quả tìm kiếm (tên, địa chỉ, chi nhánh)
-- `outContractList`: Danh sách hợp đồng chưa thanh toán cho đối tác (checkbox, mã HĐ, tên KH, tổng sản phẩm, tổng tiền, tiền cần trả)
-- `subNext`: Nút chuyển sang xem hóa đơn thanh toán
-- `outPaymentInvoice`: Hóa đơn thanh toán đối tác (đối tác, danh sách HĐ, tổng tiền)
-- `subConfirm`: Nút xác nhận và lưu thanh toán
+**PayPartnerFrm** — Giao diem thanh toan cho doi tac:
+
+| Phan tu | Ten | Loai | Mo ta |
+|---------|-----|------|-------|
+| inPartnerName | `txtPartnerName` | TextBox | O nhap ten doi tac can tim kiem |
+| subSearch | `btnSearch` | Button | Nut tim kiem doi tac theo ten |
+| outPartnerList | `dgvPartnerList` | DataGridView | Bang danh sach doi tac ket qua tim kiem: ma, ten, dia chi, so dien thoai |
+| outContractList | `dgvContractList` | DataGridView | Bang hop dong chua thanh toan: checkbox, ma HĐ, ten KH, tong SP, tong tien, tien can tra |
+| subNext | `btnNext` | Button | Nut chuyen sang xem hoa don thanh toan |
+| outPaymentInvoice | `pnlInvoice` | Panel | Hoa don thanh toan doi tac: thong tin doi tac, danh sach HĐ, tong tien |
+| subSave | `btnSave` | Button | Nut xac nhan va luu phieu thanh toan |
+
+**HomeFrm** — Giao diem trang chu:
+
+| Phan tu | Ten | Loai | Mo ta |
+|---------|-----|------|-------|
+| subPayPartner | `btnPayPartner` | Button | Nut mo giao diem thanh toan cho doi tac |
+
+### Entity types
+
+| Entity | Attributes | Kieu du lieu |
+|--------|------------|--------------|
+| Customer | customerId | int (PK) |
+| | customerName | String |
+| | phoneNumber | String |
+| | address | String |
+| | idCard | String |
+| Partner | partnerId | int (PK) |
+| | partnerName | String |
+| | address | String |
+| | phoneNumber | String |
+| | branch | String |
+| Contract | contractId | int (PK) |
+| | customerId | int (FK) |
+| | partnerId | int (FK) |
+| | signingDate | Date |
+| | totalLoanAmount | double |
+| | status | String |
+| PartnerPayment | partnerPaymentId | int (PK) |
+| | partnerId | int (FK) |
+| | userId | int (FK) |
+| | paymentDate | Date |
+| | totalAmount | double |
+| | status | String |
 
 ### DAO classes
 
-| DAO | Phương thức |
-|-----|-------------|
-| PartnerDAO | `searchByName(String keyword): List<Partner>` — Tìm kiếm đối tác theo tên |
-| ContractDAO | `getUnpaidContractsByPartner(int partnerId): List<Contract>` — Lấy danh sách hợp đồng chưa thanh toán cho đối tác |
-| PartnerPaymentDAO | `createPayment(PartnerPayment payment): boolean` — Tạo phiếu thanh toán đối tác mới |
-| PartnerPaymentDetailDAO | `addDetails(int partnerPaymentId, List<PartnerPaymentDetail> details): boolean` — Thêm chi tiết thanh toán theo hợp đồng |
+| DAO | Phuong thuc | Mo ta |
+|-----|-------------|-------|
+| PartnerDAO | `searchByName(String keyword): List<Partner>` | Tim kiem doi tac theo ten |
+| PartnerDAO | `getById(int partnerId): Partner` | Lay thong tin doi tac theo ma |
+| ContractDAO | `getUnpaidContractsByPartner(int partnerId): List<Contract>` | Lay danh sach hop dong chua thanh toan cho doi tac |
+| PartnerPaymentDAO | `create(PartnerPayment payment): int` | Tao phieu thanh toan doi tac, tra ve ID |
+| PartnerPaymentDetailDAO | `batchInsert(int partnerPaymentId, List<PartnerPaymentDetail> details): boolean` | Them chi tiet thanh toan theo hop dong |
+
+### Huong dan Visual Paradigm
+
+1. Tao package `view.payment` chua `PayPartnerFrm`, `HomeFrm`
+2. Tao package `dao` chua `PartnerDAO`, `ContractDAO`, `PartnerPaymentDAO`, `PartnerPaymentDetailDAO`
+3. Tao package `model` chua cac entity classes
+4. Ve dependency tu `PayPartnerFrm` den cac DAO classes
+5. Ve dependency tu DAO classes den cac Entity classes
 
 ---
 
-## Câu 4: Sequence Diagram
+## Cau 4: Sequence Diagram
 
-### Mô tả bằng Visual Paradigm
+### Huong dan Visual Paradigm
 
-**Lifelines:**
-1. `:Staff` — Actor, nhân viên thực hiện thanh toán cho đối tác
-2. `:PayPartnerFrm` — boundary, giao diện thanh toán cho đối tác
-3. `:PartnerDAO` — control, truy vấn dữ liệu đối tác
-4. `:ContractDAO` — control, truy vấn dữ liệu hợp đồng
-5. `:PartnerPaymentDAO` — control, truy vấn và lưu phiếu thanh toán đối tác
-6. `:PartnerPaymentDetailDAO` — control, truy vấn và lưu chi tiết thanh toán
-7. `:Database` — database
+1. Tao Sequence Diagram trong VP
+2. Them lifelines: `:Staff` (actor), `:PayPartnerFrm` (boundary), `:PartnerDAO` (control), `:ContractDAO` (control), `:PartnerPaymentDAO` (control), `:PartnerPaymentDetailDAO` (control), `:Database` (entity)
+3. Ve message flow theo bang duoi, dung `synchronous message` (mui ten dac) cho request va `return message` (mui ten dut) cho response
+4. Them `alt` fragment cho truong hop khong tim thay doi tac (E1) va khong co hop dong (E2)
+5. Them `loop` fragment cho viec luu chi tiet thanh toan nhieu dong
 
-**Message flow:**
-1. Staff → PayPartnerFrm: `selectMenu("Payment to partners")`
-2. PayPartnerFrm → Staff: `showSearchForm()`
-3. Staff → PayPartnerFrm: `enter(inPartnerName="FPT Shop"), click(subSearchPartner)`
-4. PayPartnerFrm → PartnerDAO: `searchByName("FPT Shop")`
-5. PartnerDAO → Database: `SELECT * FROM tblPartner WHERE partnerName LIKE '%FPT Shop%'`
-6. Database → PartnerDAO: `ResultSet`
-7. PartnerDAO → PayPartnerFrm: `List<Partner>`
-8. PayPartnerFrm → Staff: `show(outPartnerList)`
-9. Staff → PayPartnerFrm: `click("FPT Shop")`
-10. PayPartnerFrm → ContractDAO: `getUnpaidContractsByPartner(partnerId)`
-11. ContractDAO → Database: `SELECT hợp đồng chưa thanh toán WHERE partnerId = ?`
-12. Database → ContractDAO: `ResultSet`
-13. ContractDAO → PayPartnerFrm: `List<Contract>`
-14. PayPartnerFrm → Staff: `show(outContractList)`
-15. Staff → PayPartnerFrm: `tick(HD001, HD003), click(subNext)`
-16. PayPartnerFrm → PayPartnerFrm: `calculateInvoice(selectedContracts)`
-17. PayPartnerFrm → Staff: `show(outPaymentInvoice) — tổng 42,000,000đ`
-18. Staff → PayPartnerFrm: `click(subConfirm)`
-19. PayPartnerFrm → PartnerPaymentDAO: `createPayment(payment)`
-20. PartnerPaymentDAO → Database: `INSERT INTO tblPartnerPayment(...)`
-21. Database → PartnerPaymentDAO: `partnerPaymentId`
-22. PayPartnerFrm → PartnerPaymentDetailDAO: `addDetails(partnerPaymentId, details)`
-23. PartnerPaymentDetailDAO → Database: `INSERT INTO tblPartnerPaymentDetail(...) × 2 dòng`
-24. Database → PartnerPaymentDetailDAO: `true`
-25. PayPartnerFrm → Staff: `printInvoice(), showSuccessMessage()`
+### Bang buoc sequence
+
+| Buoc | Nguoi gui | Nguoi nhan | Message | Ghi chu |
+|------|-----------|------------|---------|---------|
+| 1 | Staff | PayPartnerFrm | `selectMenu("Payment to partners")` | Nhan vien chon chuc nang |
+| 2 | PayPartnerFrm | Staff | `showSearchForm()` | Hien thi giao diem tim kiem |
+| 3 | Staff | PayPartnerFrm | `enter(inPartnerName="FPT Shop")` | Nhap ten doi tac |
+| 4 | Staff | PayPartnerFrm | `click(subSearch)` | Nhan nut tim kiem |
+| 5 | PayPartnerFrm | PartnerDAO | `searchByName("FPT Shop")` | Goi DAO tim kiem |
+| 6 | PartnerDAO | Database | `SELECT * FROM tblPartner WHERE partnerName LIKE '%FPT Shop%'` | Truy van CSDL |
+| 7 | Database | PartnerDAO | `ResultSet` | Tra ket qua |
+| 8 | PartnerDAO | PayPartnerFrm | `List<Partner>` | Tra ve danh sach doi tac |
+| 9 | PayPartnerFrm | Staff | `show(outPartnerList)` | Hien thi ket qua tim kiem |
+| 10 | Staff | PayPartnerFrm | `click("FPT Shop")` | Chon doi tac |
+| 11 | PayPartnerFrm | ContractDAO | `getUnpaidContractsByPartner(partnerId)` | Lay hop dong chua thanh toan |
+| 12 | ContractDAO | Database | `SELECT c.*, ci.totalAmount FROM tblContract c ... WHERE c.partnerId = ? AND c.status != 'Paid to Partner'` | Truy van hop dong |
+| 13 | Database | ContractDAO | `ResultSet` | Tra ket qua |
+| 14 | ContractDAO | PayPartnerFrm | `List<Contract>` | Tra ve danh sach hop dong |
+| 15 | PayPartnerFrm | Staff | `show(outContractList)` | Hien thi danh sach hop dong |
+| 16 | Staff | PayPartnerFrm | `tick(HD001, HD003), click(subNext)` | Chon hop dong va bam Next |
+| 17 | PayPartnerFrm | PayPartnerFrm | `calculateInvoice(selectedContracts)` | Tinh toan tong tien |
+| 18 | PayPartnerFrm | Staff | `show(outPaymentInvoice)` | Hien thi hoa don: 42,000,000d |
+| 19 | Staff | PayPartnerFrm | `click(subSave)` | Xac nhan luu |
+| 20 | PayPartnerFrm | PartnerPaymentDAO | `create(payment)` | Tao phieu thanh toan |
+| 21 | PartnerPaymentDAO | Database | `INSERT INTO tblPartnerPayment(partnerId, userId, paymentDate, totalAmount, status) VALUES (?, ?, ?, 42000000, 'Completed')` | Luu phieu thanh toan |
+| 22 | Database | PartnerPaymentDAO | `partnerPaymentId = PP001` | Tra ve ID vua tao |
+| 23 | PartnerPaymentDAO | PayPartnerFrm | `partnerPaymentId` | Tra ve ID phieu |
+| 24 | PayPartnerFrm | PartnerPaymentDetailDAO | `batchInsert(PP001, details)` | Luu chi tiet thanh toan |
+| 25 | PartnerPaymentDetailDAO | Database | `INSERT INTO tblPartnerPaymentDetail VALUES (D001, PP001, HD001, 28000000), (D002, PP001, HD003, 14000000)` | Luu 2 dong chi tiet |
+| 26 | Database | PartnerPaymentDetailDAO | `true` | Xac nhan thanh cong |
+| 27 | PartnerPaymentDetailDAO | PayPartnerFrm | `true` | Tra ve ket qua |
+| 28 | PayPartnerFrm | Staff | `printInvoice(), showSuccessMessage("Thanh toan thanh cong")` | In hoa don va thong bao |
 
 ---
 
-## Câu 5: Blackbox Testcase
+## Cau 5: Blackbox Testcase
 
-### TC01: Thanh toán thành công cho đối tác FPT Shop
+### Test Plan
 
-**Database trước:**
+| No. | Module | Test case |
+|-----|--------|-----------|
+| TC01 | Payment to partners | Thanh toan thanh cong cho doi tac FPT Shop voi 2 hop dong |
+| TC02 | Payment to partners | Tim kiem doi tac khong ton tai |
+| TC03 | Payment to partners | Doi tac khong co hop dong chua thanh toan |
+| TC04 | Payment to partners | Khong chon hop dong nao ma nhan Next |
+
+### TC01: Thanh toan thanh cong cho doi tac FPT Shop voi 2 hop dong
+
+**Muc dich:** Kiem tra luong chinh — tim doi tac, chon hop dong, xac nhan thanh toan thanh cong.
+
+**Database truoc:**
+
+tblUser:
+| userId | username | password | fullName | role |
+|--------|----------|----------|----------|------|
+| U001 | staff01 | matkhau123 | Nguyen Van Staff | Staff |
 
 tblPartner:
-| partnerId | partnerName | address | phoneNumber |
-|-----------|-------------|---------|-------------|
-| P001 | FPT Shop | 123 Le Loi, HCM | 0901111111 |
+| partnerId | partnerName | address | phoneNumber | branch |
+|-----------|-------------|---------|-------------|--------|
+| P001 | FPT Shop | 123 Le Loi, Q.1, HCM | 0901111111 | Chi nhanh 1 |
+
+tblCustomer:
+| customerId | customerName | phoneNumber | address | idCard |
+|-----------|-------------|-------------|---------|--------|
+| C001 | Nguyen Van A | 0901234567 | Ha Noi | 012345678901 |
+| C003 | Le Thi C | 0923456789 | Da Nang | 034567890123 |
 
 tblContract:
 | contractId | customerId | partnerId | signingDate | totalLoanAmount | status |
 |-----------|-----------|-----------|-------------|-----------------|--------|
 | HD001 | C001 | P001 | 2026-01-15 | 30000000 | Active |
+| HD002 | C001 | P001 | 2026-02-20 | 20000000 | Paid to Partner |
 | HD003 | C003 | P001 | 2026-03-10 | 15000000 | Active |
 
-tblPartnerPayment: (rỗng)
-tblPartnerPaymentDetail: (rỗng)
+tblPartnerPayment: (rong)
+tblPartnerPaymentDetail: (rong)
 
-| Bước | Kết quả mong đợi |
-|------|------------------|
-| 1 | Đăng nhập thành công, hiển thị trang chủ |
-| 2 | Chọn "Payment to partners" — Hiển thị giao diện tìm kiếm đối tác với ô nhập tên và nút Search |
-| 3 | Nhập "FPT Shop", nhấn Search — Hiển thị danh sách đối tác chứa "FPT Shop" |
-| 4 | Click chọn "FPT Shop" — Hiển thị danh sách hợp đồng chưa thanh toán: HD001 (Nguyen Van A, 2 SP, 30,000,000đ, cần trả 28,000,000đ), HD003 (Le Thi C, 1 SP, 15,000,000đ, cần trả 14,000,000đ) |
-| 5 | Tick chọn HD001 và HD003, nhấn Next — Hiển thị hóa đơn thanh toán: FPT Shop, tổng 42,000,000đ |
-| 6 | Xác nhận, nhấn Save — Hệ thống lưu phiếu thanh toán, in hóa đơn, hiển thị thông báo thành công |
+**Kich ban va ket qua mong doi:**
+
+| Buoc | Kich ban | Ket qua mong doi |
+|------|----------|------------------|
+| 1 | Nhan vien dang nhap voi `staff01` / `matkhau123` | Dang nhap thanh cong, hien thi trang chu |
+| 2 | Nhan vien click nut **Payment to partners** | Hien thi giao diem tim kiem doi tac voi o nhap ten va nut Search |
+| 3 | Nhan vien nhap `"FPT Shop"` vao o ten doi tac, nhan **Search** | Hien thi danh sach doi tac: 1 dong — P001, FPT Shop, 123 Le Loi, Q.1, HCM, 0901111111 |
+| 4 | Nhan vien click chon dong **FPT Shop** | Hien thi bang hop dong chua thanh toan: HD001 (Nguyen Van A, 2 SP, 30,000,000d, can tra 28,000,000d), HD003 (Le Thi C, 1 SP, 15,000,000d, can tra 14,000,000d). HD002 khong hien vi da thanh toan |
+| 5 | Nhan vien tick checkbox **HD001** va **HD003**, nhan nut **Next** | Hien thi hoa don thanh toan doi tac: FPT Shop, tong thanh toan 42,000,000d |
+| 6 | Nhan vien xac nhan, nhan nut **Save** | He thong luu phieu thanh toan, in hoa don, hien thi thong bao "Thanh toan thanh cong cho doi tac FPT Shop, tong: 42,000,000d" |
+| 7 | Nhan vien kiem tra giao diem | Hoa don da in xong, doi tac co the ky xac nhan |
 
 **Database sau:**
 
-tblPartner: Không thay đổi
+tblPartner: Khong thay doi
 
 tblContract:
 | contractId | customerId | partnerId | signingDate | totalLoanAmount | status |
 |-----------|-----------|-----------|-------------|-----------------|--------|
-| HD001 | C001 | P001 | 2026-01-15 | 30000000 | **Paid** |
-| HD003 | C003 | P001 | 2026-03-10 | 15000000 | **Paid** |
+| HD001 | C001 | P001 | 2026-01-15 | 30000000 | **Paid to Partner** |
+| HD002 | C001 | P001 | 2026-02-20 | 20000000 | Paid to Partner |
+| HD003 | C003 | P001 | 2026-03-10 | 15000000 | **Paid to Partner** |
 
 tblPartnerPayment:
 | partnerPaymentId | partnerId | userId | paymentDate | totalAmount | status |

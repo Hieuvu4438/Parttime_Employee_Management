@@ -6,41 +6,188 @@
 
 ## Câu 1: Scenario — Thanh toán cho khách hàng
 
+### Kịch bản chính
+
 | Bước | Diễn biến |
 |------|-----------|
-| 1 | Staff đăng nhập hệ thống, chọn menu "Customer paying" |
-| 2 | Hệ thống hiển thị giao diện: ô nhập tên khách hàng, nút Search |
-| 3 | Staff nhập "Nguyen Van A" vào ô Customer Name, nhấn nút Search. Hệ thống hiển thị danh sách khách hàng có tên "Nguyen Van A" |
-| 4 | Staff click chọn "Nguyen Van A". Hệ thống hiển thị danh sách booking đang hoạt động của khách hàng này |
-| 5 | Staff click nút Payment cho booking B001 |
-| 6 | Hệ thống hiển thị hóa đơn với đầy đủ thông tin khách hàng + danh sách sản phẩm food & beverage đã sử dụng trong các phiên thuê + dòng cuối là tổng tiền thanh toán (nếu khách hàng phản ánh thay đổi, staff phải cập nhật) |
-| 7 | Staff nhấn nút Confirm. Hệ thống cập nhật Payment vào database |
+| 1 | Staff đăng nhập vào hệ thống. Giao diện Login xuất hiện: ô nhập username, ô nhập password, nút Login. |
+| 2 | Staff nhập username `staff01`, password `******`, nhấn Login. Hệ thống xác thực thành công. |
+| 3 | Giao diện Home xuất hiện với các menu chức năng: Booking, Import goods, Update used items, Customer paying, Revenue statistics, Statistics of time slot. |
+| 4 | Staff chọn menu **Customer paying**. |
+| 5 | Giao diện tìm kiếm khách hàng xuất hiện: ô nhập tên khách hàng (txtCustomerName), nút Search (btnSearchCustomer), bảng danh sách khách hàng (tblCustomerList). |
+| 6 | Staff nhập "Nguyen Van A" vào ô Customer Name, nhấn nút Search. Hệ thống truy vấn database tìm khách hàng có tên chứa "Nguyen Van A". |
+| 7 | Hệ thống hiển thị bảng danh sách khách hàng: cột Mã KH, Tên KH, Số điện thoại, Địa chỉ. Kết quả: KH001 — Nguyen Van A — 0912345678 — Quan 1, TP.HCM. |
+| 8 | Staff click chọn dòng "Nguyen Van A" (KH001). Hệ thống hiển thị danh sách booking của khách hàng này: bảng gồm cột Mã booking, Ngày đặt, Sân, Khung giờ, Tổng tiền, Trạng thái. |
+| 9 | Danh sách booking hiển thị: B001 — 01/06/2026 — Sân S1 — T6 18:00-19:00 — 2,400,000đ — Active (chưa thanh toán). |
+| 10 | Staff click nút **Payment** cho booking B001. |
+| 11 | Hệ thống hiển thị hóa đơn chi tiết. Phần đầu: thông tin khách hàng (Nguyen Van A, 0912345678, Quan 1, TP.HCM), thông tin booking (B001, Sân S1, T6 18:00-19:00, 01/07-30/09/2026). |
+| 12 | Phần giữa hóa đơn: danh sách phiên thuê và sản phẩm đã sử dụng. Phiên 1 (10/07/2026): Sân S1, 18:00-19:15, Coca Cola 330ml × 2 = 30,000đ, Bánh mì × 1 = 20,000đ, tổng phiên 1 = 250,000đ (tiền sân 200,000đ + sản phẩm 50,000đ). |
+| 13 | Tiếp tục: Phiên 2 (17/07/2026): Sân S1, 18:00-19:00, Nước suối × 3 = 30,000đ, tổng phiên 2 = 230,000đ (tiền sân 200,000đ + sản phẩm 30,000đ). |
+| 14 | Phần cuối hóa đơn: Tổng tiền đặt cọc = 500,000đ. Tổng tiền thuê sân = 400,000đ. Tổng tiền sản phẩm = 80,000đ. Tổng thanh toán = 480,000đ (400,000 + 80,000). Đã đặt cọc = 500,000đ. Còn lại = -20,000đ (khách đã trả dư). |
+| 15 | Staff kiểm tra hóa đơn. Nếu khách hàng phản ánh thay đổi số lượng sản phẩm (ví dụ: khách nói chỉ dùng 1 Coca Cola không phải 2), staff click vào dòng sản phẩm đó để chỉnh sửa: sửa số lượng Coca Cola từ 2 xuống 1, hệ thống cập nhật lại tổng. |
+| 16 | Staff nhấn nút **Confirm**. Hệ thống tạo bản ghi Payment, cập nhật trạng thái booking thành "Paid", cập nhật database. Hệ thống thông báo "Thanh toan thanh cong". |
+
+### Kịch bản ngoại lệ
+
+- **EL1:** Staff nhập tên khách hàng không tồn tại trong hệ thống → danh sách kết quả trống, hiển thị thông báo "Khong tim thay khach hang".
+- **EL2:** Khách hàng đã thanh toán tất cả booking → danh sách booking không có nút Payment (chỉ hiển thị trạng thái "Paid").
+- **EL3:** Khách hàng không có phiên thuê nào đã hoàn thành (chưa nhận/trả sân) → hệ thống thông báo "Chua co phien nao hoan thanh de thanh toan".
 
 ---
 
 ## Câu 2: Entity Class Diagram
 
+### Mô tả hệ thống bằng ngôn ngữ tự nhiên
+
+Hệ thống quản lý thuê sân bóng đá mini. Sân bóng có nhiều sân nhỏ, có thể gộp 2 hoặc 4 sân thành sân lớn. Mỗi sân được nhiều khách hàng thuê ở các khung giờ khác nhau. Khách hàng đặt sân theo phiên trong tuần hoặc theo tháng. Khi đặt sân, khách hàng nhận phiếu đặt và phải đặt cọc trước. Khi khách đến nhận sân và trả sân, nhân viên cập nhật giờ nhận, giờ trả, tiền thuê, và danh sách sản phẩm (đồ ăn, thức uống) mà khách đã sử dụng trong phiên đó. Khi khách hàng thanh toán, hệ thống tạo hóa đơn chi tiết bao gồm thông tin thuê sân và sản phẩm đã sử dụng. Chủ sân nhập hàng hóa từ nhiều nhà cung cấp khác nhau.
+
+### Trích xuất danh từ
+
+| Danh từ | Phân loại | Loại | Lý do |
+|---------|-----------|------|-------|
+| Sân bóng (Court) | Entity class | | Đối tượng quản lý chính, có thuộc tính riêng |
+| Khách hàng (Customer) | Entity class | | Người thuê sân và thanh toán |
+| Phiếu đặt (Booking) | Entity class | | Bản ghi đặt sân, liên kết KH và sân |
+| Phiên thuê (BookingSession) | Entity class | | Mỗi lần khách đến nhận sân cụ thể |
+| Sản phẩm (Product) | Entity class | | Đồ ăn/thức uống bán cho khách |
+| Sản phẩm phiên (SessionProduct) | Entity class | | Sản phẩm đã sử dụng trong 1 phiên thuê |
+| Thanh toán (Payment) | Entity class | | Hóa đơn thanh toán của booking |
+| Người dùng (User) | Entity class | | Nhân viên thao tác trên hệ thống |
+| Nhà cung cấp (Supplier) | Entity class | | Cung cấp hàng hóa cho sân bóng |
+| Phiếu nhập (ImportInvoice) | Entity class | | Hóa đơn nhập hàng |
+| Chi tiết phiếu nhập (ImportInvoiceDetail) | Entity class | | Chi tiết sản phẩm trong phiếu nhập |
+
+### Bảng thuộc tính
+
 | Entity | Attributes |
 |--------|------------|
-| Customer | customerId, customerName, phoneNumber, address |
-| Booking | bookingId, bookingDate, totalAmount, status, customerId (FK) |
-| BookingSession | sessionId, bookingId (FK), courtId (FK), sessionDate, startTime, endTime, checkinTime, checkoutTime, rentAmount, status |
-| Product | productId, productName, unit, price, stockQuantity |
-| SessionProduct | sessionProductId, sessionId (FK), productId (FK), unitPrice, quantity, subtotal |
-| Court | courtId, courtName, courtType, pricePerHour, status |
-| Payment | paymentId, bookingId (FK), paymentDate, totalAmount, method, status |
-| User | userId, username, password, fullName, role |
+| Court | courtId (PK), code, courtName, courtType, pricePerSession, status |
+| Customer | customerId (PK), code, customerName, phoneNumber, address |
+| Booking | bookingId (PK), courtId (FK), customerId (FK), bookingDate, startDate, endDate, timeSlot, dayOfWeek, totalSessions, totalAmount, deposit, status |
+| BookingSession | sessionId (PK), bookingId (FK), sessionDate, startTime, endTime, checkinTime, checkoutTime, rentAmount, status |
+| Product | productId (PK), code, productName, unit, price, stockQuantity |
+| SessionProduct | sessionProductId (PK), sessionId (FK), productId (FK), unitPrice, quantity, subtotal |
+| Payment | paymentId (PK), bookingId (FK), paymentDate, rentTotal, productTotal, totalAmount, depositDeducted, finalAmount, method, status |
+| User | userId (PK), username, password, fullName, role |
+| Supplier | supplierId (PK), code, supplierName, address, email, phone, description |
+| ImportInvoice | importInvoiceId (PK), supplierId (FK), importDate, totalAmount |
+| ImportInvoiceDetail | detailId (PK), importInvoiceId (FK), productId (FK), unitPrice, quantity, amount |
+
+### Class Diagram (ASCII)
+
+```
++------------------+       +------------------+
+|      Court       |       |     Customer     |
++------------------+       +------------------+
+| - courtId: int   |       | - customerId: int|
+| - code: String   |       | - code: String   |
+| - courtName      |       | - customerName   |
+| - courtType      |       | - phoneNumber    |
+| - pricePerSession|       | - address        |
+| - status         |       +------------------+
++------------------+               | 1
+        | 1                        |
+        |                          | n
+        | n                        v
+        v                  +------------------+
++------------------+       |     Booking      |
+|                  |       +------------------+
+|                  |       | - bookingId: int |
+|                  |       | - bookingDate    |
+|                  |       | - startDate      |
+|                  |       | - endDate        |
+|                  |       | - timeSlot       |
+|                  |       | - totalSessions  |
+|                  |       | - totalAmount    |
+|                  |       | - deposit        |
+|                  |       | - status         |
+|                  |       +------------------+
+|                  |        | 1         | 1
+|                  |        |           |
+|                  |        | n         | 1
+|                  |        v           v
+|                  |  +------------------+  +------------------+
+|                  |  | BookingSession   |  |     Payment      |
+|                  |  +------------------+  +------------------+
+|                  |  | - sessionId: int |  | - paymentId: int |
+|                  |  | - sessionDate    |  | - paymentDate    |
+|                  |  | - startTime      |  | - rentTotal      |
+|                  |  | - endTime        |  | - productTotal   |
+|                  |  | - checkinTime    |  | - totalAmount    |
+|                  |  | - checkoutTime   |  | - depositDeducted|
+|                  |  | - rentAmount     |  | - finalAmount    |
+|                  |  | - status         |  | - method         |
+|                  |  +------------------+  | - status         |
+|                  |        | 1             +------------------+
+|                  |        |
+|                  |        | n
+|                  |        v
+|                  |  +------------------+
+|                  |  | SessionProduct   |
+|                  |  +------------------+
+|                  |  | - sessionProductId|
+|                  |  | - unitPrice      |
+|                  |  | - quantity       |
+|                  |  | - subtotal       |
+|                  |  +------------------+
++------------------+        | n
+       Product              |
++------------------+        | 1
+| - productId: int |        +
+| - code: String   |
+| - productName    |
+| - unit: String   |
+| - price: float   |
+| - stockQuantity  |
++------------------+
+
++------------------+       +------------------+
+|     Supplier     |       |       User       |
++------------------+       +------------------+
+| - supplierId: int|       | - userId: int    |
+| - code: String   |       | - username       |
+| - supplierName   |       | - password       |
+| - address        |       | - fullName       |
+| - email          |       | - role           |
+| - phone          |       +------------------+
+| - description    |
++------------------+
+        | 1
+        | n
+        v
++------------------+
+| ImportInvoice    |
++------------------+
+| - importInvoiceId|
+| - importDate     |
+| - totalAmount    |
++------------------+
+        | 1
+        | n
+        v
++------------------+
+| ImportInvoiceDetail|
++------------------+
+| - detailId: int  |
+| - unitPrice      |
+| - quantity       |
+| - amount         |
++------------------+
+```
 
 ### Quan hệ
 
-```
-Customer 1 --- n Booking
-Booking 1 --- n BookingSession
-Court 1 --- n BookingSession
-BookingSession 1 --- n SessionProduct
-Product 1 --- n SessionProduct
-Booking 1 --- 1 Payment
-```
+| Quan hệ | Kiểu | Giải thích |
+|----------|------|------------|
+| Court → Booking | 1-n | Một sân được nhiều khách đặt |
+| Customer → Booking | 1-n | Một khách hàng có nhiều booking |
+| Booking → BookingSession | 1-n | Một booking có nhiều phiên thuê theo tuần |
+| BookingSession → SessionProduct | 1-n | Một phiên thuê có nhiều sản phẩm đã sử dụng |
+| Product → SessionProduct | 1-n | Một sản phẩm xuất hiện trong nhiều phiên |
+| Booking → Payment | 1-1 | Mỗi booking có 1 phiếu thanh toán |
+| Supplier → ImportInvoice | 1-n | Một nhà cung cấp có nhiều phiếu nhập |
+| ImportInvoice → ImportInvoiceDetail | 1-n | Một phiếu nhập có nhiều chi tiết sản phẩm |
+| Product → ImportInvoiceDetail | 1-n | Một sản phẩm xuất hiện trong nhiều phiếu nhập |
 
 ---
 
@@ -48,24 +195,181 @@ Booking 1 --- 1 Payment
 
 ### View classes
 
+**LoginFrm:**
+- `inUsername`: ô nhập tên đăng nhập (JTextField)
+- `inPassword`: ô nhập mật khẩu (JPasswordField)
+- `subLogin`: nút Login (JButton)
+
+**HomeFrm:**
+- `subBooking`: nút chọn chức năng Booking (JButton)
+- `subImportGoods`: nút chọn Import goods (JButton)
+- `subUpdateItems`: nút chọn Update used items (JButton)
+- `subCustomerPay`: nút chọn Customer paying (JButton)
+- `subRevenueStat`: nút chọn Revenue statistics (JButton)
+
 **CustomerPayFrm:**
 - `inCustomerName`: ô nhập tên khách hàng (JTextField)
 - `subSearchCustomer`: nút tìm kiếm khách hàng (JButton)
-- `outCustomerList`: bảng danh sách khách hàng tìm được (JTable)
-- `outBookingList`: bảng danh sách booking đang hoạt động của khách hàng (JTable)
+- `outsubCustomerList`: bảng danh sách khách hàng tìm được, click để chọn (JTable)
+- `outBookingList`: bảng danh sách booking của khách hàng (JTable)
 - `btnPayment`: nút Payment cho từng booking (JButton, trong bảng booking)
-- `outInvoiceDetails`: bảng chi tiết hóa đơn hiển thị các session và sản phẩm đã sử dụng (JTable)
-- `outTotalAmount`: ô hiển thị tổng tiền thanh toán (JLabel)
+- `outCustomerInfo`: thông tin khách hàng trên hóa đơn (JLabel)
+- `outBookingInfo`: thông tin booking trên hóa đơn (JLabel)
+- `outInvoiceDetail`: bảng chi tiết hóa đơn — danh sách phiên thuê và sản phẩm (JTable)
+- `outSubtotalRent`: tổng tiền thuê sân (JLabel)
+- `outSubtotalProduct`: tổng tiền sản phẩm (JLabel)
+- `outDeposit`: tiền đặt cọc (JLabel)
+- `outTotalAmount`: tổng thanh toán (JLabel)
+- `outFinalAmount`: số tiền còn lại phải thanh toán (JLabel)
+- `btnEditItem`: nút chỉnh sửa sản phẩm (JButton, trong bảng chi tiết)
 - `subConfirm`: nút xác nhận thanh toán (JButton)
+
+### UI Elements
+
+| UI Element | Kiểu | Mô tả |
+|------------|------|-------|
+| txtCustomerName | JTextField | Ô nhập tên khách hàng cần tìm |
+| btnSearchCustomer | JButton | Nút tìm kiếm khách hàng |
+| tblCustomerList | JTable | Bảng kết quả tìm khách hàng (click được) |
+| tblBookingList | JTable | Bảng danh sách booking của khách hàng |
+| btnPayment | JButton | Nút thanh toán cho từng booking |
+| lblCustomerInfo | JLabel | Hiển thị thông tin khách hàng trên hóa đơn |
+| lblBookingInfo | JLabel | Hiển thị thông tin booking trên hóa đơn |
+| tblInvoiceDetail | JTable | Bảng chi tiết hóa đơn (phiên thuê + sản phẩm) |
+| lblSubtotalRent | JLabel | Tổng tiền thuê sân |
+| lblSubtotalProduct | JLabel | Tổng tiền sản phẩm |
+| lblDeposit | JLabel | Tiền đặt cọc |
+| lblTotalAmount | JLabel | Tổng thanh toán |
+| lblFinalAmount | JLabel | Số tiền còn lại |
+| btnEditItem | JButton | Chỉnh sửa sản phẩm trong hóa đơn |
+| btnConfirm | JButton | Xác nhận thanh toán |
 
 ### DAO classes
 
-| DAO | Phương thức |
-|-----|-------------|
-| CustomerDAO | `searchByName(String name)`: tìm kiếm khách hàng theo tên, trả về `ArrayList<Customer>` |
-| BookingDAO | `getBookingsByCustomer(int customerId)`: lấy danh sách booking đang hoạt động của khách hàng, trả về `ArrayList<Booking>` |
-| BookingSessionDAO | `getSessionsWithProducts(int bookingId)`: lấy tất cả phiên thuê và sản phẩm đã sử dụng của một booking, trả về `ArrayList<BookingSession>` mỗi phiên bao gồm `ArrayList<SessionProduct>` |
-| PaymentDAO | `createPayment(int bookingId, double totalAmount, String method)`: tạo mới bản ghi Payment, cập nhật trạng thái booking thành "Paid", trả về `Payment` |
+| DAO | Phương thức | Mô tả |
+|-----|-------------|-------|
+| UserDAO | `checkLogin(username, password): boolean` | Kiểm tra đăng nhập |
+| CustomerDAO | `searchByName(String name): ArrayList<Customer>` | Tìm kiếm khách hàng theo tên |
+| BookingDAO | `getBookingsByCustomer(int customerId): ArrayList<Booking>` | Lấy danh sách booking của khách hàng |
+| BookingSessionDAO | `getCompletedSessionsWithProducts(int bookingId): ArrayList<BookingSession>` | Lấy phiên thuê đã hoàn thành kèm sản phẩm đã sử dụng |
+| SessionProductDAO | `updateSessionProduct(int sessionProductId, int quantity, double subtotal): boolean` | Cập nhật số lượng/thành tiền sản phẩm khi khách phản ánh |
+| PaymentDAO | `createPayment(Payment payment): boolean` | Tạo bản ghi thanh toán |
+| BookingDAO | `updateBookingStatus(int bookingId, String status): boolean` | Cập nhật trạng thái booking thành "Paid" |
+
+### Entity types sử dụng
+
+| Entity | Vai trò trong module |
+|--------|---------------------|
+| Customer | Tìm kiếm và hiển thị thông tin khách hàng trên hóa đơn |
+| Booking | Hiển thị danh sách booking, cập nhật trạng thái sau thanh toán |
+| BookingSession | Hiển thị thông tin phiên thuê (ngày, giờ, sân, tiền thuê) |
+| Product | Thông tin sản phẩm đã sử dụng (tên, giá) |
+| SessionProduct | Chi tiết sản phẩm trong hóa đơn, có thể chỉnh sửa số lượng |
+| Payment | Tạo bản ghi thanh toán mới |
+| User | Xác thực đăng nhập |
+
+### Database Design
+
+**tblUser:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| username | varchar(50) | NOT NULL, UNIQUE |
+| password | varchar(100) | NOT NULL |
+| fullName | nvarchar(100) | NOT NULL |
+| role | varchar(20) | NOT NULL |
+
+**tblCustomer:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| code | varchar(20) | NOT NULL, UNIQUE |
+| customerName | nvarchar(100) | NOT NULL |
+| phoneNumber | varchar(15) | |
+| address | nvarchar(255) | |
+
+**tblBooking:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| courtID | int | FOREIGN KEY → tblCourt(ID) |
+| customerID | int | FOREIGN KEY → tblCustomer(ID) |
+| bookingDate | datetime | NOT NULL |
+| startDate | date | NOT NULL |
+| endDate | date | NOT NULL |
+| timeSlot | varchar(20) | NOT NULL |
+| dayOfWeek | varchar(20) | |
+| totalSessions | int | NOT NULL |
+| totalAmount | float | NOT NULL |
+| deposit | float | |
+| status | varchar(20) | NOT NULL |
+
+**tblBookingSession:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| bookingID | int | FOREIGN KEY → tblBooking(ID) |
+| sessionDate | date | NOT NULL |
+| startTime | varchar(10) | NOT NULL |
+| endTime | varchar(10) | NOT NULL |
+| checkinTime | varchar(10) | NULLABLE |
+| checkoutTime | varchar(10) | NULLABLE |
+| rentAmount | float | DEFAULT 0 |
+| status | varchar(20) | NOT NULL |
+
+**tblCourt:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| code | varchar(20) | NOT NULL, UNIQUE |
+| courtName | nvarchar(100) | NOT NULL |
+| courtType | varchar(50) | NOT NULL |
+| pricePerSession | float | NOT NULL |
+| status | varchar(20) | NOT NULL |
+
+**tblProduct:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| code | varchar(20) | NOT NULL, UNIQUE |
+| productName | nvarchar(100) | NOT NULL |
+| unit | varchar(20) | NOT NULL |
+| price | float | NOT NULL |
+| stockQuantity | int | DEFAULT 0 |
+
+**tblSessionProduct:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| sessionID | int | FOREIGN KEY → tblBookingSession(ID) |
+| productID | int | FOREIGN KEY → tblProduct(ID) |
+| unitPrice | float | NOT NULL |
+| quantity | int | NOT NULL |
+| subtotal | float | NOT NULL |
+
+**tblPayment:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| bookingID | int | FOREIGN KEY → tblBooking(ID) |
+| paymentDate | datetime | NOT NULL |
+| rentTotal | float | NOT NULL |
+| productTotal | float | NOT NULL |
+| totalAmount | float | NOT NULL |
+| depositDeducted | float | DEFAULT 0 |
+| finalAmount | float | NOT NULL |
+| method | varchar(20) | DEFAULT 'cash' |
+| status | varchar(20) | NOT NULL |
+
+### Visual Paradigm — Hướng dẫn vẽ Static Design Class Diagram
+
+1. Mở Visual Paradigm → New → Class Diagram.
+2. Tạo package `view.payment`: chứa LoginFrm, HomeFrm, CustomerPayFrm.
+3. Tạo package `model`: chứa Customer, Booking, BookingSession, Product, SessionProduct, Payment, User.
+4. Tạo package `dao`: chứa UserDAO, CustomerDAO, BookingDAO, BookingSessionDAO, SessionProductDAO, PaymentDAO.
+5. Vẽ association từ CustomerPayFrm → CustomerDAO, CustomerPayFrm → BookingDAO, CustomerPayFrm → BookingSessionDAO, CustomerPayFrm → SessionProductDAO, CustomerPayFrm → PaymentDAO.
+6. Vẽ dependency từ DAO classes → Entity classes (dashed arrow).
+7. Thêm kiểu trả về cho phương thức DAO.
 
 ---
 
@@ -75,92 +379,234 @@ Booking 1 --- 1 Payment
 
 **Lifelines:**
 1. `:Staff` — actor
-2. `:CustomerPayFrm` — boundary
-3. `:CustomerDAO` — control
-4. `:BookingDAO` — control
-5. `:BookingSessionDAO` — control
-6. `:PaymentDAO` — control
+2. `:LoginFrm` — boundary
+3. `:HomeFrm` — boundary
+4. `:CustomerPayFrm` — boundary
+5. `:UserDAO` — control
+6. `:CustomerDAO` — control
+7. `:BookingDAO` — control
+8. `:BookingSessionDAO` — control
+9. `:SessionProductDAO` — control
+10. `:PaymentDAO` — control
 
-**Message flow:**
-1. Staff → CustomerPayFrm: `nhậpTênKH("Nguyen Van A")`
-2. Staff → CustomerPayFrm: `nhấnNutSearchCustomer()`
-3. CustomerPayFrm → CustomerDAO: `searchByName("Nguyen Van A")`
-4. CustomerDAO --> CustomerPayFrm: `ArrayList<Customer>`
-5. CustomerPayFrm --> Staff: `hiểnThịDanhSáchKH(danhSachKH)`
-6. Staff → CustomerPayFrm: `chọnKH("Nguyen Van A")`
-7. CustomerPayFrm → BookingDAO: `getBookingsByCustomer(customerId)`
-8. BookingDAO --> CustomerPayFrm: `ArrayList<Booking>`
-9. CustomerPayFrm --> Staff: `hiểnThịDanhSáchBooking(danhSachBooking)`
-10. Staff → CustomerPayFrm: `nhấnNutPayment(booking B001)`
-11. CustomerPayFrm → BookingSessionDAO: `getSessionsWithProducts(bookingId)`
-12. BookingSessionDAO --> CustomerPayFrm: `ArrayList<BookingSession>` với các `SessionProduct`
-13. CustomerPayFrm --> Staff: `hiểnThịHóaĐơn(invoiceDetails, tổngTiền 60000)`
-14. Staff → CustomerPayFrm: `nhấnNutConfirm()`
-15. CustomerPayFrm → PaymentDAO: `createPayment(bookingId, 60000, "cash")`
-16. PaymentDAO --> CustomerPayFrm: `Payment`
-17. CustomerPayFrm --> Staff: `thôngBáoThanhToánThànhCông()`
+**Các bước vẽ:**
+1. Mở Visual Paradigm → New → Sequence Diagram.
+2. Tạo 10 lifelines theo thứ tự: Staff, LoginFrm, UserDAO, HomeFrm, CustomerPayFrm, CustomerDAO, BookingDAO, BookingSessionDAO, SessionProductDAO, PaymentDAO.
+3. Vẽ message flow từ trên xuống theo bảng bên dưới.
+4. Sử dụng reply message (dashed arrow) cho giá trị trả về.
+5. Sử dụng `alt` fragment cho nhánh chỉnh sửa sản phẩm (nếu khách phản ánh).
+6. Sử dụng self-call cho các thao tác nội bộ của form.
+
+### Bảng chi tiết các bước
+
+| Bước | Từ | Đến | Message | Loại |
+|------|-----|-----|---------|------|
+| 1 | Staff | LoginFrm | `actionPerformed("Login")` — nhập username="staff01", password="******" | synchronous |
+| 2 | LoginFrm | UserDAO | `checkLogin("staff01", "******")` | synchronous |
+| 3 | UserDAO | LoginFrm | `return true` | return |
+| 4 | LoginFrm | HomeFrm | `new HomeFrm().setVisible(true)` | synchronous |
+| 5 | Staff | HomeFrm | `actionPerformed("Customer paying")` | synchronous |
+| 6 | HomeFrm | CustomerPayFrm | `new CustomerPayFrm().setVisible(true)` | synchronous |
+| 7 | Staff | CustomerPayFrm | `setText("Nguyen Van A")` + `actionPerformed("SearchCustomer")` | synchronous |
+| 8 | CustomerPayFrm | CustomerDAO | `searchByName("Nguyen Van A")` | synchronous |
+| 9 | CustomerDAO | CustomerPayFrm | `return ArrayList<Customer>` (1 kết quả: KH001) | return |
+| 10 | CustomerPayFrm | CustomerPayFrm | `displayTable(customerList)` | self |
+| 11 | Staff | CustomerPayFrm | `clickRow("Nguyen Van A")` | synchronous |
+| 12 | CustomerPayFrm | BookingDAO | `getBookingsByCustomer(1)` | synchronous |
+| 13 | BookingDAO | CustomerPayFrm | `return ArrayList<Booking>` (B001: Sân S1, T6 18:00-19:00, Active) | return |
+| 14 | CustomerPayFrm | CustomerPayFrm | `displayTable(bookingList)` | self |
+| 15 | Staff | CustomerPayFrm | `clickButton("Payment", B001)` | synchronous |
+| 16 | CustomerPayFrm | BookingSessionDAO | `getCompletedSessionsWithProducts(1)` | synchronous |
+| 17 | BookingSessionDAO | CustomerPayFrm | `return ArrayList<BookingSession>` (S1: 10/07, S2: 17/07, mỗi session kèm SessionProduct) | return |
+| 18 | CustomerPayFrm | CustomerPayFrm | `buildInvoice(customerInfo, bookingInfo, sessions, products)` — tính tổng tiền thuê, tổng sản phẩm, trừ cọc | self |
+| 19 | CustomerPayFrm | Staff | `displayInvoice(invoiceDetail, rentTotal=400000, productTotal=80000, deposit=500000, finalAmount=-20000)` | return |
+| 20 | Staff | CustomerPayFrm | `clickEditItem(sessionProduct Coca Cola, newQuantity=1)` (nếu khách phản ánh) | synchronous |
+| 21 | CustomerPayFrm | SessionProductDAO | `updateSessionProduct(spId=1, quantity=1, subtotal=15000)` | synchronous |
+| 22 | SessionProductDAO | CustomerPayFrm | `return true` | return |
+| 23 | CustomerPayFrm | CustomerPayFrm | `recalculateInvoice()` — cập nhật tổng tiền mới | self |
+| 24 | CustomerPayFrm | Staff | `displayInvoice(updatedInvoice)` | return |
+| 25 | Staff | CustomerPayFrm | `actionPerformed("Confirm")` | synchronous |
+| 26 | CustomerPayFrm | new Payment() | `Payment(bookingId=1, paymentDate=now, rentTotal=400000, productTotal=65000, totalAmount=465000, depositDeducted=500000, finalAmount=-35000, method="cash", status="completed")` | self |
+| 27 | CustomerPayFrm | PaymentDAO | `createPayment(payment)` | synchronous |
+| 28 | PaymentDAO | CustomerPayFrm | `return true` | return |
+| 29 | CustomerPayFrm | BookingDAO | `updateBookingStatus(1, "Paid")` | synchronous |
+| 30 | BookingDAO | CustomerPayFrm | `return true` | return |
+| 31 | CustomerPayFrm | Staff | `showMessage("Thanh toan thanh cong")` | return |
+
+### ASCII Sequence Diagram
+
+```
+Staff      LoginFrm   UserDAO   HomeFrm   CustomerPayFrm   CustomerDAO   BookingDAO   BookingSessionDAO   SessionProductDAO   PaymentDAO
+  |            |          |         |            |               |             |                |                   |                |
+  |--login---->|          |         |            |               |             |                |                   |                |
+  |            |--checkLogin()---->|            |               |             |                |                   |                |
+  |            |<--true---|         |            |               |             |                |                   |                |
+  |            |--open HomeFrm---->|            |               |             |                |                   |                |
+  |            |          |         |            |               |             |                |                   |                |
+  |--select "Customer paying"----->|            |               |             |                |                   |                |
+  |            |          |         |--open Frm->|               |             |                |                   |                |
+  |            |          |         |            |               |             |                |                   |                |
+  |--enter "Nguyen Van A", Search->|            |               |             |                |                   |                |
+  |            |          |         |            |--searchByName()----------->|                |                   |                |
+  |            |          |         |            |<--List<Customer>|           |                |                   |                |
+  |            |          |         |            |--display list  |             |                |                   |                |
+  |            |          |         |            |               |             |                |                   |                |
+  |--click customer------>|         |            |               |             |                |                   |                |
+  |            |          |         |            |--getBookingsByCustomer()-->|                |                   |                |
+  |            |          |         |            |<--List<Booking>|            |                |                   |                |
+  |            |          |         |            |--display bookings           |                |                   |                |
+  |            |          |         |            |               |             |                |                   |                |
+  |--click Payment B001-->|         |            |               |             |                |                   |                |
+  |            |          |         |            |--getCompletedSessionsWithProducts()--------->|                   |                |
+  |            |          |         |            |<--List<BookingSession>      |                |                   |                |
+  |            |          |         |            |--buildInvoice  |             |                |                   |                |
+  |            |          |         |            |--display invoice            |                |                   |                |
+  |            |          |         |            |               |             |                |                   |                |
+  |  [alt: customer complains about Coca Cola qty]               |             |                |                   |                |
+  |--edit Coca Cola qty=1>|         |            |               |             |                |                   |                |
+  |            |          |         |            |--updateSessionProduct()----|----------------|------------------>|                |
+  |            |          |         |            |<--true---------|             |                |                   |                |
+  |            |          |         |            |--recalculate   |             |                |                   |                |
+  |            |          |         |            |--display updated invoice    |                |                   |                |
+  |  [end alt] |          |         |            |               |             |                |                   |                |
+  |            |          |         |            |               |             |                |                   |                |
+  |--click Confirm-------->|        |            |               |             |                |                   |                |
+  |            |          |         |            |--createPayment(payment)-----|----------------|-------------------|--------------->|
+  |            |          |         |            |<--true---------|             |                |                   |                |
+  |            |          |         |            |--updateBookingStatus(1,"Paid")              |                   |                |
+  |            |          |         |            |<--true---------|             |                |                   |                |
+  |            |          |         |            |               |             |                |                   |                |
+  |<--success--|          |         |            |               |             |                |                   |                |
+```
 
 ---
 
 ## Câu 5: Blackbox Testcase
 
-### TC01: Thanh toán thành công booking với nhiều session và sản phẩm
+### Bảng tổng hợp test case
 
-**Database trước:**
-- tblBooking: B001 có status = "active", customerId = 1
-- tblBookingSession: S1 (01/07, Sân S1, 18:00-19:00), S2 (08/07, Sân S1, 18:00-19:00)
-- tblSessionProduct: S1 có Coca Cola × 2 = 30,000đ và Bánh mì × 1 = 20,000đ; S2 có Nước suối × 1 = 10,000đ
-- tblPayment: không có bản ghi nào cho B001
+| No. | Module | Test case |
+|-----|--------|-----------|
+| TC01 | Customer paying | Thanh toán thành công booking với nhiều phiên và sản phẩm, có chỉnh sửa |
+| TC02 | Customer paying | Tìm khách hàng không tồn tại |
+| TC03 | Customer paying | Khách hàng có booking nhưng không có phiên thuê hoàn thành |
 
-| Bước | Kết quả mong đợi |
-|------|------------------|
-| 1 | Staff đăng nhập thành công, chọn menu "Customer paying" |
-| 2 | Giao diện hiển thị ô nhập Customer Name và nút Search |
-| 3 | Staff nhập "Nguyen Van A", nhấn Search. Hiển thị danh sách chứa "Nguyen Van A" |
-| 4 | Staff click "Nguyen Van A". Hiển thị danh sách booking đang hoạt động, bao gồm B001 |
-| 5 | Staff click nút Payment cho B001. Hiển thị hóa đơn chi tiết |
-| 6 | Hóa đơn hiển thị: Session 1 (01/07): Sân S1, 18:00-19:00, Coca Cola × 2 = 30,000đ, Bánh mì × 1 = 20,000đ; Session 2 (08/07): Sân S1, 18:00-19:00, Nước suối × 1 = 10,000đ. Tổng thanh toán: 60,000đ |
-| 7 | Staff nhấn Confirm. Hiển thị thông báo thanh toán thành công |
+### TC01: Thanh toán thành công booking với nhiều phiên và sản phẩm
 
-**Database sau:**
-- tblBooking: B001 có status = "Paid"
-- tblPayment: thêm mới 1 dòng — (paymentId=mới, bookingId=B001, paymentDate=ngày hiện tại, totalAmount=60000, method="cash", status="completed")
+**Purpose:** Kiểm tra quy trình thanh toán hoàn chỉnh: tìm khách hàng, chọn booking, xem hóa đơn, chỉnh sửa sản phẩm khi khách phản ánh, xác nhận thanh toán.
+
+**Database trước khi test:**
+
+**tblUser:**
+| ID | username | password | fullName | role |
+|----|----------|----------|----------|------|
+| 1 | staff01 | 123456 | Nguyen Thi Staff | staff |
+
+**tblCustomer:**
+| ID | code | customerName | phoneNumber | address |
+|----|------|-------------|-------------|---------|
+| 1 | KH001 | Nguyen Van A | 0912345678 | Quan 1, TP.HCM |
+
+**tblCourt:**
+| ID | code | courtName | courtType | pricePerSession | status |
+|----|------|-----------|-----------|-----------------|--------|
+| 1 | S1 | San 1 | San nho | 200000 | active |
+
+**tblBooking:**
+| ID | courtID | customerID | bookingDate | startDate | endDate | timeSlot | dayOfWeek | totalSessions | totalAmount | deposit | status |
+|----|---------|------------|-------------|-----------|---------|----------|-----------|---------------|-------------|---------|--------|
+| 1 | 1 | 1 | 2026-06-01 | 2026-07-01 | 2026-09-30 | 18:00-19:00 | Thu 6 | 12 | 2400000 | 500000 | active |
+
+**tblBookingSession:**
+| ID | bookingID | sessionDate | startTime | endTime | checkinTime | checkoutTime | rentAmount | status |
+|----|-----------|-------------|-----------|---------|-------------|--------------|------------|--------|
+| 1 | 1 | 2026-07-10 | 18:00 | 19:00 | 18:00 | 19:15 | 200000 | completed |
+| 2 | 1 | 2026-07-17 | 18:00 | 19:00 | 17:55 | 19:00 | 200000 | completed |
+| 3 | 1 | 2026-07-24 | 18:00 | 19:00 | NULL | NULL | 0 | pending |
+
+**tblProduct:**
+| ID | code | productName | unit | price | stockQuantity |
+|----|------|-------------|------|-------|---------------|
+| 1 | P01 | Coca Cola 330ml | Chai | 15000 | 100 |
+| 2 | P03 | Nuoc suoi 500ml | Chai | 10000 | 150 |
+| 3 | P04 | Banh mi | Cai | 20000 | 50 |
+
+**tblSessionProduct:**
+| ID | sessionID | productID | unitPrice | quantity | subtotal |
+|----|-----------|-----------|-----------|----------|----------|
+| 1 | 1 | 1 | 15000 | 2 | 30000 |
+| 2 | 1 | 3 | 20000 | 1 | 20000 |
+| 3 | 2 | 2 | 10000 | 3 | 30000 |
+
+**tblPayment:** (rỗng — chưa có thanh toán nào cho B001)
+
+### Kịch bản test và kết quả mong đợi
+
+| Bước | Kịch bản | Kết quả mong đợi |
+|------|----------|------------------|
+| 1 | Khởi động ứng dụng | Giao diện Login hiển thị: ô username, ô password, nút Login |
+| 2 | Nhập username=`staff01`, password=`123456`, nhấn Login | Đăng nhập thành công, hiển thị HomeFrm |
+| 3 | Chọn menu "Customer paying" | Giao diện tìm kiếm khách hàng hiển thị |
+| 4 | Nhập "Nguyen Van A", nhấn Search | Bảng kết quả hiển thị: KH001 — Nguyen Van A — 0912345678 |
+| 5 | Click chọn "Nguyen Van A" | Bảng booking hiển thị: B001 — Sân S1 — T6 18:00-19:00 — 2,400,000đ — Active |
+| 6 | Click nút Payment cho B001 | Hóa đơn chi tiết hiển thị: thông tin KH + thông tin booking + bảng phiên thuê và sản phẩm |
+| 7 | Hóa đơn hiển thị: Phiên 1 (10/07): Coca Cola × 2 = 30,000đ, Bánh mì × 1 = 20,000đ; Phiên 2 (17/07): Nước suối × 3 = 30,000đ. Tổng thuê: 400,000đ, Tổng SP: 80,000đ, Cọc: 500,000đ, Còn lại: -20,000đ | Dữ liệu chính xác theo database |
+| 8 | Khách phản ánh chỉ dùng 1 Coca Cola. Staff click edit dòng Coca Cola, sửa SL từ 2 xuống 1 | Hệ thống cập nhật: Coca Cola × 1 = 15,000đ. Tổng SP: 65,000đ. Còn lại: -35,000đ |
+| 9 | Nhấn Confirm | Hệ thống hiển thị thông báo "Thanh toan thanh cong" |
+
+**Database sau khi test:**
+
+**tblBooking:** (cập nhật 1 dòng)
+| ID | courtID | customerID | bookingDate | startDate | endDate | timeSlot | dayOfWeek | totalSessions | totalAmount | deposit | status |
+|----|---------|------------|-------------|-----------|---------|----------|-----------|---------------|-------------|---------|--------|
+| 1 | 1 | 1 | 2026-06-01 | 2026-07-01 | 2026-09-30 | 18:00-19:00 | Thu 6 | 12 | 2400000 | 500000 | Paid |
+
+**tblSessionProduct:** (cập nhật 1 dòng)
+| ID | sessionID | productID | unitPrice | quantity | subtotal |
+|----|-----------|-----------|-----------|----------|----------|
+| 1 | 1 | 1 | 15000 | 1 | 15000 |
+
+**tblPayment:** (thêm 1 dòng)
+| ID | bookingID | paymentDate | rentTotal | productTotal | totalAmount | depositDeducted | finalAmount | method | status |
+|----|-----------|-------------|-----------|--------------|-------------|-----------------|-------------|--------|--------|
+| 1 | 1 | 2026-06-08 10:30 | 400000 | 65000 | 465000 | 500000 | -35000 | cash | completed |
 
 ---
 
-### TC02: Khách hàng không tồn tại trong hệ thống
+### TC02: Tìm khách hàng không tồn tại
 
-**Database trước:**
+**Purpose:** Kiểm tra hệ thống xử lý đúng khi tìm kiếm khách hàng không có trong database.
+
+**Database trước khi test:**
 - tblCustomer: không có khách hàng nào có tên "Vo Thi C"
 
-| Bước | Kết quả mong đợi |
-|------|------------------|
-| 1 | Staff đăng nhập thành công, chọn menu "Customer paying" |
-| 2 | Giao diện hiển thị ô nhập Customer Name và nút Search |
-| 3 | Staff nhập "Vo Thi C", nhấn Search. Hiển thị danh sách trống (không có kết quả) |
+| Bước | Kịch bản | Kết quả mong đợi |
+|------|----------|------------------|
+| 1 | Staff đăng nhập thành công, chọn menu "Customer paying" | Giao diện tìm kiếm hiển thị |
+| 2 | Nhập "Vo Thi C" vào ô Customer Name, nhấn Search | Bảng kết quả trống, thông báo "Khong tim thay khach hang" |
 
-**Database sau:**
+**Database sau khi test:**
 - Không có thay đổi
 
 ---
 
-### TC03: Khách hàng có booking nhưng không có sản phẩm đã sử dụng
+### TC03: Khách hàng có booking nhưng không có phiên thuê hoàn thành
 
-**Database trước:**
-- tblCustomer: có khách hàng "Tran Van D" với customerId = 3
-- tblBooking: B003 có status = "active", customerId = 3
-- tblBookingSession: S5 có checkinTime và checkoutTime nhưng không có SessionProduct nào
-- tblPayment: không có bản ghi nào cho B003
+**Purpose:** Kiểm tra hệ thống khi khách hàng có booking nhưng chưa có phiên nào được nhận/trả sân.
 
-| Bước | Kết quả mong đợi |
-|------|------------------|
-| 1 | Staff đăng nhập thành công, chọn menu "Customer paying" |
-| 2 | Staff nhập "Tran Van D", nhấn Search. Hiển thị danh sách chứa "Tran Van D" |
-| 3 | Staff click "Tran Van D". Hiển thị danh sách booking đang hoạt động, bao gồm B003 |
-| 4 | Staff click nút Payment cho B003. Hiển thị hóa đơn chi tiết |
-| 5 | Hóa đơn hiển thị: Session 5 với chỉ tiền sân (rentAmount), không có sản phẩm nào. Tổng thanh toán = rentAmount |
-| 6 | Staff nhấn Confirm. Hiển thị thông báo thanh toán thành công |
+**Database trước khi test:**
+- tblCustomer: "Tran Thi B" (ID=2, code=KH002)
+- tblBooking: B002 (ID=2, customerID=2, status="active", deposit=500000)
+- tblBookingSession: S4 (ID=4, bookingID=2, checkinTime=NULL, checkoutTime=NULL, status="pending")
+- tblSessionProduct: không có sản phẩm nào cho S4
+- tblPayment: không có bản ghi nào cho B002
 
-**Database sau:**
-- tblBooking: B003 có status = "Paid"
-- tblPayment: thêm mới 1 dòng — (paymentId=mới, bookingId=B003, paymentDate=ngày hiện tại, totalAmount=rentAmount, method="cash", status="completed")
+| Bước | Kịch bản | Kết quả mong đợi |
+|------|----------|------------------|
+| 1 | Staff đăng nhập thành công, chọn menu "Customer paying" | Giao diện tìm kiếm hiển thị |
+| 2 | Nhập "Tran Thi B", nhấn Search | Bảng kết quả hiển thị: KH002 — Tran Thi B |
+| 3 | Click chọn "Tran Thi B" | Bảng booking hiển thị: B002 — Active |
+| 4 | Click nút Payment cho B002 | Hệ thống thông báo "Chua co phien nao hoan thanh de thanh toan" |
+
+**Database sau khi test:**
+- Không có thay đổi
