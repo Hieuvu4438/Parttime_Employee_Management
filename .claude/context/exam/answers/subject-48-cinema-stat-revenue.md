@@ -560,6 +560,7 @@ Staff       LoginFrm   UserDAO   HomeFrm   RevenueStatFrm   MovieDAO   ShowtimeD
 | 4 | Chon "Theo phim", nhap ngay bat dau `01/01/2026`, ngay ket thuc `31/12/2026`, nhan View | Bang phim hien thi: Avengers (M01, 10 ve, 800,000d), Spider-Man (M02, 3 ve, 210,000d). Sap xep giam dan theo doanh thu |
 | 5 | Click vao dong "Avengers" | Bang chi tiet suat chieu hien thi: 19:00 15/07 (5 ve, 400,000d), 21:00 15/07 (5 ve, 400,000d). Sap xep tu cu den moi |
 | 6 | Click vao suat "19:00 15/07/2026" | Bang hoa don hien thi: HD001 (Nguyen Van A, 3 ve, 240,000d), HD002 (Tran Thi B, 2 ve, 160,000d). Sap xep theo thoi gian thanh toan |
+| 7 | Nhan nut Back de quay lai bang phim | Quay lai bang thong ke phim, giu nguyen ket qua: Avengers (10 ve, 800,000d), Spider-Man (3 ve, 210,000d) |
 
 ### Database sau khi test
 

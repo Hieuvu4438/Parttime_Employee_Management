@@ -408,19 +408,23 @@ Manager      LoginFrm     UserDAO    HomeFrm    TourRevenueStatFrm  TourDAO     
 | 6 | select Statistics | Manager | HomeFrm | Manager chon muc Statistics |
 | 7 | select Tour stat | Manager | HomeFrm | Manager chon Tour statistics by revenue |
 | 8 | open | HomeFrm | TourRevenueStatFrm | Mo giao dien thong ke tour |
-| 9 | enter dates | Manager | TourRevenueStatFrm | Manager nhap 01/01/2026 - 31/12/2026 |
-| 10 | click View | Manager | TourRevenueStatFrm | Manager nhan nut View |
-| 11 | getTourRevenueStat() | TourRevenueStatFrm | TourDAO | Goi TourDAO.getTourRevenueStat(startDate, endDate) |
-| 12 | query DB | TourDAO | Database | Truy van: SELECT tour, AVG(guests), SUM(revenue) GROUP BY tour ORDER BY revenue DESC |
-| 13 | return List<TourStat> | TourDAO | TourRevenueStatFrm | Tra ve danh sach thong ke tour |
-| 14 | display table | TourRevenueStatFrm | UI | Hien thi bang thong ke tour |
-| 15 | click tour "T001" | Manager | TourRevenueStatFrm | Manager click vao tour T001 |
-| 16 | getInvoicesByTour() | TourRevenueStatFrm | InvoiceDAO | Goi InvoiceDAO.getInvoicesByTour(tourId, startDate, endDate) |
-| 17 | query DB | InvoiceDAO | Database | Truy van: SELECT invoice JOIN invoiceDetail JOIN tourDeparture WHERE tourId AND date range |
-| 18 | return List<InvoiceStat> | InvoiceDAO | TourRevenueStatFrm | Tra ve danh sach chi tiet hoa don |
-| 19 | display detail | TourRevenueStatFrm | UI | Hien thi chi tiet hoa don khach hang |
-| 20 | click Back | Manager | TourRevenueStatFrm | Manager nhan nut Back |
-| 21 | show main table | TourRevenueStatFrm | UI | Quay lai bang thong ke tour |
+| 9 | enterStartDate("01/01/2026") | Manager | TourRevenueStatFrm | Manager nhap ngay bat dau |
+| 10 | enterEndDate("31/12/2026") | Manager | TourRevenueStatFrm | Manager nhap ngay ket thuc |
+| 11 | click View | Manager | TourRevenueStatFrm | Manager nhan nut View |
+| 12 | validateDates(startDate, endDate) | TourRevenueStatFrm | TourRevenueStatFrm | Kiem tra: startDate <= endDate, khong trong |
+| 13 | getTourRevenueStat() | TourRevenueStatFrm | TourDAO | Goi TourDAO.getTourRevenueStat(startDate, endDate) |
+| 14 | query DB | TourDAO | Database | Truy van: SELECT tour, AVG(guests), SUM(revenue) GROUP BY tour ORDER BY revenue DESC |
+| 15 | return List<TourStat> | TourDAO | TourRevenueStatFrm | Tra ve danh sach thong ke tour |
+| 16 | sortResults() | TourRevenueStatFrm | TourRevenueStatFrm | Sap xep danh sach theo doanh thu giam dan |
+| 17 | display table | TourRevenueStatFrm | UI | Hien thi bang thong ke tour voi cot: ma tour, ten tour, noi khoi hanh, diem den, avg khach, tong doanh thu |
+| 18 | click tour "T001" | Manager | TourRevenueStatFrm | Manager click vao dong tour T001 |
+| 19 | highlightRow(T001) | TourRevenueStatFrm | TourRevenueStatFrm | Highlight dong duoc chon |
+| 20 | getInvoicesByTour() | TourRevenueStatFrm | InvoiceDAO | Goi InvoiceDAO.getInvoicesByTour(tourId=1, startDate, endDate) |
+| 21 | query DB | InvoiceDAO | Database | Truy van: SELECT invoice JOIN invoiceDetail JOIN tourDeparture WHERE tourId AND date range |
+| 22 | return List<InvoiceStat> | InvoiceDAO | TourRevenueStatFrm | Tra ve danh sach chi tiet hoa don |
+| 23 | display detail | TourRevenueStatFrm | UI | Hien thi chi tiet hoa don: ma KH, ten KH, ngay khoi hanh, so khach, tong tien |
+| 24 | click Back | Manager | TourRevenueStatFrm | Manager nhan nut Back de quay lai |
+| 25 | show main table | TourRevenueStatFrm | UI | Quay lai bang thong ke tour, giu nguyen ket qua |
 
 ---
 
@@ -489,8 +493,8 @@ Manager      LoginFrm     UserDAO    HomeFrm    TourRevenueStatFrm  TourDAO     
 | 3 | Chon Statistics → Tour statistics by revenue | Giao dien thong ke xuat hien voi o ngay bat dau, ngay ket thuc, nut View |
 | 4 | Nhap ngay bat dau 01/01/2026, ngay ket thuc 31/12/2026, nhan View | Bang thong ke hien thi: T001 (Tour Ha Long 3 ngay, Ha Noi, Ha Long, avg 3 khach/tour, 15,000,000 VND), T002 (Tour Da Nang 2 ngay, Ha Noi, Da Nang, avg 2 khach/tour, 4,000,000 VND). Sap xep theo doanh thu giam dan |
 | 5 | Click vao tour T001 | Chi tiet hoa don hien thi: C001 (Nguyen Van A, 15/07/2026, 2 khach, 5,000,000 VND), C002 (Tran Thi B, 20/07/2026, 4 khach, 10,000,000 VND) |
-| 6 | Nhan nut Back | Quay lai bang thong ke tour |
-| 7 | Nhap ngay bat dau 01/08/2026, ngay ket thuc 31/08/2026, nhan View | Bang rong, thong bao "Khong co du lieu trong khoang thoi gian nay" |
+| 6 | Nhan nut Back | Quay lai bang thong ke tour, giu nguyen ket qua truoc do |
+| 7 | Kiem tra bang thong ke van con du lieu T001 va T002 | Bang thong ke van hien thi binh thuong |
 
 ### Database sau khi test
 

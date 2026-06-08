@@ -15,9 +15,9 @@
 | 5 | Giao diện bảng xếp hạng đội đua xuất hiện: combobox chọn chặng đua (để lọc kết quả tính đến chặng đó). |
 | 6 | Staff chọn "Silverstone GP" (chặng 2) từ combobox. |
 | 7 | Hệ thống hiển thị bảng xếp hạng đội: cột Tên đội, Chủ sở hữu (brand), Tổng điểm, Tổng thời gian. Sắp xếp: tổng điểm giảm dần → tổng thời gian tăng dần. |
-| 8 | Bảng hiển thị: Red Bull Racing (Honda, 43đ, 3:02:05), Mercedes AMG (Mercedes, 27đ, 3:04:05), McLaren (Mercedes, 0đ, --). |
+| 8 | Bảng hiển thị: Red Bull Racing (Honda, 83đ, 5:53:45), Mercedes AMG (Mercedes, 57đ, 5:56:25), McLaren (Mercedes, 0đ, --). |
 | 9 | Staff nhấn vào dòng "Red Bull Racing". |
-| 10 | Hệ thống hiển thị chi tiết kết quả từng chặng của Red Bull: Monaco GP (tổng 43đ, tổng thời gian 2 tay đua), Silverstone GP (tổng 43đ, tổng thời gian 2 tay đua). |
+| 10 | Hệ thống hiển thị chi tiết kết quả từng chặng của Red Bull: Monaco GP (tổng 43đ, tổng thời gian 3:02:05), Silverstone GP (tổng 40đ, tổng thời gian 2:51:40). |
 | 11 | Staff nhấn nút **Back** để quay về bảng xếp hạng. |
 
 ### Kịch bản ngoại lệ
@@ -224,7 +224,7 @@ Staff              TeamRankingFrm    RaceDAO    TeamDAO
   |                      |               |          |
   |                      |---display race detail table
   |                      |  Monaco: 43đ, 3:02:05
-  |                      |  Silverstone: 43đ, 3:02:05
+  |                      |  Silverstone: 40đ, 2:51:40
   |                      |               |          |
   |---click Back--------->|              |          |
   |                      |---hide detail, show standings
@@ -253,7 +253,7 @@ Staff              TeamRankingFrm    RaceDAO    TeamDAO
 | 16 | TeamRankingFrm | TeamDAO | getTeamRaceDetails(teamId=1, maxRaceId=2) | Sync |
 | 17 | TeamDAO | (self) | SELECT race, SUM(score), SUM(finishTime) FROM RaceResult JOIN Driver JOIN Race WHERE teamId = 1 AND raceId <= 2 GROUP BY race | Self |
 | 18 | TeamDAO | TeamRankingFrm | return List\<TeamRaceDetail\> (2 races) | Return |
-| 19 | TeamRankingFrm | (self) | display detail table: Monaco (43đ, 3:02:05), Silverstone (43đ, 3:02:05) | Self |
+| 19 | TeamRankingFrm | (self) | display detail table: Monaco (43đ, 3:02:05), Silverstone (40đ, 2:51:40) | Self |
 | 20 | Staff | TeamRankingFrm | clickBack() | Sync |
 | 21 | TeamRankingFrm | (self) | hide detail, show standings | Self |
 | 22 | TeamRankingFrm | Staff | display standings table | Async |

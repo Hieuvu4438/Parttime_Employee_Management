@@ -302,6 +302,7 @@ Staff    StatCostumesFrm    CostumeDAO    RentalSlipDetailDAO
 | 4 | Staff nhấn nút "Xem thống kê" | Bảng thống kê hiển thị 4 dòng (sắp xếp giảm dần theo tổng lần thuê): CS001 (4 lần, 2,700,000đ), CS002 (3 lần, 1,350,000đ), CS003 (2 lần, 720,000đ), CS004 (1 lần, 600,000đ) |
 | 5 | Staff click vào dòng CS001 (Vest nam đen) | Bảng chi tiết hóa đơn hiển thị 4 dòng: RS001 - Nguyen Thi A - 01/07 10:00 - 04/07 10:00 - 600,000đ; RS002 - Tran Thi B - 10/07 14:00 - 13/07 14:00 - 600,000đ; RS004 - Nguyen Thi A - 20/08 09:00 - 23/08 09:00 - 600,000đ; RS005 - Tran Thi B - 15/06 14:00 - 18/06 14:00 - 900,000đ |
 | 6 | Staff click vào dòng CS002 (Váy dạ hội đỏ) | Bảng chi tiết hóa đơn cập nhật hiển thị 3 dòng: RS001 - Nguyen Thi A - 01/07 - 04/07 - 450,000đ; RS004 - Nguyen Thi A - 20/08 - 23/08 - 450,000đ; RS005 - Tran Thi B - 15/06 - 18/06 - 450,000đ |
+| 7 | Staff nhấn nút Back hoặc click lại bảng tổng hợp | Quay lại bảng thống kê tổng hợp, giu nguyen ket qua: CS001 (4 lần, 2,700,000đ), CS002 (3 lần, 1,350,000đ), CS003 (2 lần, 720,000đ), CS004 (1 lần, 600,000đ) |
 
 #### Database AFTER
 

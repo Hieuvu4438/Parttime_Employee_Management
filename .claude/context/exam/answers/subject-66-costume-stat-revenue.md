@@ -339,7 +339,7 @@ Staff    CostumeStatRevenueFrm    PaymentDAO    RentalSlipDAO
 |------|----------|------------------|
 | 1 | Staff đăng nhập thành công (staff01/123456) | Giao diện Home hiển thị |
 | 2 | Staff chọn menu "Revenue Statistics" | Giao diện thống kê hiển thị: combobox chọn loại thống kê (Thang/Quy/Nam) |
-| 3 | Staff chọn "Thang" trong combobox | Bảng thống kê hiển thị 5 tháng (sắp xếp gần nhất đến xa nhất): 07/2026 (3,600,000đ = P001 1,100,000 + P002 800,000 + P005 2,500,000), 06/2026 (9,000,000đ = P003 7,200,000 + P006 1,800,000), 05/2026 (10,000,000đ = P004 6,800,000 + P007 3,200,000), 04/2026 (5,500,000đ = P008) |
+| 3 | Staff chọn "Thang" trong combobox | Bảng thống kê hiển thị 5 tháng (sắp xếp gần nhất đến xa nhất): 07/2026 (4,400,000đ = P001 1,100,000 + P002 800,000 + P005 2,500,000), 06/2026 (9,000,000đ = P003 7,200,000 + P006 1,800,000), 05/2026 (10,000,000đ = P004 6,800,000 + P007 3,200,000), 04/2026 (5,500,000đ = P008) |
 | 4 | Staff click vào dòng 07/2026 | Bảng chi tiết hiển thị 3 hóa đơn: RS001 - Nguyen Thi A - 01/07 - 2 trang phục - 1,100,000đ; RS002 - Tran Thi B - 05/07 - 2 trang phục - 800,000đ; RS005 - Nguyen Thi A - 18/07 - 2 trang phục - 2,500,000đ |
 | 5 | Staff click vào dòng 06/2026 | Bảng chi tiết cập nhật hiển thị 2 hóa đơn: RS003 - Le Thi C - 10/06 - 2 trang phục - 7,200,000đ; RS006 - Tran Thi B - 25/06 - 2 trang phục - 1,800,000đ |
 | 6 | Staff click vào dòng 05/2026 | Bảng chi tiết cập nhật hiển thị 2 hóa đơn: RS004 - Pham Thi D - 15/05 - 2 trang phục - 6,800,000đ; RS007 - Le Thi C - 05/05 - 2 trang phục - 3,200,000đ |

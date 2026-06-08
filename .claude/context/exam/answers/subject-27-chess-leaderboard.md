@@ -355,8 +355,8 @@ Staff          LeaderboardFrm     PlayerDAO       MatchDAO
 | 3 | Mở combobox Round, chọn **Round 5** | Bảng xếp hạng hiển thị 4 đấu thủ |
 | 4 | Kiểm tra dòng Rank 1 | P001, Nguyen Van A, 1995, Vietnam, Total Score = **4.5**, Opponent Total Score = **18.5**, Elo = **2512** |
 | 5 | Kiểm tra dòng Rank 2 | P003, Le Van C, 2000, Vietnam, Total Score = **3.0**, Opponent Total Score = **17.0**, Elo = **2362** |
-| 6 | Kiểm tra dòng Rank 3 | P002, Tran Van B, 1998, Vietnam, Total Score = **2.5**, Opponent Total Score = **16.5**, Elo = **2388** |
-| 7 | Kiểm tra dòng Rank 4 | P004, Pham Thi D, 1997, Vietnam, Total Score = **1.5**, Opponent Total Score = **16.0**, Elo = **2290** |
+| 6 | Kiểm tra dòng Rank 3 | P002, Tran Van B, 1998, Vietnam, Total Score = **1.5**, Opponent Total Score = **16.0**, Elo = **2388** |
+| 7 | Kiểm tra dòng Rank 4 | P004, Pham Thi D, 1997, Vietnam, Total Score = **1.0**, Opponent Total Score = **15.5**, Elo = **2290** |
 | 8 | Click vào dòng **Nguyen Van A** (Rank 1) | Vùng chi tiết hiển thị danh sách 5 trận |
 | 9 | Kiểm tra chi tiết trận M01 | Opponent = Tran Van B, Result = **Win** (+1.0), Elo Change = **+12** |
 | 10 | Kiểm tra chi tiết trận M03 | Opponent = Le Van C, Result = **Draw** (+0.5), Elo Change = **+0** |

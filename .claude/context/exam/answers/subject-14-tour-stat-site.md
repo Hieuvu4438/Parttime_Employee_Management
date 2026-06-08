@@ -455,19 +455,23 @@ Manager      LoginFrm     UserDAO    HomeFrm    SiteRevenueStatFrm  SiteDAO     
 | 6 | select Statistics | Manager | HomeFrm | Manager chon muc Statistics |
 | 7 | select Site stat | Manager | HomeFrm | Manager chon Revenue statistics by site |
 | 8 | open | HomeFrm | SiteRevenueStatFrm | Mo giao dien thong ke diem tham quan |
-| 9 | enter dates | Manager | SiteRevenueStatFrm | Manager nhap 01/01/2026 - 31/12/2026 |
-| 10 | click View | Manager | SiteRevenueStatFrm | Manager nhan nut View |
-| 11 | getSiteRevenueStat() | SiteRevenueStatFrm | SiteDAO | Goi SiteDAO.getSiteRevenueStat(startDate, endDate) |
-| 12 | query DB | SiteDAO | Database | Truy van: SELECT site, COUNT(tour), SUM(visitors), SUM(revenue) GROUP BY site ORDER BY revenue DESC |
-| 13 | return List<SiteStat> | SiteDAO | SiteRevenueStatFrm | Tra ve danh sach thong ke diem tham quan |
-| 14 | display table | SiteRevenueStatFrm | UI | Hien thi bang thong ke diem tham quan |
-| 15 | click site "Vinh Ha Long" | Manager | SiteRevenueStatFrm | Manager click vao diem tham quan |
-| 16 | getInvoicesBySite() | SiteRevenueStatFrm | InvoiceDAO | Goi InvoiceDAO.getInvoicesBySite(siteId, startDate, endDate) |
-| 17 | query DB | InvoiceDAO | Database | Truy van: SELECT invoice JOIN invoiceDetail JOIN tourDeparture JOIN tour JOIN tourSite WHERE siteId AND date range |
-| 18 | return List<InvoiceStat> | InvoiceDAO | SiteRevenueStatFrm | Tra ve danh sach chi tiet hoa don |
-| 19 | display detail | SiteRevenueStatFrm | UI | Hien thi chi tiet hoa don khach hang |
-| 20 | click Back | Manager | SiteRevenueStatFrm | Manager nhan nut Back |
-| 21 | show main table | SiteRevenueStatFrm | UI | Quay lai bang thong ke diem tham quan |
+| 9 | enterStartDate("01/01/2026") | Manager | SiteRevenueStatFrm | Manager nhap ngay bat dau |
+| 10 | enterEndDate("31/12/2026") | Manager | SiteRevenueStatFrm | Manager nhap ngay ket thuc |
+| 11 | click View | Manager | SiteRevenueStatFrm | Manager nhan nut View |
+| 12 | validateDates(startDate, endDate) | SiteRevenueStatFrm | SiteRevenueStatFrm | Kiem tra: startDate <= endDate, khong trong |
+| 13 | getSiteRevenueStat() | SiteRevenueStatFrm | SiteDAO | Goi SiteDAO.getSiteRevenueStat(startDate, endDate) |
+| 14 | query DB | SiteDAO | Database | Truy van: SELECT site, COUNT(tour), SUM(visitors), SUM(revenue) GROUP BY site ORDER BY revenue DESC |
+| 15 | return List<SiteStat> | SiteDAO | SiteRevenueStatFrm | Tra ve danh sach thong ke diem tham quan |
+| 16 | sortResults() | SiteRevenueStatFrm | SiteRevenueStatFrm | Sap xep danh sach theo doanh thu giam dan |
+| 17 | display table | SiteRevenueStatFrm | UI | Hien thi bang thong ke: ten diem, so tour, so khach, tong doanh thu |
+| 18 | click site "Vinh Ha Long" | Manager | SiteRevenueStatFrm | Manager click vao dong diem tham quan |
+| 19 | highlightRow("Vinh Ha Long") | SiteRevenueStatFrm | SiteRevenueStatFrm | Highlight dong duoc chon |
+| 20 | getInvoicesBySite() | SiteRevenueStatFrm | InvoiceDAO | Goi InvoiceDAO.getInvoicesBySite(siteId=1, startDate, endDate) |
+| 21 | query DB | InvoiceDAO | Database | Truy van: SELECT invoice JOIN invoiceDetail JOIN tourDeparture JOIN tour JOIN tourSite WHERE siteId AND date range |
+| 22 | return List<InvoiceStat> | InvoiceDAO | SiteRevenueStatFrm | Tra ve danh sach chi tiet hoa don |
+| 23 | display detail | SiteRevenueStatFrm | UI | Hien thi chi tiet: ma KH, ten KH, ngay, ten tour, so khach, tong tien |
+| 24 | click Back | Manager | SiteRevenueStatFrm | Manager nhan nut Back de quay lai |
+| 25 | show main table | SiteRevenueStatFrm | UI | Quay lai bang thong ke diem tham quan, giu nguyen ket qua |
 
 ---
 
@@ -548,8 +552,8 @@ Manager      LoginFrm     UserDAO    HomeFrm    SiteRevenueStatFrm  SiteDAO     
 | 3 | Chon Statistics → Revenue statistics by site | Giao dien thong ke xuat hien voi o ngay bat dau, ngay ket thuc, nut View |
 | 4 | Nhap ngay bat dau 01/01/2026, ngay ket thuc 31/12/2026, nhan View | Bang thong ke hien thi: Vinh Ha Long (1 tour, 6 khach, 15,000,000 VND), Ngu Hanh Son (1 tour, 2 khach, 4,000,000 VND). Sap xep theo doanh thu giam dan |
 | 5 | Click vao "Vinh Ha Long" | Chi tiet hoa don hien thi: C001 (Nguyen Van A, 15/07/2026, Tour Ha Long 3 ngay, 2 khach, 5,000,000 VND), C002 (Tran Thi B, 20/07/2026, Tour Ha Long 3 ngay, 4 khach, 10,000,000 VND) |
-| 6 | Nhan nut Back | Quay lai bang thong ke diem tham quan |
-| 7 | Nhap ngay bat dau 01/01/2027, ngay ket thuc 31/12/2027, nhan View | Bang rong, thong bao "Khong co du lieu trong khoang thoi gian nay" |
+| 6 | Nhan nut Back | Quay lai bang thong ke diem tham quan, giu nguyen ket qua truoc do |
+| 7 | Kiem tra bang thong ke van con du lieu Vinh Ha Long va Ngu Hanh Son | Bang thong ke van hien thi binh thuong |
 
 ### Database sau khi test
 

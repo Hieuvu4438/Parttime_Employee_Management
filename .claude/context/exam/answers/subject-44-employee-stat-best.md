@@ -305,24 +305,26 @@ Staff       LoginFrm    UserDAO   HomeFrm  BestEmployeeStatFrm  EmployeeDAO  Att
 
 | Bước | Từ | Đến | Message | Ghi chú |
 |------|-----|------|---------|---------|
-| 1 | Staff | LoginFrm | actionPerformed("Login") | Staff nhập username/password |
-| 2 | LoginFrm | UserDAO | checkLogin("staff01", "******") | Kiểm tra thông tin đăng nhập |
-| 3 | UserDAO | LoginFrm | return true | Đăng nhập thành công |
-| 4 | LoginFrm | HomeFrm | new HomeFrm().setVisible(true) | Mở giao diện chính |
-| 5 | Staff | HomeFrm | actionPerformed("Statistics") | Chọn chức năng Statistics |
-| 6 | HomeFrm | BestEmployeeStatFrm | new BestEmployeeStatFrm().setVisible(true) | Mở giao diện thống kê NV xuất sắc |
-| 7 | Staff | BestEmployeeStatFrm | setText("01/01/2026") | Nhập ngày bắt đầu |
-| 8 | Staff | BestEmployeeStatFrm | setText("31/12/2026") | Nhập ngày kết thúc |
-| 9 | Staff | BestEmployeeStatFrm | actionPerformed("View") | Nhấn nút View |
-| 10 | BestEmployeeStatFrm | EmployeeDAO | getBestEmployeeStat(01/01/2026, 31/12/2026) | Truy vấn thống kê NV xuất sắc |
-| 11 | EmployeeDAO | BestEmployeeStatFrm | return List<BestEmployeeStat> | Trả về danh sách thống kê |
-| 12 | BestEmployeeStatFrm | BestEmployeeStatFrm | sortAscendingByLateHours() | Sắp xếp tăng dần theo tổng giờ trễ |
-| 13 | BestEmployeeStatFrm | BestEmployeeStatFrm | displayTable(listBestEmployeeStat) | Hiển thị bảng thống kê |
-| 14 | Staff | BestEmployeeStatFrm | clickRow("A") | Nhấn vào dòng nhân viên A |
-| 15 | BestEmployeeStatFrm | AttendanceDAO | getAttendanceDetail(employeeId=1, dates) | Truy vấn chi tiết chấm công |
-| 16 | AttendanceDAO | BestEmployeeStatFrm | return List<AttendanceDetail> | Trả về danh sách chi tiết |
-| 17 | BestEmployeeStatFrm | BestEmployeeStatFrm | displayDetailTable(listDetail) | Hiển thị bảng chi tiết |
-| 18 | BestEmployeeStatFrm | Staff | showDetailTable() | Hiển thị chi tiết giờ làm việc |
+| 1 | Staff | LoginFrm | enterCredentials("staff01", "******") | Staff nhập username/password |
+| 2 | Staff | LoginFrm | clickLogin() | Staff nhấn nút Login |
+| 3 | LoginFrm | UserDAO | checkLogin("staff01", "******") | Kiểm tra thông tin đăng nhập |
+| 4 | UserDAO | Database | executeQuery("SELECT * FROM tblUser WHERE...") | Truy vấn tblUser |
+| 5 | UserDAO | LoginFrm | return true | Đăng nhập thành công |
+| 6 | LoginFrm | HomeFrm | new HomeFrm().setVisible(true) | Mở giao diện chính |
+| 7 | Staff | HomeFrm | actionPerformed("Statistics") | Chọn chức năng Statistics |
+| 8 | HomeFrm | BestEmployeeStatFrm | new BestEmployeeStatFrm().setVisible(true) | Mở giao diện thống kê NV xuất sắc |
+| 9 | Staff | BestEmployeeStatFrm | setText("01/01/2026") | Nhập ngày bắt đầu |
+| 10 | Staff | BestEmployeeStatFrm | setText("31/12/2026") | Nhập ngày kết thúc |
+| 11 | Staff | BestEmployeeStatFrm | actionPerformed("View") | Nhấn nút View |
+| 12 | BestEmployeeStatFrm | EmployeeDAO | getBestEmployeeStat(01/01/2026, 31/12/2026) | Truy vấn thống kê NV xuất sắc |
+| 13 | EmployeeDAO | Database | executeQuery("SELECT employee, SUM(lateHours)...") | Truy vấn tblAttendance JOIN tblEmployee |
+| 14 | EmployeeDAO | BestEmployeeStatFrm | return List<BestEmployeeStat> | Trả về danh sách thống kê |
+| 15 | BestEmployeeStatFrm | BestEmployeeStatFrm | sortAscendingByLateHours() | Sắp xếp tăng dần theo tổng giờ trễ |
+| 16 | BestEmployeeStatFrm | BestEmployeeStatFrm | displayTable(listBestEmployeeStat) | Hiển thị bảng thống kê |
+| 17 | Staff | BestEmployeeStatFrm | clickRow("A") | Nhấn vào dòng nhân viên A |
+| 18 | BestEmployeeStatFrm | AttendanceDAO | getAttendanceDetail(employeeId=1, dates) | Truy vấn chi tiết chấm công |
+| 19 | AttendanceDAO | BestEmployeeStatFrm | return List<AttendanceDetail> | Trả về danh sách chi tiết |
+| 20 | BestEmployeeStatFrm | BestEmployeeStatFrm | displayDetailTable(listDetail) | Hiển thị bảng chi tiết giờ làm việc |
 
 ---
 

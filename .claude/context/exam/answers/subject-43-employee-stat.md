@@ -304,24 +304,26 @@ Staff       LoginFrm    UserDAO   HomeFrm   EmployeeStatFrm  EmployeeDAO  Attend
 
 | Bước | Từ | Đến | Message | Ghi chú |
 |------|-----|------|---------|---------|
-| 1 | Staff | LoginFrm | actionPerformed("Login") | Staff nhập username/password |
-| 2 | LoginFrm | UserDAO | checkLogin("staff01", "******") | Kiểm tra thông tin đăng nhập |
-| 3 | UserDAO | LoginFrm | return true | Đăng nhập thành công |
-| 4 | LoginFrm | HomeFrm | new HomeFrm().setVisible(true) | Mở giao diện chính |
-| 5 | Staff | HomeFrm | actionPerformed("Statistics") | Chọn chức năng Statistics |
-| 6 | HomeFrm | EmployeeStatFrm | new EmployeeStatFrm().setVisible(true) | Mở giao diện thống kê NV |
-| 7 | Staff | EmployeeStatFrm | setText("01/01/2026") | Nhập ngày bắt đầu |
-| 8 | Staff | EmployeeStatFrm | setText("31/12/2026") | Nhập ngày kết thúc |
-| 9 | Staff | EmployeeStatFrm | actionPerformed("View") | Nhấn nút View |
-| 10 | EmployeeStatFrm | EmployeeDAO | getEmployeeStat(01/01/2026, 31/12/2026) | Truy vấn thống kê NV |
-| 11 | EmployeeDAO | EmployeeStatFrm | return List<EmployeeStat> | Trả về danh sách thống kê |
-| 12 | EmployeeStatFrm | EmployeeStatFrm | sortDescendingByActualHours() | Sắp xếp giảm dần theo tổng giờ thực tế |
-| 13 | EmployeeStatFrm | EmployeeStatFrm | displayTable(listEmployeeStat) | Hiển thị bảng thống kê |
-| 14 | Staff | EmployeeStatFrm | clickRow("B") | Nhấn vào dòng nhân viên B |
-| 15 | EmployeeStatFrm | AttendanceDAO | getAttendanceDetail(employeeId=1, dates) | Truy vấn chi tiết chấm công |
-| 16 | AttendanceDAO | EmployeeStatFrm | return List<AttendanceDetail> | Trả về danh sách chi tiết |
-| 17 | EmployeeStatFrm | EmployeeStatFrm | displayDetailTable(listDetail) | Hiển thị bảng chi tiết |
-| 18 | EmployeeStatFrm | Staff | showDetailTable() | Hiển thị chi tiết giờ làm việc |
+| 1 | Staff | LoginFrm | enterCredentials("staff01", "******") | Staff nhập username/password |
+| 2 | Staff | LoginFrm | clickLogin() | Staff nhấn nút Login |
+| 3 | LoginFrm | UserDAO | checkLogin("staff01", "******") | Kiểm tra thông tin đăng nhập |
+| 4 | UserDAO | Database | executeQuery("SELECT * FROM tblUser WHERE...") | Truy vấn tblUser |
+| 5 | UserDAO | LoginFrm | return true | Đăng nhập thành công |
+| 6 | LoginFrm | HomeFrm | new HomeFrm().setVisible(true) | Mở giao diện chính |
+| 7 | Staff | HomeFrm | actionPerformed("Statistics") | Chọn chức năng Statistics |
+| 8 | HomeFrm | EmployeeStatFrm | new EmployeeStatFrm().setVisible(true) | Mở giao diện thống kê NV |
+| 9 | Staff | EmployeeStatFrm | setText("01/01/2026") | Nhập ngày bắt đầu |
+| 10 | Staff | EmployeeStatFrm | setText("31/12/2026") | Nhập ngày kết thúc |
+| 11 | Staff | EmployeeStatFrm | actionPerformed("View") | Nhấn nút View |
+| 12 | EmployeeStatFrm | EmployeeDAO | getEmployeeStat(01/01/2026, 31/12/2026) | Truy vấn thống kê NV |
+| 13 | EmployeeDAO | Database | executeQuery("SELECT employee, SUM(hours)...") | Truy vấn tblAttendance JOIN tblEmployee |
+| 14 | EmployeeDAO | EmployeeStatFrm | return List<EmployeeStat> | Trả về danh sách thống kê |
+| 15 | EmployeeStatFrm | EmployeeStatFrm | sortDescendingByActualHours() | Sắp xếp giảm dần theo tổng giờ thực tế |
+| 16 | EmployeeStatFrm | EmployeeStatFrm | displayTable(listEmployeeStat) | Hiển thị bảng thống kê |
+| 17 | Staff | EmployeeStatFrm | clickRow("B") | Nhấn vào dòng nhân viên B |
+| 18 | EmployeeStatFrm | AttendanceDAO | getAttendanceDetail(employeeId=1, dates) | Truy vấn chi tiết chấm công |
+| 19 | AttendanceDAO | EmployeeStatFrm | return List<AttendanceDetail> | Trả về danh sách chi tiết |
+| 20 | EmployeeStatFrm | EmployeeStatFrm | displayDetailTable(listDetail) | Hiển thị bảng chi tiết giờ làm việc |
 
 ---
 

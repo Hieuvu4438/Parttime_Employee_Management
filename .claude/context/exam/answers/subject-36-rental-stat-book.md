@@ -277,22 +277,26 @@ Staff              BookStatFrm          BookTitleDAO       RentalSlipDetailDAO  
 
 | # | Từ | Đến | Message | Ghi chú |
 |---|-----|------|---------|---------|
-| 1 | Staff | BookStatFrm | `selectStatBook()` | Chọn chức năng Statistics of book từ HomeFrm |
-| 2 | BookStatFrm | BookStatFrm | `showStatForm()` | Hiển thị giao diện thống kê |
-| 3 | Staff | BookStatFrm | `enterStartDate("01/01/2026")` | Nhập ngày bắt đầu vào ô inStartDate |
-| 4 | Staff | BookStatFrm | `enterEndDate("31/12/2026")` | Nhập ngày kết thúc vào ô inEndDate |
-| 5 | Staff | BookStatFrm | `clickView()` | Nhấn nút View |
-| 6 | BookStatFrm | BookStatFrm | `validateDates()` | Kiểm tra ngày hợp lệ |
-| 7 | BookStatFrm | BookTitleDAO | `getBookStatistics(startDate, endDate)` | Gọi DAO lấy thống kê sách theo kỳ |
-| 8 | BookTitleDAO | BookStatFrm | `return List<BookStatDTO>` | Trả về danh sách thống kê (bookTitleId, code, name, author, publisher, pubYear, totalTimes, totalRevenue) |
-| 9 | BookStatFrm | BookStatFrm | `sortStatList(list)` | Sắp xếp: totalTimes giảm, rồi totalRevenue giảm |
-| 10 | BookStatFrm | BookStatFrm | `displayStatTable(list)` | Hiển thị bảng thống kê ra outStatTable |
-| 11 | Staff | BookStatFrm | `clickBook(bookTitleId=1)` | Click vào dòng "Lap trinh Java" |
-| 12 | BookStatFrm | RentalSlipDetailDAO | `getRentalDetailsByBookTitle(bookTitleId=1, startDate, endDate)` | Lấy chi tiết hóa đơn mượn sách này |
-| 13 | RentalSlipDetailDAO | BookStatFrm | `return List<RentalDetailDTO>` | Trả về danh sách chi tiết (rentalSlipId, customerName, rentalDate, returnDate, totalAmount) |
-| 14 | BookStatFrm | CustomerDAO | `getCustomerById(customerId)` | Lấy tên khách hàng cho mỗi phiếu mượn |
-| 15 | CustomerDAO | BookStatFrm | `return Customer` | Trả về thông tin khách hàng |
-| 16 | BookStatFrm | BookStatFrm | `displayDetailTable(list)` | Hiển thị bảng chi tiết hóa đơn ra outDetailTable |
+| 1 | Staff | HomeFrm | `clickMenu("Statistics")` | Chọn menu Statistics từ giao diện Home |
+| 2 | HomeFrm | BookStatFrm | `show()` | Mở giao diện thống kê sách |
+| 3 | BookStatFrm | BookStatFrm | `showStatForm()` | Hiển thị form với ô ngày bắt đầu, ô ngày kết thúc, nút View |
+| 4 | Staff | BookStatFrm | `enterStartDate("01/01/2026")` | Nhập ngày bắt đầu vào ô inStartDate |
+| 5 | Staff | BookStatFrm | `enterEndDate("31/12/2026")` | Nhập ngày kết thúc vào ô inEndDate |
+| 6 | Staff | BookStatFrm | `clickView()` | Nhấn nút View |
+| 7 | BookStatFrm | BookStatFrm | `validateDates()` | Kiểm tra: startDate <= endDate, không trống |
+| 8 | BookStatFrm | BookTitleDAO | `getBookStatistics(startDate, endDate)` | Gọi DAO lấy thống kê sách theo kỳ |
+| 9 | BookTitleDAO | Database | `executeQuery(SQL)` | Truy vấn: SELECT bookTitle, COUNT(detail), SUM(amount) GROUP BY bookTitle |
+| 10 | BookTitleDAO | BookStatFrm | `return List<BookStatDTO>` | Trả về danh sách thống kê (bookTitleId, code, name, author, publisher, pubYear, totalTimes, totalRevenue) |
+| 11 | BookStatFrm | BookStatFrm | `sortStatList(list)` | Sắp xếp: totalTimes giảm, rồi totalRevenue giảm |
+| 12 | BookStatFrm | BookStatFrm | `displayStatTable(list)` | Hiển thị bảng thống kê ra outStatTable |
+| 13 | Staff | BookStatFrm | `clickBook(bookTitleId=1)` | Click vào dòng "Lap trinh Java" |
+| 14 | BookStatFrm | RentalSlipDetailDAO | `getRentalDetailsByBookTitle(bookTitleId=1, startDate, endDate)` | Lấy chi tiết hóa đơn mượn sách này |
+| 15 | RentalSlipDetailDAO | Database | `executeQuery(SQL)` | Truy vấn: SELECT slip, customer, dates, amount FROM detail JOIN slip JOIN customer |
+| 16 | RentalSlipDetailDAO | BookStatFrm | `return List<RentalDetailDTO>` | Trả về danh sách chi tiết (rentalSlipId, customerName, rentalDate, returnDate, totalAmount) |
+| 17 | BookStatFrm | BookStatFrm | `sortDetailList(list)` | Sắp xếp chi tiết theo ngày mượn |
+| 18 | BookStatFrm | BookStatFrm | `displayDetailTable(list)` | Hiển thị bảng chi tiết hóa đơn ra outDetailTable |
+| 19 | Staff | BookStatFrm | `clickBack()` | Nhấn nút Back để quay lại bảng tổng hợp |
+| 20 | BookStatFrm | BookStatFrm | `showStatTable()` | Hiển thị lại bảng thống kê tổng hợp |
 
 ---
 
