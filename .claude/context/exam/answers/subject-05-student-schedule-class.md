@@ -26,7 +26,7 @@
 **Truong hop 1: Trung lich phong hoc**
 | Buoc | Nguoi dung | He thong |
 |------|-----------|----------|
-| 7b | Chon Classroom "A101", TimeSlot "Slot1: 07:00–09:00" (da co lop CL002 o Slot1 Thu 2) | He thong kiem tra: A101 Slot1 Thu 2 da co lop CL002 → Hien thi loi: "Conflict detected! Room A101 is already scheduled for Slot1 on Monday. Class CL002 occupies this slot." |
+| 7b | Chon Classroom "A101", TimeSlot "Slot1: 07:00–09:00" (da co lop CL002 o Slot1 Thu 2) | He thong kiem tra: A101 Slot1 Thu 2 da co lop CL002 → Hien thi loi: "Conflict detected! Room A101 is already scheduled for Slot1 on Thu 2. Class CL002 occupies this slot." |
 | 8b | Nhan OK, chon lai Classroom "A201", TimeSlot "Slot1: 07:00–09:00", nhan OK | He thong kiem tra: A201 Slot1 Thu 2 trong → Them vao bang thanh cong |
 
 **Truong hop 2: Thong tin bat buoc thieu**
@@ -53,7 +53,7 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep nhan vi
 
 | Danh tu | Phan loai | Ly do |
 |---------|-----------|-------|
-| Student | Entity | Doi tuong chinh, co ma SV, ten, ngay sinh, email, khoa hoc |
+| Student | Entity | Doi tuong chinh, co ma SV, ten, ngay sinh, khoa hoc, que quan, dia chi, email |
 | Subject | Entity | Mon hoc, co ma mon, ten mon, so tin chi, mon tien quyet |
 | Class | Entity | Lop hoc cu the, co ma lop, thuoc mon hoc, co si so toi da |
 | Registration | Entity | Bang dang ky, lien ket sinh vien voi lop hoc |
@@ -82,97 +82,53 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep nhan vi
 ### Buoc 4: Class Diagram (ASCII art)
 
 ```
-+------------------+        +------------------+
-|    <<entity>>    |        |    <<entity>>    |
-|     Subject      |1      *|      Class       |
-+------------------+--------+------------------+
-| - subjectId: int |        | - classId: int   |
-| - subjectCode:   |        | - subjectId: int |
-|   String         |        | - classroomId:   |
-| - subjectName:   |        |   int            |
-|   String         |        | - timeSlotId:    |
-| - credits: int   |        |   int            |
-| - prerequisiteId:|        | - maxStudents:   |
-|   int            |        |   int            |
-+------------------+        | - section: String|
-        |*                  | - teacherId: int |
-        |                   +------------------+
-        | 1                        |*
-        v                          |1
-+------------------+        +------------------+
-|    <<entity>>    |        |    <<entity>>    |
-|   Subject        |        |   Classroom      |
-| (Prerequisite)   |        +------------------+
-+------------------+        | - classroomId:   |
-| - subjectId: int |        |   int            |
-| - requiredSubject|        | - classroomName: |
-|   Id: int        |        |   String         |
-+------------------+        | - building:      |
-                            |   String         |
-                            | - capacity: int  |
++------------------+        +------------------+        +------------------+        +------------------+
+|    <<entity>>    |  1   * |    <<entity>>    |  *   1 |    <<entity>>    |  *   1 |    <<entity>>    |
+|     Student      |--------|   Registration   |--------|      Class       |--------|    Subject       |
++------------------+        +------------------+        +------------------+        +------------------+
+| - studentId: int |        | - regId: int     |        | - classId: int   |        | - subjectId: int |
+| - studentCode:   |        | - studentId: int |        | - subjectId: int |        | - subjectCode:   |
+|   String         |        | - classId: int   |        | - classroomId:   |        |   String         |
+| - studentName:   |        | - semester:      |        |   int            |        | - subjectName:   |
+|   String         |        |   String         |        | - timeSlotId:    |        |   String         |
+| - dob: Date      |        | - regDate: Date  |        |   int            |        | - credits: int   |
+| - course: String |        | - status: String |        | - maxStudents:   |        | - prerequisiteId:|
+| - hometown:      |        +------------------+        |   int            |        |   int            |
+|   String         |                |1                  | - section: String|        +------------------+
+| - address:       |                |1                  | - teacherId: int |               |*
+|   String         |                v                   +------------------+               |1
+| - email: String  |        +------------------+               |*                          v
+| - userId: int    |        |    <<entity>>    |               |1                 +------------------+
++------------------+        |      Grade       |               v                 |    <<entity>>    |
+                            +------------------+        +------------------+        |   Classroom      |
+                            | - gradeId: int   |        |    <<entity>>    |        +------------------+
+                            | - regId: int     |        |    TimeSlot       |        | - classroomId:   |
+                            | - component1:    |        +------------------+        |   int            |
+                            |   double         |        | - timeSlotId: int|        | - classroomName: |
+                            | - component2:    |        | - slotName:      |        |   String         |
+                            |   double         |        |   String         |        | - building:      |
+                            | - component3:    |        | - startTime:     |        |   String         |
+                            |   double         |        |   String         |        | - capacity: int  |
+                            | - examScore:     |        | - endTime: String|        +------------------+
+                            |   double         |        | - dayOfWeek:     |
+                            | - finalScore:    |        |   String         |
+                            |   double         |        +------------------+
                             +------------------+
-                                    |1
-+------------------+                 |
-|    <<entity>>    |                 |
-|   TimeSlot       |                 |
-+------------------+                 |
-| - timeSlotId: int|                 |
-| - slotName:      |                 |
-|   String         |                 |
-| - startTime:     |                 |
-|   String         |                 |
-| - endTime: String|                 |
-| - dayOfWeek:     |                 |
-|   String         |                 |
-+------------------+                 |
-        |1                           |
-        |                            |
-        +----------------------------+
-                     |*
-                     |1
-              +------------------+
-              |    <<entity>>    |
-              |   Registration   |
-              +------------------+
-              | - regId: int     |
-              | - studentId: int |
-              | - classId: int   |
-              | - semester:      |
-              |   String         |
-              | - regDate: Date  |
-              | - status: String |
-              +------------------+
-                     |1
-                     |1
-                     v
-              +------------------+        +------------------+
-              |    <<entity>>    |        |    <<entity>>    |
-              |      Grade       |        |     Student      |
-              +------------------+        +------------------+
-              | - gradeId: int   |        | - studentId: int |
-              | - regId: int     |        | - studentCode:   |
-              | - component1:    |        |   String         |
-              |   double         |        | - studentName:   |
-              | - component2:    |        |   String         |
-              |   double         |        | - email: String  |
-              | - component3:    |        | - dob: Date      |
-              |   double         |        | - major: String  |
-              | - examScore:     |        | - userId: int    |
-              |   double         |        +------------------+
-              | - finalScore:    |                |1
-              |   double         |                |
-              +------------------+                |1
-                                          +------------------+
-                                          |    <<entity>>    |
-                                          |      User        |
-                                          +------------------+
-                                          | - userId: int    |
-                                          | - username:      |
-                                          |   String         |
-                                          | - password:      |
-                                          |   String         |
-                                          | - role: String   |
-                                          +------------------+
+
++------------------+
+|    <<entity>>    |
+|      User        |
++------------------+
+| - userId: int    |
+| - username:      |
+|   String         |
+| - password:      |
+|   String         |
+| - role: String   |
++------------------+
+
+Ghi chu: Subject co quan he tu tham chieu (self-reference) de the hien mon tien quyet.
+Subject.prerequisiteId → Subject.subjectId (FK, NULL allowed).
 ```
 
 ### Buoc 5: Bang quan he chi tiet
@@ -215,7 +171,7 @@ Stereotype sử dụng: `<<entity>>` cho entity class, `<<boundary>>` cho view c
 
 | Class | Stereotype | Thuộc tính (Ngăn 2) | Phương thức (Ngăn 3) |
 |-------|-----------|----------------------|----------------------|
-| Student | `<<entity>>` | `-studentId: int`, `-studentCode: String`, `-studentName: String`, `-email: String`, `-dob: Date`, `-major: String`, `-userId: int` | `+getStudentById(id: int): Student` |
+| Student | `<<entity>>` | `-studentId: int`, `-studentCode: String`, `-studentName: String`, `-dob: Date`, `-course: String`, `-hometown: String`, `-address: String`, `-email: String`, `-userId: int` | `+getStudentById(id: int): Student` |
 | Subject | `<<entity>>` | `-subjectId: int`, `-subjectCode: String`, `-subjectName: String`, `-credits: int`, `-prerequisiteId: int` | `+getSectionsBySubject(subjectId: int): List<String>`, `+getAllSubjects(): List<Subject>` |
 | Class | `<<entity>>` | `-classId: int`, `-subjectId: int`, `-classroomId: int`, `-timeSlotId: int`, `-maxStudents: int`, `-section: String`, `-teacherId: int` | `+getClassesBySubjectSection(subjectId: int, section: String): List<Class>` |
 | Registration | `<<entity>>` | `-regId: int`, `-studentId: int`, `-classId: int`, `-semester: String`, `-regDate: Date`, `-status: String` | `+addRegistration(reg: Registration): boolean` |
@@ -427,7 +383,9 @@ public class Student {
     private String studentName;    // "Nguyen Van A"
     private String email;          // "nva@gmail.com"
     private Date dob;              // 2004-03-15
-    private String major;          // "Computer Science"
+    private String course;         // "Computer Science"
+    private String hometown;       // "Ha Noi"
+    private String address;        // "123 Main St"
     private int userId;            // FK -> tblUser
     private User user;              // object attribute
     private List<Registration> registrations; // object attribute
@@ -538,6 +496,9 @@ public class TimeSlot {
 | StudentName | VARCHAR(100) | NOT NULL |
 | Email | VARCHAR(100) | UNIQUE |
 | DOB | DATE | |
+| Course | VARCHAR(50) | |
+| Hometown | VARCHAR(100) | |
+| Address | VARCHAR(200) | |
 | Major | VARCHAR(50) | |
 | UserID | INT | FOREIGN KEY → tblUser(UserID) |
 
@@ -576,7 +537,7 @@ public class TimeSlot {
 | TimeSlotID | INT | FOREIGN KEY → tblTimeSlot(TimeSlotID), NOT NULL |
 | MaxStudents | INT | NOT NULL, CHECK (MaxStudents > 0) |
 | Section | VARCHAR(20) | NOT NULL |
-| TeacherID | INT | FOREIGN KEY → tblTeacher(TeacherID) |
+| TeacherID | INT | FOREIGN KEY → tblUser(UserID), NULL allowed |
 
 **tblRegistration**
 | Column | Type | Constraint |
@@ -631,7 +592,7 @@ public class TimeSlot {
 3. Tao lifelines:
    - Actor: Staff
    - Boundary: LoginFrm, HomeFrm, ClassSchedulerFrm, AddClassDialog
-   - Control: ScheduleController
+   - Control: UserDAO, ScheduleController
    - Entity: Subject, Class, Classroom, TimeSlot
 4. Ve message flow tu tren xuong theo cac buoc trong bang
 5. Them alt fragment cho dieu kien (kiem tra trung lich, thong tin thieu)
@@ -641,80 +602,74 @@ public class TimeSlot {
 ### ASCII Sequence Diagram
 
 ```
-Staff     LoginFrm   HomeFrm  ClassSchedulerFrm  AddClassDialog  ScheduleController  Subject  Class  Classroom  TimeSlot
-  |          |          |            |                |                |               |        |        |          |
-  |--------->|          |            |                |                |               |        |        |          |
-  | login()  |          |            |                |                |               |        |        |          |
-  |          |--------->|            |                |                |               |        |        |          |
-  |          |validate()|            |                |                |               |        |        |          |
-  |          |          |<-----------|                |                |               |        |        |          |
-  |          |          | showHome() |                |                |               |        |        |          |
-  |<---------|          |            |                |                |               |        |        |          |
-  | showHome |          |            |                |                |               |        |        |          |
-  |          |          |            |                |                |               |        |        |          |
-  |--------->|          |            |                |                |               |        |        |          |
-  | clickSchedule()     |            |                |                |               |        |        |          |
-  |          |          |----------->|                |                |               |        |        |          |
-  |          |          |openScheduler               |                |               |        |        |          |
-  |          |          |            |                |                |               |        |        |          |
-  |--------->|          |            |                |                |               |        |        |          |
-  | selectSubject("CS101")          |                |                |               |        |        |          |
-  |          |          |            |--------------->|                |               |        |        |          |
-  |          |          |            |getSections()   |                |               |        |        |          |
-  |          |          |            |                |--------------->|               |        |        |          |
-  |          |          |            |                |querySections() |-------------->|        |        |          |
-  |          |          |            |                |                |<--------------|        |        |          |
-  |          |          |            |                |<---------------|               |        |        |          |
-  |          |          |            |<---------------|                |               |        |        |          |
-  |          |          |            |updateSection() |                |               |        |        |          |
-  |          |          |            |                |                |               |        |        |          |
-  |--------->|          |            |                |                |               |        |        |          |
-  | selectSection("Sec1")           |                |                |               |        |        |          |
-  |          |          |            |--------------->|                |               |        |        |          |
-  |          |          |            |getClasses()    |                |               |        |        |          |
-  |          |          |            |                |--------------->|               |        |        |          |
-  |          |          |            |                |queryClasses()  |-------------->|        |        |          |
-  |          |          |            |                |                |<--------------|        |        |          |
-  |          |          |            |                |<---------------|               |        |        |          |
-  |          |          |            |<---------------|                |               |        |        |          |
-  |          |          |            |updateTable()   |                |               |        |        |          |
-  |          |          |            |                |                |               |        |        |          |
-  |--------->|          |            |                |                |               |        |        |          |
-  | clickAdd()          |            |                |                |               |        |        |          |
-  |          |          |            |--------------->|                |               |        |        |          |
-  |          |          |            |showDialog()    |                |               |        |        |          |
-  |          |          |            |                |                |               |        |        |          |
-  |--------->|          |            |                |                |               |        |        |          |
-  | selectClassroom("A101")         |                |                |               |        |        |          |
-  | selectTimeSlot("Slot1")         |                |                |               |        |        |          |
-  | enterMaxStudents(40)            |                |                |               |        |        |          |
-  | clickOK()           |            |                |                |               |        |        |          |
-  |          |          |            |                |--------------->|               |        |        |          |
-  |          |          |            |                |validateConflict               |        |        |          |
-  |          |          |            |                |                |-------------->|        |        |          |
-  |          |          |            |                |                |checkConflict()|-------->|        |          |
-  |          |          |            |                |                |<--------------|        |        |          |
-  |          |          |            |                |                | noConflict    |        |        |          |
-  |          |          |            |                |<---------------|               |        |        |          |
-  |          |          |            |                | valid          |               |        |        |          |
-  |          |          |            |<---------------|                |               |        |        |          |
-  |          |          |            |addToTable()    |                |               |        |        |          |
-  |          |          |            |                |                |               |        |        |          |
-  |--------->|          |            |                |                |               |        |        |          |
-  | clickConfirm()      |            |                |                |               |        |        |          |
-  |          |          |            |--------------->|                |               |        |        |          |
-  |          |          |            |confirmSchedule()                |               |        |        |          |
-  |          |          |            |                |--------------->|               |        |        |          |
-  |          |          |            |                |saveSchedule()  |               |        |        |          |
-  |          |          |            |                |                |-------------->|        |        |          |
-  |          |          |            |                |                |insertClass()  |-------->|        |          |
-  |          |          |            |                |                |<--------------|        |        |          |
-  |          |          |            |                |                | success       |        |        |          |
-  |          |          |            |                |<---------------|               |        |        |          |
-  |          |          |            |<---------------|                |               |        |        |          |
-  |          |          |            |showSuccess()   |                |               |        |        |          |
-  |<---------|          |            |                |                |               |        |        |          |
-  | showMsg  |          |            |                |                |               |        |        |          |
+Staff     LoginFrm   UserDAO    HomeFrm  ClassSchedulerFrm  ScheduleController  Subject  Class  Classroom  TimeSlot
+  |          |          |          |            |                |               |        |        |          |
+  |--------->|          |          |            |                |               |        |        |          |
+  | login()  |          |          |            |                |               |        |        |          |
+  |          |--------->|          |            |                |               |        |        |          |
+  |          |validate()|          |            |                |               |        |        |          |
+  |          |          |---query DB            |                |               |        |        |          |
+  |          |          |<-return--|            |                |               |        |        |          |
+  |          |<--true---|          |            |                |               |        |        |          |
+  |          |--------->|----------|----------->|                |               |        |        |          |
+  |          |          |  openHome |           |                |               |        |        |          |
+  |<---------|          |          |            |                |               |        |        |          |
+  | showHome |          |          |            |                |               |        |        |          |
+  |          |          |          |            |                |               |        |        |          |
+  |--------->|          |          |            |                |               |        |        |          |
+  | clickSchedule()     |          |            |                |               |        |        |          |
+  |          |          |          |----------->|                |               |        |        |          |
+  |          |          |          |openScheduler               |               |        |        |          |
+  |          |          |          |            |                |               |        |        |          |
+  |--------->|          |          |            |                |               |        |        |          |
+  | selectSubject("CS101")        |            |                |               |        |        |          |
+  |          |          |          |            |--------------->|               |        |        |          |
+  |          |          |          |            |getSections()   |               |        |        |          |
+  |          |          |          |            |                |-------------->|        |        |          |
+  |          |          |          |            |                |querySections()|-------->|        |          |
+  |          |          |          |            |                |<--------------|        |        |          |
+  |          |          |          |            |<---------------|               |        |        |          |
+  |          |          |          |            |updateSection() |               |        |        |          |
+  |          |          |          |            |                |               |        |        |          |
+  |--------->|          |          |            |                |               |        |        |          |
+  | selectSection("Sec1")         |            |                |               |        |        |          |
+  |          |          |          |            |--------------->|               |        |        |          |
+  |          |          |          |            |getClasses()    |               |        |        |          |
+  |          |          |          |            |                |-------------->|        |        |          |
+  |          |          |          |            |                |queryClasses() |-------->|        |          |
+  |          |          |          |            |                |<--------------|        |        |          |
+  |          |          |          |            |<---------------|               |        |        |          |
+  |          |          |          |            |updateTable()   |               |        |        |          |
+  |          |          |          |            |                |               |        |        |          |
+  |--------->|          |          |            |                |               |        |        |          |
+  | clickAdd()          |          |            |                |               |        |        |          |
+  |          |          |          |            |                |               |        |        |          |
+  | selectClassroom("A101")       |            |                |               |        |        |          |
+  | selectTimeSlot("Slot1")       |            |                |               |        |        |          |
+  | enterMaxStudents(40)          |            |                |               |        |        |          |
+  | clickOK()           |          |            |                |               |        |        |          |
+  |          |          |          |            |--------------->|               |        |        |          |
+  |          |          |          |            |validateConflict               |        |        |          |
+  |          |          |          |            |                |-------------->|        |        |          |
+  |          |          |          |            |                |checkConflict()|-------->|        |          |
+  |          |          |          |            |                |<--------------|        |        |          |
+  |          |          |          |            |                | noConflict    |        |        |          |
+  |          |          |          |            |<---------------|               |        |        |          |
+  |          |          |          |            | valid          |               |        |        |          |
+  |          |          |          |            |addToTable()    |               |        |        |          |
+  |          |          |          |            |                |               |        |        |          |
+  |--------->|          |          |            |                |               |        |        |          |
+  | clickConfirm()      |          |            |                |               |        |        |          |
+  |          |          |          |            |--------------->|               |        |        |          |
+  |          |          |          |            |confirmSchedule()               |        |        |          |
+  |          |          |          |            |                |-------------->|        |        |          |
+  |          |          |          |            |                |saveSchedule() |-------->|        |          |
+  |          |          |          |            |                |insertClass()  |        |        |          |
+  |          |          |          |            |                |<--------------|        |        |          |
+  |          |          |          |            |<---------------|               |        |        |          |
+  |          |          |          |            |showSuccess()   |               |        |        |          |
+  |<---------|          |          |            |                |               |        |        |          |
+  | showMsg  |          |          |            |                |               |        |        |          |
 ```
 
 ### Bang giai thich Sequence Diagram
@@ -722,38 +677,43 @@ Staff     LoginFrm   HomeFrm  ClassSchedulerFrm  AddClassDialog  ScheduleControl
 | Buoc | Message | Tu | Den | Mo ta |
 |------|---------|-----|-----|--------|
 | 1 | login() | Staff | LoginFrm | Staff nhap username/password va nhan Login |
-| 2 | validate() | LoginFrm | HomeFrm | LoginFrm xac thuc thong tin dang nhap |
-| 3 | showHome() | HomeFrm | Staff | Hien thi giao dien trang chu voi menu |
-| 4 | clickSchedule() | Staff | HomeFrm | Staff chon menu Schedule → Schedule a Class |
-| 5 | openScheduler() | HomeFrm | ClassSchedulerFrm | Mo form lap lich lop hoc |
-| 6 | selectSubject() | Staff | ClassSchedulerFrm | Staff chon mon hoc tu combobox Subject |
-| 7 | getSections() | ClassSchedulerFrm | AddClassDialog | Goi controller lay danh sach tiet hoc |
-| 8 | querySections() | AddClassDialog | Subject | Truy van database lay tiet hoc theo mon |
-| 9 | sectionList | Subject | AddClassDialog | Tra ve danh sach tiet hoc |
-| 10 | updateSection() | AddClassDialog | ClassSchedulerFrm | Cap nhat combobox Section |
-| 11 | selectSection() | Staff | ClassSchedulerFrm | Staff chon tiet hoc tu combobox Section |
-| 12 | getClasses() | ClassSchedulerFrm | AddClassDialog | Goi controller lay danh sach lop |
-| 13 | queryClasses() | AddClassDialog | Class | Truy van database lay lop theo tiet |
-| 14 | classList | Class | AddClassDialog | Tra ve danh sach lop |
-| 15 | updateTable() | AddClassDialog | ClassSchedulerFrm | Cap nhat bang hien thi lop |
-| 16 | clickAdd() | Staff | ClassSchedulerFrm | Staff nhan nut Add de them lop moi |
-| 17 | showDialog() | ClassSchedulerFrm | AddClassDialog | Hien thi dialog them lop |
-| 18 | selectClassroom() | Staff | AddClassDialog | Staff chon phong hoc tu combobox |
-| 19 | selectTimeSlot() | Staff | AddClassDialog | Staff chon khung gio tu combobox |
-| 20 | enterMaxStudents() | Staff | AddClassDialog | Staff nhap si so toi da |
-| 21 | clickOK() | Staff | AddClassDialog | Staff nhan OK de xac nhan |
-| 22 | validateConflict() | AddClassDialog | ScheduleController | Kiem tra trung lich phong hoc |
-| 23 | checkConflict() | ScheduleController | Class | Truy van database kiem tra xung dot |
-| 24 | noConflict | Class | ScheduleController | Phong hoc trong, khong trung lich |
-| 25 | valid | ScheduleController | AddClassDialog | Du lieu hop le |
-| 26 | addToTable() | AddClassDialog | ClassSchedulerFrm | Them lop vao bang danh sach tam |
-| 27 | clickConfirm() | Staff | ClassSchedulerFrm | Staff nhan nut Confirm de luu |
-| 28 | confirmSchedule() | ClassSchedulerFrm | AddClassDialog | Goi controller luu lich |
-| 29 | saveSchedule() | AddClassDialog | ScheduleController | Luu du lieu vao database |
-| 30 | insertClass() | ScheduleController | Class | INSERT INTO tblClass |
-| 31 | success | Class | ScheduleController | Luu thanh cong |
-| 32 | showSuccess() | AddClassDialog | ClassSchedulerFrm | Hien thi thong bao thanh cong |
-| 33 | showMsg | ClassSchedulerFrm | Staff | Thong bao "Schedule saved successfully!" |
+| 2 | validateLogin() | LoginFrm | UserDAO | Goi UserDAO.validateLogin("staff01", "@Staff2026") |
+| 3 | query DB | UserDAO | Database | Truy van tblUser kiem tra thong tin dang nhap |
+| 4 | return true | UserDAO | LoginFrm | Tra ve true neu dang nhap hop le |
+| 5 | openHome() | LoginFrm | HomeFrm | Mo giao dien trang chu |
+| 6 | showHome() | HomeFrm | Staff | Hien thi menu: Student, Subject, Class, Schedule, Grade |
+| 7 | clickSchedule() | Staff | HomeFrm | Staff chon menu Schedule → Schedule a Class |
+| 8 | openScheduler() | HomeFrm | ClassSchedulerFrm | Mo form lap lich lop hoc |
+| 9 | selectSubject() | Staff | ClassSchedulerFrm | Staff chon mon hoc "CS101" tu combobox Subject |
+| 10 | getSections() | ClassSchedulerFrm | ScheduleController | Goi controller lay danh sach tiet hoc theo mon |
+| 11 | querySections() | ScheduleController | Subject | Truy van database lay tiet hoc theo subjectId |
+| 12 | return sectionList | Subject | ScheduleController | Tra ve danh sach tiet hoc |
+| 13 | return sections | ScheduleController | ClassSchedulerFrm | Tra ve danh sach Section cho combobox |
+| 14 | updateSection() | ClassSchedulerFrm | UI | Cap nhat combobox Section |
+| 15 | selectSection() | Staff | ClassSchedulerFrm | Staff chon "Section 1" tu combobox Section |
+| 16 | getClasses() | ClassSchedulerFrm | ScheduleController | Goi controller lay danh sach lop theo mon va tiet |
+| 17 | queryClasses() | ScheduleController | Class | Truy van database lay lop theo subjectId + section |
+| 18 | return classList | Class | ScheduleController | Tra ve danh sach lop |
+| 19 | return classes | ScheduleController | ClassSchedulerFrm | Tra ve danh sach lop cho bang hien thi |
+| 20 | updateTable() | ClassSchedulerFrm | UI | Cap nhat bang hien thi danh sach lop |
+| 21 | clickAdd() | Staff | ClassSchedulerFrm | Staff nhan nut "Add New Class" |
+| 22 | showDialog() | ClassSchedulerFrm | AddClassDialog | Mo dialog them lop moi |
+| 23 | selectClassroom() | Staff | AddClassDialog | Staff chon phong hoc "A101" tu combobox |
+| 24 | selectTimeSlot() | Staff | AddClassDialog | Staff chon khung gio "Slot1" tu combobox |
+| 25 | enterMaxStudents() | Staff | AddClassDialog | Staff nhap si so toi da: 40 |
+| 26 | clickOK() | Staff | AddClassDialog | Staff nhan OK de xac nhan |
+| 27 | validateConflict() | AddClassDialog | ScheduleController | Gui thong tin phong + khung gio de kiem tra trung lich |
+| 28 | checkConflict() | ScheduleController | Class | Truy van database kiem tra xung dot lich phong |
+| 29 | return noConflict | Class | ScheduleController | Phong trong, khong trung lich |
+| 30 | return valid | ScheduleController | AddClassDialog | Du lieu hop le |
+| 31 | addToTable() | AddClassDialog | ClassSchedulerFrm | Them lop moi vao bang danh sach |
+| 32 | clickConfirm() | Staff | ClassSchedulerFrm | Staff nhan nut "Confirm" de luu vao database |
+| 33 | confirmSchedule() | ClassSchedulerFrm | ScheduleController | Gui yeu cau luu lich lop hoc |
+| 34 | saveSchedule() | ScheduleController | Class | Goi Class.insertClass() de luu vao tblClass |
+| 35 | insertClass() | ScheduleController | Database | INSERT INTO tblClass |
+| 36 | return success | Class | ScheduleController | Luu thanh cong |
+| 37 | return success | ScheduleController | ClassSchedulerFrm | Tra ve ket qua thanh cong |
+| 38 | showSuccess() | ClassSchedulerFrm | Staff | Hien thi "Schedule saved successfully! Class ID: 1" |
 
 ---
 
@@ -761,13 +721,13 @@ Staff     LoginFrm   HomeFrm  ClassSchedulerFrm  AddClassDialog  ScheduleControl
 
 ### Test Plan
 
-| TC | Muc dich | Input | Expected Output |
-|----|---------|-------|-----------------|
-| TC01 | Lap lich lop hoc thanh cong | Chon CS101, Section 1, Classroom A101, Slot1, MaxStudents 40 | Luu thanh cong, ClassID = 1 |
-| TC02 | Trung lich phong hoc | Chon A101, Slot1 (da co lop ClassID=2) | Loi: "Room A101 is already scheduled for Slot1" |
-| TC03 | Thieu thong tin bat buoc | Khong chon Classroom, nhan OK | Loi: "Please select a classroom" |
-| TC04 | Si so vuot suc chua phong | MaxStudents: 60, Room capacity: 40 | Loi: "Max students exceeds room capacity" |
-| TC05 | Lap lich nhieu lop cho cung mon | Tao 3 lop cho CS101 voi 3 khung gio khac nhau | 3 lop duoc tao thanh cong |
+| STT | Module | Test case |
+|-----|--------|-----------|
+| 1 | Schedule a Class | Lap lich lop hoc thanh cong voi mon CS101, phong A101, Slot1 |
+| 2 | Schedule a Class | Trung lich phong hoc (phong A101 da co lop o Slot1) |
+| 3 | Schedule a Class | Thieu thong tin bat buoc (khong chon Classroom) |
+| 4 | Schedule a Class | Si so vuot suc chua phong (MaxStudents > Capacity) |
+| 5 | Schedule a Class | Lap lich nhieu lop cho cung mon voi khung gio khac nhau |
 
 ### TC01: Lap lich lop hoc thanh cong — Chi tiet
 
@@ -803,6 +763,11 @@ tblTimeSlot:
 | 2 | Slot2 | 09:00 | 11:00 | Monday |
 | 3 | Slot3 | 13:00 | 15:00 | Wednesday |
 
+tblStudent:
+| StudentID | StudentCode | StudentName | Email | DOB | Course | Hometown | Address | UserID |
+|-----------|-------------|-------------|-------|-----|--------|----------|---------|--------|
+| 1 | SV2026001 | Nguyen Van A | nva@gmail.com | 2004-03-15 | Computer Science | Ha Noi | 123 Main St | 3 |
+
 tblClass: (rong)
 
 tblRegistration: (rong)
@@ -820,8 +785,9 @@ tblGrade: (rong)
 | 5 | Chon Section "Section 1 — Slot1, Monday" | Bang danh sach lop hien thi rong (chua co lop cho Section 1) |
 | 6 | Nhan nut "Add New Class" | Hien thi AddClassDialog |
 | 7 | Chon Classroom "A101", TimeSlot "Slot1 (07:00–09:00, Monday)", nhap MaxStudents: 40, nhan OK | Dialog dong, lop moi hien thi trong bang: ClassID=1, CS101, Sec1, A101, Slot1, 40 |
-| 8 | Nhan nut "Confirm" | Hien thi thong bao: "Schedule saved successfully! Class ID: 1" |
-| 9 | Nhan OK | Quay lai ClassSchedulerFrm, bang hien thi lop vua tao |
+| 8 | Kiem tra tblClass trong database | tblClass van rong — chua luu vao database (chi them vao bang tam tren UI) |
+| 9 | Nhan nut "Confirm" | He thong luu vao database. Hien thi thong bao: "Schedule saved successfully! Class ID: 1" |
+| 10 | Nhan OK | Quay lai ClassSchedulerFrm, bang hien thi lop vua tao |
 
 **Database sau khi chay test:**
 
@@ -830,4 +796,11 @@ tblClass:
 |---------|-----------|-------------|------------|-------------|---------|-----------|
 | 1 | 1 | 1 | 1 | 40 | Section 1 | NULL |
 
-(Cac bang khac khong thay doi)
+Cac bang khac khong thay doi:
+- tblUser: khong thay doi
+- tblStudent: khong thay doi
+- tblSubject: khong thay doi
+- tblClassroom: khong thay doi
+- tblTimeSlot: khong thay doi
+- tblRegistration: khong thay doi
+- tblGrade: khong thay doi
