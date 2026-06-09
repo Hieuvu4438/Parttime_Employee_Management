@@ -13,15 +13,14 @@
 | 3 | Staff chon thong ke doc gia | Click "Statistics of Readers" | StatReaderFrm: form voi 2 o nhap ngay (StartDate, EndDate), nut Search, vung ket qua (an) |
 | 4 | Staff nhap khoang thoi gian | StartDate: `01/01/2026`, EndDate: `08/06/2026` | StatReaderFrm: o StartDate va EndDate duoc dien, nut Search sang |
 | 5 | Staff nhan nut tim kiem | Click "Search" | StatReaderFrm: bang ket qua hien thi danh sach doc gia xep theo so sach muon giam dan |
-| 6 | He thong hien thi ket qua | — | StatReaderFrm: bang "Reader Statistics" voi cot: Code, Name, Date of Birth, Address, Total Books Borrowed. Dong dau: RDR-2024-0015 - Nguyen Minh Tuan - 15/03/1998 - 123 Le Loi, Q1, TP.HCM - 25 sach. Dong 2: RDR-2024-0010 - Tran Thi Binh - 10/05/1997 - 789 Cach Mang T8, Q3, TP.HCM - 18 sach. Dong 3: RDR-2024-0018 - Pham Thi Lan - 20/07/1995 - 456 Nguyen Hue, Q1, TP.HCM - 12 sach. Tong: 3 dong |
+| 6 | He thong hien thi ket qua | — | StatReaderFrm: bang "Reader Statistics" voi cot: Code, Name, Date of Birth, Address, Total Books Borrowed. Dong dau: RDR-2024-0015 - Nguyen Minh Tuan - 15/03/1998 - 123 Le Loi, Q1, TP.HCM - 10 sach. Dong 2: RDR-2024-0010 - Tran Thi Binh - 10/05/1997 - 789 Cach Mang T8, Q3, TP.HCM - 7 sach. Dong 3: RDR-2024-0020 - Hoang Van Em - 05/11/2000 - 321 Vo Van Tan, Q3, TP.HCM - 2 sach. Dong 4: RDR-2024-0018 - Pham Thi Lan - 20/07/1995 - 456 Nguyen Hue, Q1, TP.HCM - 2 sach. Tong: 4 dong |
 | 7 | Staff click vao dong doc gia dau tien | Click dong RDR-2024-0015 | StatReaderFrm: panel chi tiet phia duoi/phai hien thi "Detail: Loan slips of Nguyen Minh Tuan" |
-| 8 | He thong hien thi chi tiet phieu muon cua doc gia | — | StatReaderFrm: bang "Loan Slip Details" voi cot: Loan Date, Total Books. Dong 1: 15/01/2026 - 3 sach. Dong 2: 01/03/2026 - 2 sach. Dong 3: 10/04/2026 - 4 sach. Dong 4: 10/05/2026 - 3 sach. Tong: 4 phieu muon |
+| 8 | He thong hien thi chi tiet phieu muon cua doc gia | — | StatReaderFrm: bang "Loan Slip Details" voi cot: Loan Date, Total Books. Dong 1: 15/01/2026 - 3 sach. Dong 2: 01/04/2026 - 4 sach. Dong 3: 20/05/2026 - 3 sach. Tong: 3 phieu muon, 10 sach |
 | 9 | Staff click vao dong doc gia thu hai | Click dong RDR-2024-0010 | StatReaderFrm: panel chi tiet cap nhat, hien thi bang "Loan Slip Details" cho Tran Thi Binh |
-| 10 | He thong hien thi chi tiet phieu muon cua doc gia thu hai | — | StatReaderFrm: bang voi cot: Loan Date, Total Books. Dong 1: 05/02/2026 - 2 sach. Dong 2: 20/03/2026 - 3 sach. Tong: 2 phieu muon, 18 sach tong cong |
+| 10 | He thong hien thi chi tiet phieu muon cua doc gia thu hai | — | StatReaderFrm: bang voi cot: Loan Date, Total Books. Dong 1: 10/01/2026 - 3 sach. Dong 2: 10/05/2026 - 4 sach. Tong: 2 phieu muon, 7 sach tong cong |
 | 11 | Staff thay doi khoang thoi gian | StartDate: `01/04/2026`, EndDate: `08/06/2026` | StatReaderFrm: o ngay duoc cap nhat |
 | 12 | Staff nhan Search lai | Click "Search" | StatReaderFrm: bang ket qua cap nhat voi du lieu moi, xep theo so sach muon giam dan |
-| 13 | Staff nhan Export | Click "Export to CSV" | StatReaderFrm: dialog luu file, file CSV duoc tao |
-| 14 | Staff quay ve trang chu | Click "Back" | StatReaderFrm dong, quay ve HomeFrm |
+| 13 | Staff quay ve trang chu | Click "Back" | StatReaderFrm dong, quay ve HomeFrm |
 
 ### Kich ban ngoai le
 
@@ -62,14 +61,19 @@ He thong thu vien cho phep nhan vien thong ke so sach muon cua tung doc gia tron
 | Danh tu | Phan loai | Ly do |
 |---------|-----------|-------|
 | Nhan vien (User) | Entity | Doi tuong thuc hien thao tac, co thuoc tính rieng (ten, tai khoan) |
-| Doc gia (Reader) | Entity | Doi tuong chinh cua thong ke, co nhieu thuoc tính (ma, ten, ngay sinh, dia chi, ma vach) |
-| Sach (Book) | Entity | Doi tuong duoc muon, co thuoc tính (ma, ten, tac gia, ma vach, gia bia) |
+| Doc gia (Reader) | Entity | Doi tuong chinh cua thong ke, co nhieu thuoc tính (ma, ten, ngay sinh, dia chi, so dien thoai, ma vach) |
+| Sach (Book) | Entity | Doi tuong duoc muon, co thuoc tính (ma, ten, tac gia, nam xuat ban, gia bia, so luong, ma vach, mo ta) |
 | Phieu muon (Loan) | Entity | Dai dien cho mot lan muon, co ngay muon, lien ket voi doc gia va nhan vien |
 | Chi tiet muon (LoanDetail) | Entity | Lien ket giua phieu muon va tung cuon sach, co ngay muon, ngay hen tra, ngay tra, tien phat |
 | Ma doc gia (Reader Code) | Thuoc tính | Thuoc tính cua Reader |
 | Ten doc gia (Reader Name) | Thuoc tính | Thuoc tính cua Reader |
 | Ngay sinh (Date of Birth) | Thuoc tính | Thuoc tính cua Reader |
 | Dia chi (Address) | Thuoc tính | Thuoc tính cua Reader |
+| So dien thoai (Phone Number) | Thuoc tính | Thuoc tính cua Reader |
+| Ma sach (Book Code) | Thuoc tính | Thuoc tính cua Book |
+| Nam xuat ban (Publication Year) | Thuoc tính | Thuoc tính cua Book |
+| So luong (Quantity) | Thuoc tính | Thuoc tính cua Book |
+| Mo ta (Description) | Thuoc tính | Thuoc tính cua Book |
 | Tong so sach muon (Total Books Borrowed) | Thuoc tính tinh toan | Duoc tinh tu LoanDetail, khong luu trong database |
 | Ngay muon (Loan Date) | Thuoc tính | Thuoc tính cua Loan |
 | Tong so sach moi phieu (Total Books per Loan) | Thuoc tính tinh toan | Duoc dem tu LoanDetail theo loanId |
@@ -89,21 +93,22 @@ He thong thu vien cho phep nhan vien thong ke so sach muon cua tung doc gia tron
 |  Reader  |--------|  Loan  |--------| LoanDetail |--------|  Book  |
 +----------+        +--------+        +------------+        +--------+
 | readerId |        | loanId |        | detailId   |        | bookId |
-| fullName |        | loanDate        | loanId     |        | title  |
-| dob      |        | readerId|        | bookId     |        | author |
-| address  |        | userId |        | borrowDate |        | barcode|
-| barcode  |        +--------+        | dueDate    |        | coverP |
-+----------+             |            | returnDate |        +--------+
-                         1            | fine       |
-                         |            +------------+
-                         N
+| code     |        | loanDate        | loanId     |        | code   |
+| fullName |        | readerId|        | bookId     |        | title  |
+| dob      |        | userId |        | borrowDate |        | author |
+| address  |        +--------+        | dueDate    |        | pubYear|
+| phone    |             |            | returnDate |        | coverP |
+| barcode  |             1            | fine       |        | qty    |
++----------+             |            +------------+        | barcode|
+                         N                                  | desc   |
+                                                    +--------+
                     +--------+
                     |  User  |
                     +--------+
                     | userId |
-                    | fullNm |
-                    | userNm |
-                    | passw  |
+                    | fullName |
+                    | username |
+                    | password |
                     +--------+
 ```
 
@@ -146,11 +151,11 @@ Stereotype sử dụng: `<<entity>>` cho entity class, `<<boundary>>` cho view c
 
 | Class | Stereotype | Thuộc tính (Ngăn 2) | Phương thức (Ngăn 3) |
 |-------|-----------|----------------------|----------------------|
-| Book | `<<entity>>` | `-bookId: int`, `-code: String`, `-name: String`, `-author: String`, `-barcode: String`, `-coverPrice: double` | `+getBookById(bookId: int): Book` |
-| Reader | `<<entity>>` | `-readerId: int`, `-code: String`, `-name: String`, `-dob: Date`, `-address: String`, `-barcode: String` | `+getReaderById(readerId: int): Reader`, `+countBooksByReader(start: Date, end: Date): List<Map>` |
+| Book | `<<entity>>` | `-bookId: int`, `-code: String`, `-title: String`, `-author: String`, `-publicationYear: int`, `-coverPrice: double`, `-quantity: int`, `-barcode: String`, `-description: String` | `+getBookById(bookId: int): Book` |
+| Reader | `<<entity>>` | `-readerId: int`, `-code: String`, `-fullName: String`, `-dateOfBirth: Date`, `-address: String`, `-phoneNumber: String`, `-barcode: String` | `+getReaderById(readerId: int): Reader`, `+countBooksByReader(start: Date, end: Date): List<Map>` |
 | Loan | `<<entity>>` | `-loanId: int`, `-loanDate: Date`, `-readerId: int`, `-userId: int` | `+getLoanById(loanId: int): Loan`, `+getLoansByReader(readerId: int): List<Loan>` |
-| LoanDetail | `<<entity>>` | `-detailId: int`, `-loanId: int`, `-bookId: int`, `-borrowDate: Date`, `-returnDate: Date`, `-fine: double` | `+getDetailsByLoanId(loanId: int): List<LoanDetail>` |
-| User | `<<entity>>` | `-userId: int`, `-username: String`, `-password: String`, `-role: String` | `+checkLogin(username: String, password: String): boolean` |
+| LoanDetail | `<<entity>>` | `-detailId: int`, `-loanId: int`, `-bookId: int`, `-borrowDate: Date`, `-dueDate: Date`, `-returnDate: Date`, `-fine: double` | `+getDetailsByLoanId(loanId: int): List<LoanDetail>` |
+| User | `<<entity>>` | `-userId: int`, `-fullName: String`, `-username: String`, `-password: String` | `+checkLogin(username: String, password: String): boolean` |
 
 **4. Bảng chi tiết view classes (nếu có):**
 
@@ -240,7 +245,7 @@ Staff enters dates and clicks Search -> The system counts books by reader -> nee
   name: countBooksByReader()
   input: startDate (Date), endDate (Date)
   output: List<Map> (readerId, totalBooks)
-  assign to the entity class: LoanDetail.
+  assign to the entity class: Reader (output relates to reader statistics).
 
 The system must get reader info for each result -> need a method:
   name: getReaderById()
@@ -342,19 +347,25 @@ Methods: checkLogin(), countBooksByReader(), getReaderById(), findLoansByReaderI
 **Reader**
 ```
 - readerId: int
+- code: String
 - fullName: String
 - dateOfBirth: Date
 - address: String
+- phoneNumber: String
 - barcode: String
 ```
 
 **Book**
 ```
 - bookId: int
+- code: String
 - title: String
 - author: String
-- barcode: String
+- publicationYear: int
 - coverPrice: double
+- quantity: int
+- barcode: String
+- description: String
 ```
 
 **Loan**
@@ -397,9 +408,11 @@ Methods: checkLogin(), countBooksByReader(), getReaderById(), findLoansByReaderI
 | Column | Type | Constraint |
 |--------|------|------------|
 | readerId | INT | PRIMARY KEY, AUTO_INCREMENT |
+| code | VARCHAR(50) | NOT NULL, UNIQUE |
 | fullName | VARCHAR(100) | NOT NULL |
 | dateOfBirth | DATE | NOT NULL |
 | address | VARCHAR(255) | |
+| phoneNumber | VARCHAR(20) | |
 | barcode | VARCHAR(50) | NOT NULL, UNIQUE |
 
 **tblBook**
@@ -407,10 +420,14 @@ Methods: checkLogin(), countBooksByReader(), getReaderById(), findLoansByReaderI
 | Column | Type | Constraint |
 |--------|------|------------|
 | bookId | INT | PRIMARY KEY, AUTO_INCREMENT |
+| code | VARCHAR(50) | NOT NULL, UNIQUE |
 | title | VARCHAR(200) | NOT NULL |
 | author | VARCHAR(100) | NOT NULL |
-| barcode | VARCHAR(50) | NOT NULL, UNIQUE |
+| publicationYear | INT | NOT NULL |
 | coverPrice | DECIMAL(10,2) | NOT NULL |
+| quantity | INT | NOT NULL, DEFAULT 0 |
+| barcode | VARCHAR(50) | NOT NULL, UNIQUE |
+| description | TEXT | NULLABLE |
 
 **tblLoan**
 
@@ -439,8 +456,8 @@ Methods: checkLogin(), countBooksByReader(), getReaderById(), findLoansByReaderI
 2. Vao menu Diagram -> Add Diagram -> Class Diagram
 3. Tao 5 class:
    - Keo "Class" tu toolbar vao canvas, dat ten "User", them attributes: userId: int, fullName: String, username: String, password: String
-   - Tao class "Reader" voi attributes: readerId: int, fullName: String, dateOfBirth: Date, address: String, barcode: String
-   - Tao class "Book" voi attributes: bookId: int, title: String, author: String, barcode: String, coverPrice: double
+   - Tao class "Reader" voi attributes: readerId: int, code: String, fullName: String, dateOfBirth: Date, address: String, phoneNumber: String, barcode: String
+   - Tao class "Book" voi attributes: bookId: int, code: String, title: String, author: String, publicationYear: int, coverPrice: double, quantity: int, barcode: String, description: String
    - Tao class "Loan" voi attributes: loanId: int, loanDate: Date, readerId: int, userId: int
    - Tao class "LoanDetail" voi attributes: detailId: int, loanId: int, bookId: int, borrowDate: Date, dueDate: Date, returnDate: Date, fine: double
 4. Ve quan he:
@@ -529,26 +546,26 @@ Staff    :StatReaderFrm    :StatReaderControl    :LoanDetailDAO    :LoanDAO    :
 | 5 | clickSearch | Staff | StatReaderFrm | Staff nhan nut Search |
 | 6 | searchReaders(startDate, endDate) | StatReaderFrm | StatReaderControl | Gui yeu cau thong ke voi khoang thoi gian |
 | 7 | validateDates(startDate, endDate) | StatReaderControl | StatReaderControl | Kiem tra: startDate <= endDate va ca hai khong null |
-| 8 | countBooksByReader("2026-01-01", "2026-06-08") | StatReaderControl | LoanDetailDAO | Truy van SQL: SELECT l.readerId, COUNT(ld.detailId) as totalBooks FROM tblLoanDetail ld JOIN tblLoan l ON ld.loanId=l.loanId WHERE ld.borrowDate BETWEEN '2026-01-01' AND '2026-06-08' GROUP BY l.readerId ORDER BY totalBooks DESC |
-| 9 | return List<Map> | LoanDetailDAO | StatReaderControl | Tra ve: [{readerId:15, totalBooks:25}, {readerId:10, totalBooks:18}, {readerId:18, totalBooks:12}] |
+| 8 | countBooksByReader("2026-01-01", "2026-06-08") | StatReaderControl | LoanDetailDAO | Truy van SQL: SELECT l.readerId, COUNT(ld.detailId) as totalBooks FROM tblLoanDetail ld JOIN tblLoan l ON ld.loanId=l.loanId WHERE l.loanDate BETWEEN '2026-01-01' AND '2026-06-08' GROUP BY l.readerId ORDER BY totalBooks DESC |
+| 9 | return List<Map> | LoanDetailDAO | StatReaderControl | Tra ve: [{readerId:15, totalBooks:10}, {readerId:10, totalBooks:7}, {readerId:20, totalBooks:2}, {readerId:18, totalBooks:2}] |
 | 10 | getReaderById(15) | StatReaderControl | ReaderDAO | Lay thong tin doc gia readerId=15 |
 | 11 | return Reader | ReaderDAO | StatReaderControl | Tra ve: Reader{readerId:15, fullName:"Nguyen Minh Tuan", dob:"1998-03-15", address:"123 Le Loi, Q1, TP.HCM", barcode:"RDR-2024-0015"} |
 | 12 | getReaderById(10) | StatReaderControl | ReaderDAO | Lay thong tin doc gia readerId=10 |
 | 13 | return Reader | ReaderDAO | StatReaderControl | Tra ve: Reader{readerId:10, fullName:"Tran Thi Binh", dob:"1997-05-10", address:"789 Cach Mang T8, Q3, TP.HCM"} |
 | 14 | getReaderById(18) | StatReaderControl | ReaderDAO | Lay thong tin doc gia readerId=18 |
 | 15 | return Reader | ReaderDAO | StatReaderControl | Tra ve: Reader{readerId:18, fullName:"Pham Thi Lan", dob:"1995-07-20", address:"456 Nguyen Hue, Q1, TP.HCM"} |
-| 16 | ReaderList(readerList) | StatReaderControl | StatReaderFrm | Gui danh sach ket qua: [{code:"RDR-2024-0015", name:"Nguyen Minh Tuan", dob:"15/03/1998", address:"123 Le Loi", totalBooks:25}, ...] |
-| 17 | displayReaderTable | StatReaderFrm | Staff | Hien thi bang voi 3 dong, sap xep theo totalBooks giam dan |
+| 16 | ReaderList(readerList) | StatReaderControl | StatReaderFrm | Gui danh sach ket qua: [{code:"RDR-2024-0015", name:"Nguyen Minh Tuan", dob:"15/03/1998", address:"123 Le Loi", totalBooks:10}, {code:"RDR-2024-0010", name:"Tran Thi Binh", dob:"10/05/1997", address:"789 Cach Mang T8", totalBooks:7}, {code:"RDR-2024-0020", name:"Hoang Van Em", dob:"05/11/2000", address:"321 Vo Van Tan", totalBooks:2}, {code:"RDR-2024-0018", name:"Pham Thi Lan", dob:"20/07/1995", address:"456 Nguyen Hue", totalBooks:2}] |
+| 17 | displayReaderTable | StatReaderFrm | Staff | Hien thi bang voi 4 dong, sap xep theo totalBooks giam dan |
 | 18 | clickReaderRow(readerId=15) | Staff | StatReaderFrm | Staff click vao dong doc gia Nguyen Minh Tuan |
 | 19 | getReaderDetail(15, startDate, endDate) | StatReaderFrm | StatReaderControl | Yeu cau chi tiet phieu muon cua doc gia 15 |
 | 20 | findLoansByReader(15, "2026-01-01", "2026-06-08") | StatReaderControl | LoanDAO | Truy van: SELECT * FROM tblLoan WHERE readerId=15 AND loanDate BETWEEN '2026-01-01' AND '2026-06-08' |
-| 21 | return List<Loan> | LoanDAO | StatReaderControl | Tra ve 4 phieu muon: [{loanId:102, loanDate:"2026-01-15"}, {loanId:105, loanDate:"2026-04-01"}, ...] |
+| 21 | return List<Loan> | LoanDAO | StatReaderControl | Tra ve 3 phieu muon: [{loanId:102, loanDate:"2026-01-15"}, {loanId:105, loanDate:"2026-04-01"}, {loanId:107, loanDate:"2026-05-20"}] |
 | 22 | countBooksByLoan(102) | StatReaderControl | LoanDetailDAO | Dem so sach trong phieu muon 102 |
 | 23 | return 3 | LoanDetailDAO | StatReaderControl | Phieu muon 102 co 3 sach |
 | 24 | countBooksByLoan(105) | StatReaderControl | LoanDetailDAO | Dem so sach trong phieu muon 105 |
 | 25 | return 4 | LoanDetailDAO | StatReaderControl | Phieu muon 105 co 4 sach |
-| 26 | DetailList(detailList) | StatReaderControl | StatReaderFrm | Gui danh sach chi tiet: [{loanDate:"15/01/2026", totalBooks:3}, {loanDate:"01/04/2026", totalBooks:4}, ...] |
-| 27 | displayDetailTable | StatReaderFrm | Staff | Hien thi bang chi tiet: 4 phieu muon voi Loan Date va Total Books |
+| 26 | DetailList(detailList) | StatReaderControl | StatReaderFrm | Gui danh sach chi tiet: [{loanDate:"15/01/2026", totalBooks:3}, {loanDate:"01/04/2026", totalBooks:4}, {loanDate:"20/05/2026", totalBooks:3}] |
+| 27 | displayDetailTable | StatReaderFrm | Staff | Hien thi bang chi tiet: 3 phieu muon voi Loan Date va Total Books, tong 10 sach |
 | 28 | clickExport | Staff | StatReaderFrm | Staff nhan nut Export to CSV |
 | 29 | exportCSV() | StatReaderFrm | StatReaderControl | Yeu cau xuat du lieu |
 | 30 | generateCSV(data) | StatReaderControl | StatReaderControl | Tao noi dung CSV tu du lieu bang |
@@ -651,20 +668,22 @@ Staff    :StatReaderFrm    :StatReaderControl    :LoanDetailDAO    :LoanDAO    :
 | 3 | Chon "Statistics of Readers" | Click "Statistics of Readers" | Hien thi StatReaderFrm voi o StartDate, EndDate, nut Search |
 | 4 | Nhap ngay bat dau | StartDate: `01/01/2026` | O StartDate hien thi 01/01/2026 |
 | 5 | Nhap ngay ket thuc | EndDate: `08/06/2026` | O EndDate hien thi 08/06/2026 |
-| 6 | Nhan Search | Click "Search" | Bang ket qua hien thi 4 dong |
-| 7 | Kiem tra dong 1 | Xem dong dau tien | Code: RDR-2024-0015, Name: Nguyen Minh Tuan, DOB: 15/03/1998, Address: 123 Le Loi, Q1, TP.HCM, Total Books: 10 (detailId: 4,5,6,11,12,13,14,19,20,21) |
-| 8 | Kiem tra dong 2 | Xem dong thu hai | Code: RDR-2024-0010, Name: Tran Thi Binh, DOB: 10/05/1997, Address: 789 Cach Mang T8, Q3, TP.HCM, Total Books: 7 (detailId: 1,2,3,15,16,17,18) |
-| 9 | Kiem tra dong 3 | Xem dong thu ba | Code: RDR-2024-0018, Name: Pham Thi Lan, DOB: 20/07/1995, Address: 456 Nguyen Hue, Q1, TP.HCM, Total Books: 2 (detailId: 7,8) |
-| 10 | Kiem tra dong 4 | Xem dong thu tu | Code: RDR-2024-0020, Name: Hoang Van Em, DOB: 05/11/2000, Address: 321 Vo Van Tan, Q3, TP.HCM, Total Books: 2 (detailId: 9,10) |
-| 11 | Kiem tra thu tu | Xem thu tu cac dong | Sap xep giam dan: R0015(10) > R0010(7) > R0018(2) = R0020(2) |
-| 12 | Click vao dong RDR-2024-0015 | Click dong dau tien | Panel chi tiet hien thi "Detail: Loan slips of Nguyen Minh Tuan" |
-| 13 | Kiem tra bang chi tiet | Xem bang Loan Slip Details | 3 dong: (1) 15/01/2026 - 3 sach (loanId:102). (2) 01/04/2026 - 4 sach (loanId:105). (3) 20/05/2026 - 3 sach (loanId:107). Tong: 10 sach |
-| 14 | Click vao dong RDR-2024-0010 | Click dong thu hai | Panel chi tiet cap nhat cho Tran Thi Binh |
-| 15 | Kiem tra bang chi tiet | Xem bang Loan Slip Details | 2 dong: (1) 10/01/2026 - 3 sach (loanId:101). (2) 10/05/2026 - 4 sach (loanId:106). Tong: 7 sach |
-| 16 | Click vao dong RDR-2024-0018 | Click dong thu ba | Panel chi tiet cap nhat cho Pham Thi Lan |
-| 17 | Kiem tra bang chi tiet | Xem bang Loan Slip Details | 1 dong: (1) 01/02/2026 - 2 sach (loanId:103). Tong: 2 sach |
-| 18 | Click vao dong RDR-2024-0020 | Click dong thu tu | Panel chi tiet cap nhat cho Hoang Van Em |
-| 19 | Kiem tra bang chi tiet | Xem bang Loan Slip Details | 1 dong: (1) 05/03/2026 - 2 sach (loanId:104). Tong: 2 sach |
+| 6 | Kiem tra DB truoc khi search | Xem tblLoan, tblLoanDetail | DB chua thay doi: tblLoan co 7 dong, tblLoanDetail co 21 dong (theo Database truoc khi test) |
+| 7 | Nhan Search | Click "Search" | Bang ket qua hien thi 4 dong |
+| 8 | Kiem tra dong 1 | Xem dong dau tien | Code: RDR-2024-0015, Name: Nguyen Minh Tuan, DOB: 15/03/1998, Address: 123 Le Loi, Q1, TP.HCM, Total Books: 10 (detailId: 4,5,6,11,12,13,14,19,20,21) |
+| 9 | Kiem tra dong 2 | Xem dong thu hai | Code: RDR-2024-0010, Name: Tran Thi Binh, DOB: 10/05/1997, Address: 789 Cach Mang T8, Q3, TP.HCM, Total Books: 7 (detailId: 1,2,3,15,16,17,18) |
+| 10 | Kiem tra dong 3 | Xem dong thu ba | Code: RDR-2024-0020, Name: Hoang Van Em, DOB: 05/11/2000, Address: 321 Vo Van Tan, Q3, TP.HCM, Total Books: 2 (detailId: 9,10) |
+| 11 | Kiem tra dong 4 | Xem dong thu tu | Code: RDR-2024-0018, Name: Pham Thi Lan, DOB: 20/07/1995, Address: 456 Nguyen Hue, Q1, TP.HCM, Total Books: 2 (detailId: 7,8) |
+| 12 | Kiem tra thu tu | Xem thu tu cac dong | Sap xep giam dan: R0015(10) > R0010(7) > R0020(2) = R0018(2) |
+| 13 | Click vao dong RDR-2024-0015 | Click dong dau tien | Panel chi tiet hien thi "Detail: Loan slips of Nguyen Minh Tuan" |
+| 14 | Kiem tra bang chi tiet | Xem bang Loan Slip Details | 3 dong: (1) 15/01/2026 - 3 sach (loanId:102). (2) 01/04/2026 - 4 sach (loanId:105). (3) 20/05/2026 - 3 sach (loanId:107). Tong: 10 sach |
+| 15 | Click vao dong RDR-2024-0010 | Click dong thu hai | Panel chi tiet cap nhat cho Tran Thi Binh |
+| 16 | Kiem tra bang chi tiet | Xem bang Loan Slip Details | 2 dong: (1) 10/01/2026 - 3 sach (loanId:101). (2) 10/05/2026 - 4 sach (loanId:106). Tong: 7 sach |
+| 17 | Click vao dong RDR-2024-0020 | Click dong thu ba | Panel chi tiet cap nhat cho Hoang Van Em |
+| 18 | Kiem tra bang chi tiet | Xem bang Loan Slip Details | 1 dong: (1) 05/03/2026 - 2 sach (loanId:104). Tong: 2 sach |
+| 19 | Click vao dong RDR-2024-0018 | Click dong thu tu | Panel chi tiet cap nhat cho Pham Thi Lan |
+| 20 | Kiem tra bang chi tiet | Xem bang Loan Slip Details | 1 dong: (1) 01/02/2026 - 2 sach (loanId:103). Tong: 2 sach |
+| 21 | Kiem tra DB sau khi thao tac | Xem tblLoan, tblLoanDetail | DB khong thay doi: van con 7 dong tblLoan va 21 dong tblLoanDetail (chuc nang chi doc) |
 
 **Database sau khi test:**
 
