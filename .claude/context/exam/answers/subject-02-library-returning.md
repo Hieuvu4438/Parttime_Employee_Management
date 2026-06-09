@@ -20,7 +20,7 @@
 | 10 | Staff nhan nut Submit | Click "Submit Return" | ReturnBookFrm: dialog xac nhan "Xac nhan tra 3 cuon sach cho doc gia Nguyen Minh Tuan?" |
 | 11 | Staff xac nhan tra | Click "Yes" | ReturnBookFrm: thong bao "Tra sach thanh cong!" He thong cap nhat database |
 | 12 | Staff in phieu phat | Click "Print Penalty Slip" | PenaltySlipFrm: phieu in chua ma phieu: PN-20260608-001, ten doc gia, ma the, danh sach sach qua han, tong tien phat |
-| 13 | Staff in phieu muon (con sach tren muon) | Click "Print Loan Slip" | LoanSlipFrm: phieu in chua ma phieu muon, danh sach sach con dang muon (neu co). O truong hop nay khong co sach con muon nen khong in |
+| 13 | Staff in phieu muon (neu con sach tren muon) | Click "Print Loan Slip" | LoanSlipFrm: phieu in chua ma phieu muon, ma the doc gia, ten doc gia, danh sach sach con dang muon (moi dong: code, title, author, barcode, borrowDate, dueDate), dong cuoi tong so sach tren muon. Truong hop nay khong con sach muon nen nut Print Loan Slip bi disable |
 | 14 | Staff nhan Done / Quay ve | Click "Done" | ReturnBookFrm dong, quay ve HomeFrm |
 
 ### Kich ban ngoai le
@@ -59,11 +59,15 @@ He thong thu vien cho phep nhan vien quan ly viec muon va tra sach. Moi doc gia 
 
 | Danh tu | Phan loai | Ly do |
 |---------|-----------|-------|
-| Nhan vien (Staff/User) | Entity | Doi tuong thuc hien thao tac, co thuoc tính rieng (ten, tai khoan) |
-| Doc gia (Reader) | Entity | Doi tuong trung tam, co nhieu thuoc tính (ma, ten, ngay sinh, dia chi, ma vach) |
-| Sach (Book) | Entity | Doi tuong chinh, co thuoc tính (ma, ten, tac gia, ma vach, gia bia) |
+| Nhan vien (Staff/User) | Entity | Doi tuong thuc hien thao tac, co thuoc tính rieng (ho ten, ten tai khoan, mat khau) |
+| Doc gia (Reader) | Entity | Doi tuong trung tam, co nhieu thuoc tính (ma, ten, ngay sinh, dia chi, so dien thoai, ma vach) |
+| Sach (Book) | Entity | Doi tuong chinh, co thuoc tính (ma, ten, tac gia, nam xuat ban, gia bia, so luong, ma vach, mo ta) |
 | Phieu muon (Loan) | Entity | Dai dien cho mot lan muon, co ngay muon, lien ket voi doc gia va nhan vien |
 | Chi tiet muon (LoanDetail) | Entity | Lien ket giua phieu muon va tung cuon sach, co ngay muon, ngay hen tra, ngay tra, tien phat |
+| Nam xuat ban (Publication Year) | Thuoc tính | Thuoc tính cua Book |
+| So luong (Quantity) | Thuoc tính | Thuoc tính cua Book |
+| Mo ta (Description) | Thuoc tính | Thuoc tính cua Book |
+| So dien thoai (Phone) | Thuoc tính | Thuoc tính cua Reader |
 | Ma doc gia (Reader Barcode) | Thuoc tính | Thuoc tính cua Reader |
 | Ma vach sach (Book Barcode) | Thuoc tính | Thuoc tính cua Book |
 | Ngay muon (BorrowDate) | Thuoc tính | Thuoc tính cua LoanDetail |
@@ -78,7 +82,7 @@ He thong thu vien cho phep nhan vien quan ly viec muon va tra sach. Moi doc gia 
 
 1. **Reader - Loan**: Mot doc gia co the co nhieu phieu muon (1-N). Moi phieu muon thuoc ve dung mot doc gia.
 2. **Loan - LoanDetail**: Mot phieu muon chua nhieu chi tiet muon (1-N). Moi chi tiet thuoc ve dung mot phieu muon. Quan he composition vi LoanDetail khong ton tai neu khong co Loan.
-3. **Book - LoanDetail**: Mot cuon sach co the xuat hien trong nhieu chi tiet muon qua cac lan khac nhau (1-N). Moi chi tiet muon lien ket voi dung mot cuon sach.
+3. **Book - LoanDetail**: Mot cuon sach co the xuat hien trong nhieu chi tiet muon qua cac lan khac nhau (1-N). Moi chi tiet muon lien ket voi dung mot cuon sach. Quan he association vi Book ton tai doc lap, khong bi xoa khi LoanDetail bi xoa.
 4. **User - Loan**: Mot nhan vien co the xu ly nhieu phieu muon (1-N). Moi phieu muon duoc xu ly dung mot nhan vien.
 
 ### Buoc 4: Class Diagram (ASCII art)
@@ -88,14 +92,14 @@ He thong thu vien cho phep nhan vien quan ly viec muon va tra sach. Moi doc gia 
 |  Reader  |--------|  Loan  |--------| LoanDetail |--------|  Book  |
 +----------+        +--------+        +------------+        +--------+
 | readerId |        | loanId |        | detailId   |        | bookId |
-| fullName |        | loanDate        | loanId     |        | title  |
+| fullName |        | loanDate|        | loanId     |        | title  |
 | dob      |        | readerId|        | bookId     |        | author |
-| address  |        | userId |        | borrowDate |        | barcode|
-| barcode  |        +--------+        | dueDate    |        | coverP |
-+----------+             |            | returnDate |        +--------+
-                         1            | fine       |
-                         |            +------------+
-                         N
+| address  |        | userId |        | borrowDate |        | pubYear|
+| phone    |        +--------+        | dueDate    |        | coverP |
+| barcode  |             |            | returnDate |        | qty    |
++----------+             1            | fine       |        | barcode|
+                         |            +------------+        | desc   |
+                         N                                  +--------+
                     +--------+
                     |  User  |
                     +--------+
@@ -112,7 +116,7 @@ He thong thu vien cho phep nhan vien quan ly viec muon va tra sach. Moi doc gia 
 |---------|------|------------|
 | Reader -> Loan | 1-N | Mot doc gia co the co nhieu phieu muon trong thoi gian su dung thu vien |
 | Loan -> LoanDetail | 1-N (Composition) | Moi phieu muon chua 1 den 5 chi tiet muon (toi da 5 sach/nguoi). LoanDetail bi xoa khi Loan bi xoa |
-| Book -> LoanDetail | 1-N | Mot cuon sach co the duoc muon nhieu lan boi nhieu doc gia khac nhau qua cac phieu muon khac nhau |
+| Book -> LoanDetail | 1-N (Association) | Mot cuon sach co the duoc muon nhieu lan boi nhieu doc gia khac nhau qua cac phieu muon khac nhau. Book ton tai doc lap |
 | User -> Loan | 1-N | Moi nhan vien co the xu ly nhieu phieu muon/tra khac nhau |
 | Reader -> LoanDetail | Gian tiep (qua Loan) | Doc gia lien ket voi chi tiet muon thong qua phieu muon |
 | User -> LoanDetail | Gian tiep (qua Loan) | Nhan vien lien ket voi chi tiet muon thong qua phieu muon |
@@ -145,8 +149,8 @@ Stereotype sử dụng: `<<entity>>` cho entity class, `<<boundary>>` cho view c
 
 | Class | Stereotype | Thuộc tính (Ngăn 2) | Phương thức (Ngăn 3) |
 |-------|-----------|----------------------|----------------------|
-| Book | `<<entity>>` | `-bookId: int`, `-code: String`, `-name: String`, `-author: String`, `-barcode: String`, `-coverPrice: double` | `+getBookByBarcode(barcode: String): Book` |
-| Reader | `<<entity>>` | `-readerId: int`, `-code: String`, `-name: String`, `-dob: Date`, `-address: String`, `-barcode: String` | `+getReaderByBarcode(barcode: String): Reader` |
+| Book | `<<entity>>` | `-bookId: int`, `-code: String`, `-name: String`, `-author: String`, `-pubYear: int`, `-coverPrice: double`, `-quantity: int`, `-barcode: String`, `-description: String` | `+getBookByBarcode(barcode: String): Book` |
+| Reader | `<<entity>>` | `-readerId: int`, `-code: String`, `-name: String`, `-dob: Date`, `-address: String`, `-phone: String`, `-barcode: String` | `+getReaderByBarcode(barcode: String): Reader` |
 | Loan | `<<entity>>` | `-loanId: int`, `-loanDate: Date`, `-readerId: int`, `-userId: int` | `+getLoanById(loanId: int): Loan`, `+updateLoanStatus(): void` |
 | LoanDetail | `<<entity>>` | `-detailId: int`, `-loanId: int`, `-bookId: int`, `-borrowDate: Date`, `-dueDate: Date`, `-returnDate: Date`, `-fine: double` | `+updateReturnDate(date: Date): void`, `+calculateFine(): double` |
 | User | `<<entity>>` | `-userId: int`, `-username: String`, `-password: String`, `-role: String` | `+checkLogin(username: String, password: String): boolean` |
@@ -393,19 +397,25 @@ Methods: checkLogin(), getReaderByBarcode(), getActiveLoan(), getUnreturnedByLoa
 **Reader**
 ```
 - readerId: int
+- code: String
 - fullName: String
 - dateOfBirth: Date
 - address: String
+- phone: String
 - barcode: String
 ```
 
 **Book**
 ```
 - bookId: int
+- code: String
 - title: String
 - author: String
-- barcode: String
+- pubYear: int
 - coverPrice: double
+- quantity: int
+- barcode: String
+- description: String
 ```
 
 **Loan**
@@ -448,9 +458,11 @@ Methods: checkLogin(), getReaderByBarcode(), getActiveLoan(), getUnreturnedByLoa
 | Column | Type | Constraint |
 |--------|------|------------|
 | readerId | INT | PRIMARY KEY, AUTO_INCREMENT |
+| code | VARCHAR(20) | NOT NULL, UNIQUE |
 | fullName | VARCHAR(100) | NOT NULL |
 | dateOfBirth | DATE | NOT NULL |
 | address | VARCHAR(255) | |
+| phone | VARCHAR(20) | |
 | barcode | VARCHAR(50) | NOT NULL, UNIQUE |
 
 **tblBook**
@@ -458,10 +470,14 @@ Methods: checkLogin(), getReaderByBarcode(), getActiveLoan(), getUnreturnedByLoa
 | Column | Type | Constraint |
 |--------|------|------------|
 | bookId | INT | PRIMARY KEY, AUTO_INCREMENT |
+| code | VARCHAR(20) | NOT NULL, UNIQUE |
 | title | VARCHAR(200) | NOT NULL |
 | author | VARCHAR(100) | NOT NULL |
-| barcode | VARCHAR(50) | NOT NULL, UNIQUE |
+| pubYear | INT | |
 | coverPrice | DECIMAL(10,2) | NOT NULL |
+| quantity | INT | NOT NULL DEFAULT 0 |
+| barcode | VARCHAR(50) | NOT NULL, UNIQUE |
+| description | TEXT | |
 
 **tblLoan**
 
@@ -541,9 +557,11 @@ Staff    :ReturnBookFrm    :ReturnBookControl    :ReaderDAO    :LoanDAO    :Loan
   |              |                  |                 |             |              |              |              |
   |---scanBookBarcode---->|         |                 |             |              |              |              |
   |              |---processReturn()-->               |             |              |              |              |
-  |              |                  |---returnBook()  |             |              |              |              |
-  |              |                  |---update(detailId, returnDate, fine)----->    |              |              |
-  |              |                  |<--true------------------------------------------|              |              |
+  |              |                  |---checkValid(detailId)        |              |              |              |
+  |              |                  |    [kiem tra sach thuoc phieu muon]         |              |              |
+  |              |                  |---calculateFine(detailId)     |              |              |              |
+  |              |                  |    [tinh fine = 0 neu dung han, fine = coverPrice*20% neu qua han]    |
+  |              |                  |                 |             |              |              |              |
   |              |<--updateUI(detail, fine)           |             |              |              |              |
   |<--moveToReturnedTable-|         |                 |             |              |              |              |
   |              |                  |                 |             |              |              |              |
@@ -552,7 +570,10 @@ Staff    :ReturnBookFrm    :ReturnBookControl    :ReaderDAO    :LoanDAO    :Loan
   |<--confirmDialog------|         |                 |             |              |              |              |
   |---clickYes---------->|         |                 |             |              |              |              |
   |              |---finalizeReturn()-->              |             |              |              |              |
-  |              |                  |---updateAll()   |             |              |              |              |
+  |              |                  |---returnBook(detailId, returnDate, fine)-->  |              |              |
+  |              |                  |---update(detailId, returnDate, fine)----->    |              |              |
+  |              |                  |<--true------------------------------------------|              |              |
+  |              |                  |    [lap lai cho moi sach da quet]            |              |              |
   |              |<--success--------|                 |             |              |              |              |
   |<--showSuccessMsg-----|         |                 |             |              |              |              |
   |              |                  |                 |             |              |              |              |
@@ -584,24 +605,24 @@ Staff    :ReturnBookFrm    :ReturnBookControl    :ReaderDAO    :LoanDAO    :Loan
 | 12 | displayReader+Books | ReturnBookFrm | Staff | Giao dien cap nhat: hien ten, ngay sinh, dia chi + bang Borrowed Books |
 | 13 | scanBookBarcode("978-0-13-468599-1") | Staff | ReturnBookFrm | Staff quet ma vach sach B001 |
 | 14 | processReturn(bookBarcode) | ReturnBookFrm | ReturnBookControl | Gui yeu cau xu ly tra sach |
-| 15 | returnBook(detailId=1, returnDate=08/06/2026, fine=0) | ReturnBookControl | LoanDetailDAO | Cap nhat ngay tra = hom nay, fine = 0 (tra dung han) |
-| 16 | return true | LoanDetailDAO | ReturnBookControl | Cap nhat thanh cong |
-| 17 | updateUI(detail, fine=0) | ReturnBookControl | ReturnBookFrm | Chuyen sach tu bang Borrowed sang Returned, hien thi fine = 0 |
+| 15 | checkValid(detailId=1) | ReturnBookControl | ReturnBookControl | Kiem tra: sach B001 thuoc phieu muon 101 -> hop le |
+| 16 | calculateFine(detailId=1) | ReturnBookControl | ReturnBookControl | Tinh: dueDate=15/06/2026, returnDate=08/06/2026 -> dung han, fine = 0 |
+| 17 | updateUI(detail, fine=0) | ReturnBookControl | ReturnBookFrm | Chuyen sach tu bang Borrowed sang Returned, hien thi fine = 0 (chua luu DB) |
 | 18 | moveToReturnedTable | ReturnBookFrm | Staff | Giao dien cap nhat bang |
 | 19 | scanBookBarcode("978-1-491-95035-7") | Staff | ReturnBookFrm | Staff quet ma vach sach B007 |
 | 20 | processReturn(bookBarcode) | ReturnBookFrm | ReturnBookControl | Gui yeu cau xu ly tra sach |
-| 21 | checkLate(detailId=3) | ReturnBookControl | ReturnBookControl | Kiem tra: dueDate=03/06/2026, returnDate=08/06/2026 -> qua han 5 ngay |
-| 22 | returnBook(detailId=3, returnDate=08/06/2026, fine=150000) | ReturnBookControl | LoanDetailDAO | Cap nhat: fine = 750000 x 0.2 = 150,000 VND |
-| 23 | return true | LoanDetailDAO | ReturnBookControl | Cap nhat thanh cong |
-| 24 | updateUI(detail, fine=150000) | ReturnBookControl | ReturnBookFrm | Chuyen sach sang bang Returned, hien thi fine = 150,000 |
-| 25 | showTotalFine(150000) | ReturnBookControl | ReturnBookFrm | Hien thi tong tien phat = 150,000 VND |
-| 26 | clickSubmit | Staff | ReturnBookFrm | Staff nhan nut Submit |
-| 27 | confirmDialog() | ReturnBookFrm | ReturnBookFrm | Hien thi dialog xac nhan |
-| 28 | confirmDialog | ReturnBookFrm | Staff | Staff thay dialog "Xac nhan tra 3 cuon sach?" |
-| 29 | clickYes | Staff | ReturnBookFrm | Staff nhan Yes |
-| 30 | finalizeReturn() | ReturnBookFrm | ReturnBookControl | Gui yeu cau hoan tat tra sach |
-| 31 | updateAll() | ReturnBookControl | LoanDetailDAO | Dam bao tat ca chi tiet da duoc luu vao database |
-| 32 | return success | LoanDetailDAO | ReturnBookControl | Hoan tat |
+| 21 | checkValid(detailId=3) | ReturnBookControl | ReturnBookControl | Kiem tra: sach B007 thuoc phieu muon 101 -> hop le |
+| 22 | calculateFine(detailId=3) | ReturnBookControl | ReturnBookControl | Tinh: dueDate=03/06/2026, returnDate=08/06/2026 -> qua han 5 ngay, fine = 750000 x 0.2 = 150,000 VND |
+| 23 | updateUI(detail, fine=150000) | ReturnBookControl | ReturnBookFrm | Chuyen sach sang bang Returned, hien thi fine = 150,000 (chua luu DB) |
+| 24 | showTotalFine(150000) | ReturnBookControl | ReturnBookFrm | Hien thi tong tien phat = 150,000 VND |
+| 25 | clickSubmit | Staff | ReturnBookFrm | Staff nhan nut Submit |
+| 26 | confirmDialog() | ReturnBookFrm | ReturnBookFrm | Hien thi dialog xac nhan |
+| 27 | confirmDialog | ReturnBookFrm | Staff | Staff thay dialog "Xac nhan tra 3 cuon sach?" |
+| 28 | clickYes | Staff | ReturnBookFrm | Staff nhan Yes |
+| 29 | finalizeReturn() | ReturnBookFrm | ReturnBookControl | Gui yeu cau hoan tat tra sach |
+| 30 | returnBook(detailId=1, returnDate=08/06/2026, fine=0) | ReturnBookControl | LoanDetailDAO | Cap nhat DB: ngay tra = hom nay, fine = 0 |
+| 31 | returnBook(detailId=3, returnDate=08/06/2026, fine=150000) | ReturnBookControl | LoanDetailDAO | Cap nhat DB: ngay tra = hom nay, fine = 150,000 |
+| 32 | return true | LoanDetailDAO | ReturnBookControl | Cap nhat thanh cong cho tat ca sach |
 | 33 | showSuccessMsg | ReturnBookControl | ReturnBookFrm | Hien thi "Tra sach thanh cong!" |
 | 34 | clickPrintPenalty | Staff | ReturnBookFrm | Staff nhan nut in phieu phat |
 | 35 | openPenaltySlip() | ReturnBookFrm | ReturnBookControl | Yeu cau tao phieu phat |
@@ -620,15 +641,15 @@ Staff    :ReturnBookFrm    :ReturnBookControl    :ReaderDAO    :LoanDAO    :Loan
 
 | TC | Test Case | Input | Expected Output |
 |----|-----------|-------|-----------------|
-| TC01 | Tra sach dung han | Quet the RDR-2024-0015, quet sach B001 (due 15/06/2026, tra 08/06/2026) | Tra thanh cong, fine = 0, sach chuyen sang trang thai da tra |
-| TC02 | Tra sach qua han | Quet the RDR-2024-0015, quet sach B007 (due 03/06/2026, tra 08/06/2026) | Tra thanh cong, fine = 150,000 VND (750,000 x 20%) |
+| TC01 | Tra sach qua han (tra tat ca) | Quet the RDR-2024-0015, quet 3 sach (due 15/06/2026, tra 20/06/2026) | Tra thanh cong, fine = 316,000 VND, DB cap nhat sau Submit |
+| TC02 | Tra mot phan (tra 1/3 sach) | Quet the RDR-2024-0015, quet 1 sach B001 | Tra thanh cong 1 sach, con 2 sach tren muon, in phieu muon con sach |
 | TC03 | The doc gia khong ton tai | Quet ma the "RDR-9999-XXXX" | Thong bao loi "Ma the doc gia khong ton tai" |
 | TC04 | Doc gia khong co sach muon | Quet the RDR-2024-0022 (da tra het) | Bang Borrowed Books trong, nut Submit disable |
 | TC05 | Sach khong thuoc phieu muon | Quet the RDR-2024-0015, quet sach B010 (khong thuoc phieu muon) | Thong bao loi "Sach khong thuoc danh sach muon cua doc gia" |
 
-### TC01: Tra sach dung han - Chi tiet
+### TC01: Tra sach qua han (tra tat ca) - Chi tiet
 
-**Muc dich:** Kiem tra chuc nang tra sach khi sach duoc tra dung han (truoc hoac dung ngay hen tra). Tien phat phai bang 0, sach phai duoc cap nhat ngay tra trong database.
+**Muc dich:** Kiem tra chuc nang tra sach khi tat ca sach duoc tra qua han. Tien phat phai duoc tinh dung (20% gia bia), database chi cap nhat sau khi nhan Submit.
 
 **Database truoc khi test:**
 
@@ -641,19 +662,19 @@ Staff    :ReturnBookFrm    :ReturnBookControl    :ReaderDAO    :LoanDAO    :Loan
 
 **tblReader**
 
-| readerId | fullName | dateOfBirth | address | barcode |
-|----------|----------|-------------|---------|---------|
-| 15 | Nguyen Minh Tuan | 1998-03-15 | 123 Le Loi, Q1, TP.HCM | RDR-2024-0015 |
-| 22 | Pham Thi Lan | 1995-07-20 | 456 Nguyen Hue, Q1, TP.HCM | RDR-2024-0022 |
+| readerId | code | fullName | dateOfBirth | address | phone | barcode |
+|----------|------|----------|-------------|---------|-------|---------|
+| 15 | RD015 | Nguyen Minh Tuan | 1998-03-15 | 123 Le Loi, Q1, TP.HCM | 0901234567 | RDR-2024-0015 |
+| 22 | RD022 | Pham Thi Lan | 1995-07-20 | 456 Nguyen Hue, Q1, TP.HCM | 0912345678 | RDR-2024-0022 |
 
 **tblBook**
 
-| bookId | title | author | barcode | coverPrice |
-|--------|-------|--------|---------|------------|
-| 1 | Lap trinh Java | Nguyen Van A | 978-0-13-468599-1 | 450,000 |
-| 3 | Co so du lieu | Tran Thi B | 978-0-596-52068-7 | 380,000 |
-| 7 | Thiet ke phan mem | Le Van C | 978-1-491-95035-7 | 750,000 |
-| 10 | Mang may tinh | Hoang Thi D | 978-0-201-63361-0 | 320,000 |
+| bookId | code | title | author | pubYear | coverPrice | quantity | barcode | description |
+|--------|------|-------|--------|---------|------------|----------|---------|-------------|
+| 1 | B001 | Lap trinh Java | Nguyen Van A | 2020 | 450,000 | 10 | 978-0-13-468599-1 | Sach hoc lap trinh Java co ban |
+| 3 | B003 | Co so du lieu | Tran Thi B | 2019 | 380,000 | 8 | 978-0-596-52068-7 | Sach hoc co so du lieu |
+| 7 | B007 | Thiet ke phan mem | Le Van C | 2021 | 750,000 | 5 | 978-1-491-95035-7 | Sach thiet ke phan mem |
+| 10 | B010 | Mang may tinh | Hoang Thi D | 2022 | 320,000 | 12 | 978-0-201-63361-0 | Sach mang may tinh |
 
 **tblLoan**
 
@@ -668,7 +689,7 @@ Staff    :ReturnBookFrm    :ReturnBookControl    :ReaderDAO    :LoanDAO    :Loan
 |----------|--------|--------|------------|---------|------------|------|
 | 1 | 101 | 1 | 2026-05-15 | 2026-06-15 | NULL | 0 |
 | 2 | 101 | 3 | 2026-05-15 | 2026-06-15 | NULL | 0 |
-| 3 | 101 | 7 | 2026-05-03 | 2026-06-03 | NULL | 0 |
+| 3 | 101 | 7 | 2026-05-15 | 2026-06-15 | NULL | 0 |
 | 4 | 105 | 10 | 2026-05-20 | 2026-06-20 | NULL | 0 |
 
 **Kich ban test:**
@@ -678,15 +699,15 @@ Staff    :ReturnBookFrm    :ReturnBookControl    :ReaderDAO    :LoanDAO    :Loan
 | 1 | Mo ung dung, dang nhap | Username: `staff01`, Password: `pass123` | Dang nhap thanh cong, hien thi HomeFrm |
 | 2 | Chon menu "Return" | Click "Returning Books" | Hien thi ReturnBookFrm, o ReaderBarcode trong |
 | 3 | Quet ma the doc gia | Reader Barcode: `RDR-2024-0015` | Hien thi: Nguyen Minh Tuan, DOB: 15/03/1998, Address: 123 Le Loi. Bang Borrowed Books hien 3 cuon (B001, B003, B007) |
-| 4 | Quet sach B001 | Book Barcode: `978-0-13-468599-1` | B001 chuyen sang bang Returned, ReturnDate = 08/06/2026, Fine = 0. Bang Borrowed con 2 cuon (B003, B007) |
-| 5 | Kiem tra database | Query tblLoanDetail WHERE detailId=1 | returnDate = 2026-06-08, fine = 0 |
-| 6 | Quet sach B003 | Book Barcode: `978-0-596-52068-7` | B003 chuyen sang bang Returned, ReturnDate = 08/06/2026, Fine = 0. Bang Borrowed con 1 cuon (B007) |
-| 7 | Quet sach B007 | Book Barcode: `978-1-491-95035-7` | B007 chuyen sang bang Returned, ReturnDate = 08/06/2026, Fine = 150,000 (qua han). Bang Borrowed trong |
-| 8 | Kiem tra tong phat | Xem label Total Fine | Hien thi "150,000 VND" |
+| 4 | Quet sach B001 | Book Barcode: `978-0-13-468599-1` | B001 chuyen sang bang Returned, ReturnDate = 20/06/2026, Fine = 90,000 (qua han 5 ngay). Bang Borrowed con 2 cuon (B003, B007). Chua cap nhat DB |
+| 5 | Quet sach B003 | Book Barcode: `978-0-596-52068-7` | B003 chuyen sang bang Returned, ReturnDate = 20/06/2026, Fine = 76,000 (qua han 5 ngay). Bang Borrowed con 1 cuon (B007). Chua cap nhat DB |
+| 6 | Quet sach B007 | Book Barcode: `978-1-491-95035-7` | B007 chuyen sang bang Returned, ReturnDate = 20/06/2026, Fine = 150,000 (qua han 5 ngay). Bang Borrowed trong. Chua cap nhat DB |
+| 7 | Kiem tra tong phat | Xem label Total Fine | Hien thi "316,000 VND" (90,000 + 76,000 + 150,000) |
+| 8 | Kiem tra database | Query tblLoanDetail WHERE loanId=101 | Tat ca 3 dong van co returnDate = NULL, fine = 0 (chua Submit nen chua cap nhat DB) |
 | 9 | Nhan Submit | Click "Submit Return" | Dialog xac nhan xuat hien |
 | 10 | Xac nhan | Click "Yes" | Thong bao "Tra sach thanh cong!" |
-| 11 | Nhan in phieu phat | Click "Print Penalty Slip" | Phieu phat hien thi voi ma PN-20260608-001, sach B007, fine = 150,000 |
-| 12 | Kiem tra database toan bo | Query tblLoanDetail WHERE loanId=101 | Tat ca 3 dong co returnDate = 2026-06-08 |
+| 11 | Kiem tra database sau Submit | Query tblLoanDetail WHERE loanId=101 | Tat ca 3 dong co returnDate = 2026-06-20. detailId=1 fine=90000, detailId=2 fine=76000, detailId=3 fine=150000 |
+| 12 | Nhan in phieu phat | Click "Print Penalty Slip" | Phieu phat hien thi voi ma PN-20260620-001, 3 sach qua han, tong phat = 316,000 VND |
 
 **Database sau khi test:**
 
@@ -699,19 +720,19 @@ Staff    :ReturnBookFrm    :ReturnBookControl    :ReaderDAO    :LoanDAO    :Loan
 
 **tblReader** (khong thay doi)
 
-| readerId | fullName | dateOfBirth | address | barcode |
-|----------|----------|-------------|---------|---------|
-| 15 | Nguyen Minh Tuan | 1998-03-15 | 123 Le Loi, Q1, TP.HCM | RDR-2024-0015 |
-| 22 | Pham Thi Lan | 1995-07-20 | 456 Nguyen Hue, Q1, TP.HCM | RDR-2024-0022 |
+| readerId | code | fullName | dateOfBirth | address | phone | barcode |
+|----------|------|----------|-------------|---------|-------|---------|
+| 15 | RD015 | Nguyen Minh Tuan | 1998-03-15 | 123 Le Loi, Q1, TP.HCM | 0901234567 | RDR-2024-0015 |
+| 22 | RD022 | Pham Thi Lan | 1995-07-20 | 456 Nguyen Hue, Q1, TP.HCM | 0912345678 | RDR-2024-0022 |
 
 **tblBook** (khong thay doi)
 
-| bookId | title | author | barcode | coverPrice |
-|--------|-------|--------|---------|------------|
-| 1 | Lap trinh Java | Nguyen Van A | 978-0-13-468599-1 | 450,000 |
-| 3 | Co so du lieu | Tran Thi B | 978-0-596-52068-7 | 380,000 |
-| 7 | Thiet ke phan mem | Le Van C | 978-1-491-95035-7 | 750,000 |
-| 10 | Mang may tinh | Hoang Thi D | 978-0-201-63361-0 | 320,000 |
+| bookId | code | title | author | pubYear | coverPrice | quantity | barcode | description |
+|--------|------|-------|--------|---------|------------|----------|---------|-------------|
+| 1 | B001 | Lap trinh Java | Nguyen Van A | 2020 | 450,000 | 10 | 978-0-13-468599-1 | Sach hoc lap trinh Java co ban |
+| 3 | B003 | Co so du lieu | Tran Thi B | 2019 | 380,000 | 8 | 978-0-596-52068-7 | Sach hoc co so du lieu |
+| 7 | B007 | Thiet ke phan mem | Le Van C | 2021 | 750,000 | 5 | 978-1-491-95035-7 | Sach thiet ke phan mem |
+| 10 | B010 | Mang may tinh | Hoang Thi D | 2022 | 320,000 | 12 | 978-0-201-63361-0 | Sach mang may tinh |
 
 **tblLoan** (khong thay doi)
 
@@ -720,11 +741,11 @@ Staff    :ReturnBookFrm    :ReturnBookControl    :ReaderDAO    :LoanDAO    :Loan
 | 101 | 2026-05-15 | 15 | 2 |
 | 105 | 2026-05-20 | 22 | 2 |
 
-**tblLoanDetail** (THAY DOI - 3 dong duoc cap nhat)
+**tblLoanDetail** (THAY DOI - 3 dong duoc cap nhat sau khi nhan Submit)
 
 | detailId | loanId | bookId | borrowDate | dueDate | returnDate | fine |
 |----------|--------|--------|------------|---------|------------|------|
-| 1 | 101 | 1 | 2026-05-15 | 2026-06-15 | **2026-06-08** | **0** |
-| 2 | 101 | 3 | 2026-05-15 | 2026-06-15 | **2026-06-08** | **0** |
-| 3 | 101 | 7 | 2026-05-03 | 2026-06-03 | **2026-06-08** | **150,000** |
+| 1 | 101 | 1 | 2026-05-15 | 2026-06-15 | **2026-06-20** | **90,000** |
+| 2 | 101 | 3 | 2026-05-15 | 2026-06-15 | **2026-06-20** | **76,000** |
+| 3 | 101 | 7 | 2026-05-15 | 2026-06-15 | **2026-06-20** | **150,000** |
 | 4 | 105 | 10 | 2026-05-20 | 2026-06-20 | NULL | 0 |
