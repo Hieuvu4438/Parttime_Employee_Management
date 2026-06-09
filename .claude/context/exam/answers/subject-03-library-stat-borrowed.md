@@ -4,50 +4,25 @@
 
 ## Cau 1: Scenario (1.5 diem)
 
-### Bang Scenario chinh
+### Kich ban chinh
 
-| Buoc | Hanh dong | Du lieu | UI hien thi |
-|------|-----------|----------|-------------|
-| 1 | Staff dang nhap he thong | Username: `staff01`, Password: `123456` | LoginFrm: form nhap username, password, nut Login |
-| 2 | Staff chon menu "Thong ke" | Click menu item "Statistics" | HomeFrm: thanh menu chinh voi cac muc: Borrow, Return, Statistics |
-| 3 | Staff chon thong ke sach muon | Click "Statistics of Borrowed Books" | StatBorrowedFrm: form voi 2 o nhap ngay (StartDate, EndDate), nut Search, vung ket qua (an) |
-| 4 | Staff nhap khoang thoi gian | StartDate: `01/01/2026`, EndDate: `08/06/2026` | StatBorrowedFrm: o StartDate va EndDate duoc dien, nut Search sang |
-| 5 | Staff nhan nut tim kiem | Click "Search" | StatBorrowedFrm: bang ket qua hien thi danh sach sach muon xep theo so luot muon giam dan |
-| 6 | He thong hien thi ket qua | — | StatBorrowedFrm: bang "Borrowed Books Statistics" voi cot: Code, Book Title, Author, Barcode, Total Loans. Dong dau: B007 - Thiet ke phan mem - Le Van C - 978-1-491-95035-7 - 15 luot. Dong 2: B001 - Lap trinh Java - Nguyen Van A - 978-0-13-468599-1 - 12 luot. Dong 3: B003 - Co so du lieu - Tran Thi B - 978-0-596-52068-7 - 8 luot. Tong: 3 dong |
-| 7 | Staff click vao dong sach dau tien | Click dong B007 | StatBorrowedFrm: panel chi tiet phia duoi/phai hien thi "Detail: Borrowings of Book B007 - Thiet ke phan mem" |
-| 8 | He thong hien thi chi tiet muon cua cuon sach | — | StatBorrowedFrm: bang "Borrowing Details" voi cot: Reader Name, Borrowed Day, Returned Day, Fine. Dong 1: Nguyen Minh Tuan - 15/01/2026 - 10/02/2026 - 0. Dong 2: Pham Thi Lan - 01/03/2026 - 05/04/2026 - 0. Dong 3: Hoang Van Em - 20/04/2026 - NULL (dang muon) - 0. Dong 4: Nguyen Minh Tuan - 10/05/2026 - 15/06/2026 - 150,000 (qua han). Tong: 4 dong |
-| 9 | Staff click vao dong sach thu hai | Click dong B001 | StatBorrowedFrm: panel chi tiet cap nhat, hien thi bang "Borrowing Details" cho B001 - Lap trinh Java |
-| 10 | He thong hien thi chi tiet muon cua B001 | — | StatBorrowedFrm: bang voi cot: Reader Name, Borrowed Day, Returned Day, Fine. Dong 1: Tran Thi Binh - 05/02/2026 - 01/03/2026 - 0. Dong 2: Le Van Cuong - 10/03/2026 - 08/04/2026 - 0. Tong: 12 dong |
-| 11 | Staff thay doi khoang thoi gian | StartDate: `01/04/2026`, EndDate: `08/06/2026` | StatBorrowedFrm: o ngay duoc cap nhat |
-| 12 | Staff nhan Search lai | Click "Search" | StatBorrowedFrm: bang ket qua cap nhat voi du lieu moi, xep theo luot muon giam dan |
-| 13 | Staff nhan Export | Click "Export to CSV" | StatBorrowedFrm: dialog luu file, file CSV duoc tao |
-| 14 | Staff quay ve trang chu | Click "Back" | StatBorrowedFrm dong, quay ve HomeFrm |
+1. Staff mo ung dung.
+2. Giao dien dang nhap hien thi voi o nhap Username, Password va nut Login.
+3. Staff nhap Username `staff01`, Password `123456` va nhan Login.
+4. Giao dien chinh HomeFrm hien thi voi menu: Borrow, Return, Statistics.
+5. Staff chon menu "Statistics".
+6. Staff chon "Statistics of Borrowed Books".
+7. Giao dien StatBorrowedFrm hien thi voi o nhap StartDate, EndDate va nut Search.
+8. Staff nhap StartDate `01/01/2026`, EndDate `08/06/2026` va nhan Search.
+9. Bang ket qua hien thi danh sach sach muon, xep theo so luot muon giam dan. Moi dong gom: Code, Book Title, Author, Barcode, Total Loans. Dong dau: B007 - Thiet ke phan mem - Le Van C - 978-1-491-95035-7 - 6 luot. Dong 2: B001 - Lap trinh Java - Nguyen Van A - 978-0-13-468599-1 - 5 luot. Dong 3: B003 - Co so du lieu - Tran Thi B - 978-0-596-52068-7 - 3 luot.
+10. Staff click vao dong B007.
+11. Bang chi tiet hien thi "Detail: Borrowings of Book B007 - Thiet ke phan mem" voi cot: Reader Name, Borrowed Day, Returned Day, Fine. Dong 1: Tran Thi Binh - 10/01/2026 - 15/03/2026 - 150,000. Dong 2: Nguyen Minh Tuan - 15/01/2026 - 12/02/2026 - 0. Dong 3: Pham Thi Lan - 01/02/2026 - 05/03/2026 - 76,000.
 
 ### Kich ban ngoai le
 
-**Ngoai le 1: Khoang thoi gian khong hop le (StartDate > EndDate)**
-
-| Buoc | Hanh dong | Du lieu | UI hien thi |
-|------|-----------|----------|-------------|
-| 1-3 | Tuong tu | — | — |
-| 4 | Staff nhap ngay sai | StartDate: `08/06/2026`, EndDate: `01/01/2026` | StatBorrowedFrm: o nhap duoc dien |
-| 5 | Staff nhan Search | Click "Search" | StatBorrowedFrm: thong bao loi "Ngay bat dau phai nho hon hoac bang ngay ket thuc." Khong hien thi ket qua |
-
-**Ngoai le 2: Khong co sach muon trong khoang thoi gian**
-
-| Buoc | Hanh dong | Du lieu | UI hien thi |
-|------|-----------|----------|-------------|
-| 1-3 | Tuong tu | — | — |
-| 4 | Staff nhap khoang thoi gian khong co du lieu | StartDate: `01/01/2025`, EndDate: `31/12/2025` | — |
-| 5 | Staff nhan Search | Click "Search" | StatBorrowedFrm: bang ket qua trong. Thong bao "Khong co du lieu muon sach trong khoang thoi gian nay." |
-
-**Ngoai le 3: Staff chua nhap du ngay**
-
-| Buoc | Hanh dong | Du lieu | UI hien thi |
-|------|-----------|----------|-------------|
-| 1-3 | Tuong tu | — | — |
-| 4 | Staff chi nhap StartDate | StartDate: `01/01/2026`, EndDate: (trong) | StatBorrowedFrm |
-| 5 | Staff nhan Search | Click "Search" | StatBorrowedFrm: thong bao loi "Vui long nhap day du ngay bat dau va ngay ket thuc." |
+- **StartDate > EndDate**: He thong hien thi loi "Ngay bat dau phai nho hon hoac bang ngay ket thuc."
+- **Khong co du lieu trong khoang thoi gian**: Bang ket qua trong, hien thi thong bao "Khong co du lieu muon sach trong khoang thoi gian nay."
+- **Chua nhap du ngay**: He thong hien thi loi "Vui long nhap day du ngay bat dau va ngay ket thuc."
 
 ---
 
@@ -63,12 +38,15 @@ He thong thu vien cho phep nhan vien thong ke so luot muon sach trong mot khoang
 |---------|-----------|-------|
 | Nhan vien (User) | Entity | Doi tuong thuc hien thao tac, co thuoc tính rieng (ten, tai khoan) |
 | Doc gia (Reader) | Entity | Doi tuong trung tam, co nhieu thuoc tính (ma, ten, ngay sinh, dia chi, ma vach) |
-| Sach (Book) | Entity | Doi tuong chinh cua thong ke, co thuoc tính (ma, ten, tac gia, ma vach, gia bia) |
+| Sach (Book) | Entity | Doi tuong chinh cua thong ke, co thuoc tính (ma, ten, tac gia, nam xuat ban, gia bia, so luong, ma vach, mo ta) |
 | Phieu muon (Loan) | Entity | Dai dien cho mot lan muon, co ngay muon, lien ket voi doc gia va nhan vien |
 | Chi tiet muon (LoanDetail) | Entity | Lien ket giua phieu muon va tung cuon sach, co ngay muon, ngay hen tra, ngay tra, tien phat |
 | Ma sach (Book Code) | Thuoc tính | Thuoc tính cua Book |
 | Ten sach (Book Title) | Thuoc tính | Thuoc tính cua Book |
 | Tac gia (Author) | Thuoc tính | Thuoc tính cua Book |
+| Nam xuat ban (Publication Year) | Thuoc tính | Thuoc tính cua Book |
+| So luong (Quantity) | Thuoc tính | Thuoc tính cua Book |
+| Mo ta (Description) | Thuoc tính | Thuoc tính cua Book |
 | Ma vach (Barcode) | Thuoc tính | Thuoc tính cua Book va Reader |
 | So luot muon (Total Loans) | Thuoc tính tinh toan | Duoc dem tu LoanDetail, khong luu trong database |
 | Ngay muon (BorrowDate) | Thuoc tính | Thuoc tính cua LoanDetail |
@@ -86,18 +64,18 @@ He thong thu vien cho phep nhan vien thong ke so luot muon sach trong mot khoang
 ### Buoc 4: Class Diagram (ASCII art)
 
 ```
-+----------+ 1    N +--------+ 1    N +------------+ N    1 +--------+
-|  Reader  |--------|  Loan  |--------| LoanDetail |--------|  Book  |
-+----------+        +--------+        +------------+        +--------+
-| readerId |        | loanId |        | detailId   |        | bookId |
-| fullName |        | loanDate        | loanId     |        | title  |
-| dob      |        | readerId|        | bookId     |        | author |
-| address  |        | userId |        | borrowDate |        | barcode|
-| barcode  |        +--------+        | dueDate    |        | coverP |
-+----------+             |            | returnDate |        +--------+
-                         1            | fine       |
-                         |            +------------+
-                         N
++----------+ 1    N +--------+ 1    N +------------+ N    1 +-----------+
+|  Reader  |--------|  Loan  |◆------| LoanDetail |--------|   Book    |
++----------+        +--------+        +------------+        +-----------+
+| readerId |        | loanId |        | detailId   |        | bookId    |
+| fullName |        | loanDate        | loanId     |        | title     |
+| dob      |        | readerId|        | bookId     |        | author    |
+| address  |        | userId |        | borrowDate |        | pubYear   |
+| barcode  |        +--------+        | dueDate    |        | coverP    |
++----------+             |            | returnDate |        | quantity  |
+                         1            | fine       |        | barcode   |
+                         |            +------------+        | description|
+                         N                                  +-----------+
                     +--------+
                     |  User  |
                     +--------+
@@ -147,7 +125,7 @@ Stereotype sử dụng: `<<entity>>` cho entity class, `<<boundary>>` cho view c
 
 | Class | Stereotype | Thuộc tính (Ngăn 2) | Phương thức (Ngăn 3) |
 |-------|-----------|----------------------|----------------------|
-| Book | `<<entity>>` | `-bookId: int`, `-code: String`, `-name: String`, `-author: String`, `-barcode: String`, `-coverPrice: double` | `+getBookById(bookId: int): Book`, `+searchBook(key: String): List<Book>` |
+| Book | `<<entity>>` | `-bookId: int`, `-code: String`, `-name: String`, `-author: String`, `-publicationYear: int`, `-coverPrice: double`, `-quantity: int`, `-barcode: String`, `-description: String` | `+getBookById(bookId: int): Book`, `+searchBook(key: String): List<Book>` |
 | Reader | `<<entity>>` | `-readerId: int`, `-code: String`, `-name: String`, `-dob: Date`, `-address: String`, `-barcode: String` | `+getReaderById(readerId: int): Reader` |
 | Loan | `<<entity>>` | `-loanId: int`, `-loanDate: Date`, `-readerId: int`, `-userId: int` | `+getLoanById(loanId: int): Loan` |
 | LoanDetail | `<<entity>>` | `-detailId: int`, `-loanId: int`, `-bookId: int`, `-borrowDate: Date`, `-returnDate: Date`, `-fine: double` | `+countLoansByBook(start: Date, end: Date): List<Map>`, `+getDetailsByBookId(bookId: int): List<LoanDetail>` |
@@ -354,8 +332,11 @@ Methods: checkLogin(), countLoansByBook(), getBookById(), findBorrowingDetailsBy
 - bookId: int
 - title: String
 - author: String
-- barcode: String
+- publicationYear: int
 - coverPrice: double
+- quantity: int
+- barcode: String
+- description: String
 ```
 
 **Loan**
@@ -410,8 +391,11 @@ Methods: checkLogin(), countLoansByBook(), getBookById(), findBorrowingDetailsBy
 | bookId | INT | PRIMARY KEY, AUTO_INCREMENT |
 | title | VARCHAR(200) | NOT NULL |
 | author | VARCHAR(100) | NOT NULL |
-| barcode | VARCHAR(50) | NOT NULL, UNIQUE |
+| publicationYear | INT | NOT NULL |
 | coverPrice | DECIMAL(10,2) | NOT NULL |
+| quantity | INT | NOT NULL, DEFAULT 0 |
+| barcode | VARCHAR(50) | NOT NULL, UNIQUE |
+| description | TEXT | NULLABLE |
 
 **tblLoan**
 
@@ -441,7 +425,7 @@ Methods: checkLogin(), countLoansByBook(), getBookById(), findBorrowingDetailsBy
 3. Tao 5 class:
    - Keo "Class" tu toolbar vao canvas, dat ten "User", them attributes: userId: int, fullName: String, username: String, password: String
    - Tao class "Reader" voi attributes: readerId: int, fullName: String, dateOfBirth: Date, address: String, barcode: String
-   - Tao class "Book" voi attributes: bookId: int, title: String, author: String, barcode: String, coverPrice: double
+   - Tao class "Book" voi attributes: bookId: int, title: String, author: String, publicationYear: int, coverPrice: double, quantity: int, barcode: String, description: String
    - Tao class "Loan" voi attributes: loanId: int, loanDate: Date, readerId: int, userId: int
    - Tao class "LoanDetail" voi attributes: detailId: int, loanId: int, bookId: int, borrowDate: Date, dueDate: Date, returnDate: Date, fine: double
 4. Ve quan he:
@@ -461,101 +445,29 @@ Methods: checkLogin(), countLoansByBook(), getBookById(), findBorrowingDetailsBy
 1. Mo Visual Paradigm -> Diagram -> Add Diagram -> Sequence Diagram
 2. Tao cac lifelines:
    - Keo "Actor" vao, dat ten "Staff"
-   - Keo "Boundary" vao, dat ten ":StatBorrowedFrm"
-   - Keo "Control" vao, dat ten ":StatBorrowedControl"
-   - Keo "Entity" vao, dat ten ":LoanDetailDAO", ":BookDAO", ":ReaderDAO"
+   - Keo "Boundary" vao, dat ten ":HomeFrm", ":StatBorrowedFrm"
+   - Keo "Entity" vao, dat ten ":LoanDetailDAO", ":BookDAO"
 3. Ve message tu tren xuong theo thu tu trong bang duoi
-4. Su dung alt/opt fragment cho phan kiem tra du lieu hop le
+4. Su dung alt fragment cho phan kiem tra du lieu hop le
 5. Su dung loop fragment cho phan hien thi tung dong sach
 6. File -> Export -> PNG
 
-### ASCII Sequence Diagram
+### Sequence Diagram (Design Phase)
 
-```
-Staff    :StatBorrowedFrm    :StatBorrowedControl    :LoanDetailDAO    :BookDAO    :ReaderDAO
-  |              |                     |                    |              |            |
-  |---selectMenu()-->|                 |                    |              |            |
-  |              |---showForm()-->     |                    |              |            |
-  |<--displayForm----|                 |                    |              |            |
-  |              |                     |                    |              |            |
-  |---enterDates(start,end)-->         |                    |              |            |
-  |              |                     |                    |              |            |
-  |---clickSearch-->|                  |                    |              |            |
-  |              |---searchBooks(start,end)-->               |              |            |
-  |              |                     |---validateDates(start,end)       |            |
-  |              |                     |  [if invalid: return error]      |            |
-  |              |                     |  [if valid: continue]            |            |
-  |              |                     |                    |              |            |
-  |              |                     |---countLoansByBook(start,end)--> |            |
-  |              |                     |<--List<Map>(bookId,totalLoans)---|            |
-  |              |                     |                    |              |            |
-  |              |                     |---getBookById(bookId)----------->|            |
-  |              |                     |<--Book----------------------------|            |
-  |              |                     |  [loop for each book]            |            |
-  |              |                     |                    |              |            |
-  |              |<--BookList----------|                    |              |            |
-  |<--displayBookTable--|              |                    |              |            |
-  |              |                     |                    |              |            |
-  |---clickBookRow(bookId)-->          |                    |              |            |
-  |              |---getBookDetail(bookId,start,end)-->      |              |            |
-  |              |                     |---findBorrowingDetails(bookId,start,end)-->   |
-  |              |                     |<--List<Map>(readerName,borrowDate,returnDate,fine)|
-  |              |                     |                    |              |            |
-  |              |                     |---getReaderById(readerId)--------------->      |
-  |              |                     |<--Reader--------------------------------------|
-  |              |                     |  [loop for each detail]            |            |
-  |              |                     |                    |              |            |
-  |              |<--DetailList--------|                    |              |            |
-  |<--displayDetailTable--|            |                    |              |            |
-  |              |                     |                    |              |            |
-  |---clickExport-->|                  |                    |              |            |
-  |              |---exportCSV()-->    |                    |              |            |
-  |              |                     |---generateCSV(data)              |            |
-  |              |<--filePath----------|                    |              |            |
-  |<--showSaveDialog--|                |                    |              |            |
-  |              |                     |                    |              |            |
-  |---clickBack-->|                    |                    |              |            |
-  |              |---close()-->        |                    |              |            |
-  |<--returnToHome--|                  |                    |              |            |
-```
-
-### Bang giai thich chi tiet
-
-| # | Message | Tu | Den | Mo ta |
-|---|---------|-----|-----|-------|
-| 1 | selectMenu() | Staff | StatBorrowedFrm | Staff chon menu "Statistics of Borrowed Books" tu HomeFrm |
-| 2 | showForm() | StatBorrowedFrm | StatBorrowedControl | Khoi tao controller, hien thi form thong ke |
-| 3 | displayForm | StatBorrowedFrm | Staff | Hien thi form voi 2 o DatePicker (StartDate, EndDate) va nut Search |
-| 4 | enterDates("01/01/2026", "08/06/2026") | Staff | StatBorrowedFrm | Staff nhap khoang thoi gian: StartDate = 01/01/2026, EndDate = 08/06/2026 |
-| 5 | clickSearch | Staff | StatBorrowedFrm | Staff nhan nut Search |
-| 6 | searchBooks(startDate, endDate) | StatBorrowedFrm | StatBorrowedControl | Gui yeu cau thong ke voi khoang thoi gian |
-| 7 | validateDates(startDate, endDate) | StatBorrowedControl | StatBorrowedControl | Kiem tra: startDate <= endDate va ca hai khong null |
-| 8 | countLoansByBook("2026-01-01", "2026-06-08") | StatBorrowedControl | LoanDetailDAO | Truy van SQL: SELECT bookId, COUNT(*) as totalLoans FROM tblLoanDetail WHERE borrowDate BETWEEN '2026-01-01' AND '2026-06-08' GROUP BY bookId ORDER BY totalLoans DESC |
-| 9 | return List<Map> | LoanDetailDAO | StatBorrowedControl | Tra ve: [{bookId:7, totalLoans:15}, {bookId:1, totalLoans:12}, {bookId:3, totalLoans:8}] |
-| 10 | getBookById(7) | StatBorrowedControl | BookDAO | Lay thong tin sach B007 |
-| 11 | return Book | BookDAO | StatBorrowedControl | Tra ve: Book{bookId:7, title:"Thiet ke phan mem", author:"Le Van C", barcode:"978-1-491-95035-7"} |
-| 12 | getBookById(1) | StatBorrowedControl | BookDAO | Lay thong tin sach B001 |
-| 13 | return Book | BookDAO | StatBorrowedControl | Tra ve: Book{bookId:1, title:"Lap trinh Java", author:"Nguyen Van A"} |
-| 14 | getBookById(3) | StatBorrowedControl | BookDAO | Lay thong tin sach B003 |
-| 15 | return Book | BookDAO | StatBorrowedControl | Tra ve: Book{bookId:3, title:"Co so du lieu", author:"Tran Thi B"} |
-| 16 | BookList(bookList) | StatBorrowedControl | StatBorrowedFrm | Gui danh sach ket qua: [{code:"B007", title:"Thiet ke phan mem", author:"Le Van C", barcode:"978-1-491-95035-7", totalLoans:15}, ...] |
-| 17 | displayBookTable | StatBorrowedFrm | Staff | Hien thi bang voi 3 dong, sap xep theo totalLoans giam dan |
-| 18 | clickBookRow(bookId=7) | Staff | StatBorrowedFrm | Staff click vao dong sach B007 - Thiet ke phan mem |
-| 19 | getBookDetail(7, startDate, endDate) | StatBorrowedFrm | StatBorrowedControl | Yeu cau chi tiet muon cua sach B007 |
-| 20 | findBorrowingDetails(7, "2026-01-01", "2026-06-08") | StatBorrowedControl | LoanDetailDAO | Truy van: SELECT r.fullName, ld.borrowDate, ld.returnDate, ld.fine FROM tblLoanDetail ld JOIN tblLoan l ON ld.loanId=l.loanId JOIN tblReader r ON l.readerId=r.readerId WHERE ld.bookId=7 AND ld.borrowDate BETWEEN '2026-01-01' AND '2026-06-08' |
-| 21 | return List<Map> | LoanDetailDAO | StatBorrowedControl | Tra ve 4 ket qua: [{readerName:"Nguyen Minh Tuan", borrowDate:"2026-01-15", returnDate:"2026-02-10", fine:0}, {readerName:"Pham Thi Lan", borrowDate:"2026-03-01", returnDate:"2026-04-05", fine:0}, {readerName:"Hoang Van Em", borrowDate:"2026-04-20", returnDate:null, fine:0}, {readerName:"Nguyen Minh Tuan", borrowDate:"2026-05-10", returnDate:"2026-06-15", fine:150000}] |
-| 22 | getReaderById(readerId) | StatBorrowedControl | ReaderDAO | Lay thong tin doc gia (neu can bo sung) |
-| 23 | return Reader | ReaderDAO | StatBorrowedControl | Tra ve thong tin doc gia |
-| 24 | DetailList(detailList) | StatBorrowedControl | StatBorrowedFrm | Gui danh sach chi tiet muon |
-| 25 | displayDetailTable | StatBorrowedFrm | Staff | Hien thi bang chi tiet: 4 dong voi Reader Name, Borrowed Day, Returned Day, Fine |
-| 26 | clickExport | Staff | StatBorrowedFrm | Staff nhan nut Export to CSV |
-| 27 | exportCSV() | StatBorrowedFrm | StatBorrowedControl | Yeu cau xuat du lieu |
-| 28 | generateCSV(data) | StatBorrowedControl | StatBorrowedControl | Tao noi dung CSV tu du lieu bang |
-| 29 | return filePath | StatBorrowedControl | StatBorrowedFrm | Tra ve duong dan file CSV |
-| 30 | showSaveDialog | StatBorrowedFrm | Staff | Hien thi dialog luu file |
-| 31 | clickBack | Staff | StatBorrowedFrm | Staff nhan nut Back |
-| 32 | close() | StatBorrowedFrm | StatBorrowedControl | Dong form, giai phong tai nguyen |
-| 33 | returnToHome | StatBorrowedFrm | Staff | Quay ve HomeFrm |
+1. Staff chon "Statistics of Borrowed Books" tren HomeFrm.
+2. HomeFrm tao `new StatBorrowedFrm()` va hien thi.
+3. Staff nhap StartDate `01/01/2026`, EndDate `08/06/2026` va nhan nut Search.
+4. `StatBorrowedFrm.actionPerformed()` duoc goi.
+5. StatBorrowedFrm kiem tra du lieu nhap: startDate <= endDate va ca hai khong null. Neu khong hop le, hien thi loi va dung lai.
+6. StatBorrowedFrm goi `LoanDetailDAO.countLoansByBook(startDate, endDate)`.
+7. LoanDetailDAO thuc hien truy van SQL, dong goi ket qua vao `List<Map>` voi moi phan tu chua bookId va totalLoans, sap xep giam dan theo totalLoans.
+8. StatBorrowedFrm voi moi ket qua, goi `BookDAO.getBookById(bookId)`.
+9. BookDAO dong goi doi tuong Book voi cac thuoc tính title, author, barcode, coverPrice.
+10. StatBorrowedFrm hien thi bang `outBookTable` voi cac dong: Code, Book Title, Author, Barcode, Total Loans.
+11. Staff click vao mot dong sach (vi du B007). `StatBorrowedFrm` xu ly su kien mouse click.
+12. StatBorrowedFrm goi `LoanDetailDAO.findBorrowingDetailsByBookId(bookId, startDate, endDate)`.
+13. LoanDetailDAO thuc hien truy van JOIN tblLoanDetail, tblLoan, tblReader, dong goi ket qua vao `List<Map>` voi readerName, borrowDate, returnDate, fine.
+14. StatBorrowedFrm cap nhat `outDetailLabel` voi noi dung "Detail: Borrowings of Book B007 - Thiet ke phan mem" va hien thi bang `outDetailTable` voi cot: Reader Name, Borrowed Day, Returned Day, Fine.
 
 ---
 
@@ -563,19 +475,19 @@ Staff    :StatBorrowedFrm    :StatBorrowedControl    :LoanDetailDAO    :BookDAO 
 
 ### Test Plan
 
-| TC | Test Case | Input | Expected Output |
-|----|-----------|-------|-----------------|
-| TC01 | Thong ke sach muon trong khoang thoi gian co du lieu | StartDate: 01/01/2026, EndDate: 08/06/2026 | Bang hien thi 3 sach, sap xep theo luot muon giam dan |
-| TC02 | Thong ke sach muon trong khoang thoi gian khong co du lieu | StartDate: 01/01/2025, EndDate: 31/12/2025 | Bang trong, thong bao "Khong co du lieu" |
-| TC03 | Ngay bat dau lon hon ngay ket thuc | StartDate: 08/06/2026, EndDate: 01/01/2026 | Thong bao loi "Ngay bat dau phai nho hon hoac bang ngay ket thuc" |
-| TC04 | Chua nhap ngay | StartDate: (trong), EndDate: (trong) | Thong bao loi "Vui long nhap day du ngay bat dau va ngay ket thuc" |
-| TC05 | Click vao sach de xem chi tiet | Click dong B007 | Bang chi tiet hien thi 4 lan muon cua B007 |
+| No. | Module | Test case |
+|-----|--------|-----------|
+| 1 | Statistics of Borrowed Books | Thong ke sach muon trong khoang thoi gian co du lieu |
+| 2 | Statistics of Borrowed Books | Thong ke sach muon trong khoang thoi gian khong co du lieu |
+| 3 | Statistics of Borrowed Books | Ngay bat dau lon hon ngay ket thuc |
+| 4 | Statistics of Borrowed Books | Chua nhap du ngay |
+| 5 | Statistics of Borrowed Books | Click vao sach de xem chi tiet muon |
 
-### TC01: Thong ke sach muon trong khoang thoi gian co du lieu - Chi tiet
+### Test case No. 1 — Thong ke sach muon trong khoang thoi gian co du lieu
 
-**Muc dich:** Kiem tra chuc nang thong ke sach muon khi nhap khoang thoi gian hop le co du lieu. Bang ket qua phai hien thi dung danh sach sach muon, sap xep theo so luot muon giam dan, voi day du thong tin code, title, author, barcode, total loans.
+**Muc dich:** Kiem tra chuc nang thong ke sach muon khi nhap khoang thoi gian hop le co du lieu. Bang ket qua phai hien thi dung danh sach sach muon, sap xep theo so luot muon giam dan.
 
-**Database truoc khi test:**
+### Database truoc khi test
 
 **tblUser**
 
@@ -595,12 +507,12 @@ Staff    :StatBorrowedFrm    :StatBorrowedControl    :LoanDetailDAO    :BookDAO 
 
 **tblBook**
 
-| bookId | title | author | barcode | coverPrice |
-|--------|-------|--------|---------|------------|
-| 1 | Lap trinh Java | Nguyen Van A | 978-0-13-468599-1 | 450,000 |
-| 3 | Co so du lieu | Tran Thi B | 978-0-596-52068-7 | 380,000 |
-| 7 | Thiet ke phan mem | Le Van C | 978-1-491-95035-7 | 750,000 |
-| 10 | Mang may tinh | Hoang Thi D | 978-0-201-63361-0 | 320,000 |
+| bookId | title | author | publicationYear | coverPrice | quantity | barcode | description |
+|--------|-------|--------|-----------------|------------|----------|---------|-------------|
+| 1 | Lap trinh Java | Nguyen Van A | 2020 | 450,000 | 10 | 978-0-13-468599-1 | Sach giao trinh lap trinh Java co ban |
+| 3 | Co so du lieu | Tran Thi B | 2019 | 380,000 | 8 | 978-0-596-52068-7 | Sach giao trinh co so du lieu |
+| 7 | Thiet ke phan mem | Le Van C | 2021 | 750,000 | 5 | 978-1-491-95035-7 | Sach thiet ke phan mem |
+| 10 | Mang may tinh | Hoang Thi D | 2018 | 320,000 | 12 | 978-0-201-63361-0 | Sach giao trinh mang may tinh |
 
 **tblLoan**
 
@@ -633,80 +545,22 @@ Staff    :StatBorrowedFrm    :StatBorrowedControl    :LoanDetailDAO    :BookDAO 
 | 14 | 106 | 10 | 2026-05-10 | 2026-06-10 | NULL | 0 |
 | 15 | 106 | 1 | 2026-05-10 | 2026-06-10 | 2026-06-05 | 0 |
 
-**Kich ban test:**
+### Kich ban test va ket qua mong doi
 
-| Buoc | Hanh dong | Du lieu nhap | Ket qua mong doi |
-|------|-----------|---------------|-----------------|
-| 1 | Mo ung dung, dang nhap | Username: `staff01`, Password: `pass123` | Dang nhap thanh cong, hien thi HomeFrm |
-| 2 | Chon menu "Statistics" | Click "Statistics" | Hien thi menu con thong ke |
-| 3 | Chon "Statistics of Borrowed Books" | Click "Statistics of Borrowed Books" | Hien thi StatBorrowedFrm voi o StartDate, EndDate, nut Search |
-| 4 | Nhap ngay bat dau | StartDate: `01/01/2026` | O StartDate hien thi 01/01/2026 |
-| 5 | Nhap ngay ket thuc | EndDate: `08/06/2026` | O EndDate hien thi 08/06/2026 |
-| 6 | Nhan Search | Click "Search" | Bang ket qua hien thi 4 dong |
-| 7 | Kiem tra dong 1 | Xem dong dau tien | Code: B007, Title: Thiet ke phan mem, Author: Le Van C, Barcode: 978-1-491-95035-7, Total Loans: 6 (cac detailId: 3,5,7,9,10,13) |
-| 8 | Kiem tra dong 2 | Xem dong thu hai | Code: B001, Title: Lap trinh Java, Author: Nguyen Van A, Barcode: 978-0-13-468599-1, Total Loans: 5 (cac detailId: 1,4,8,11,15) |
-| 9 | Kiem tra dong 3 | Xem dong thu ba | Code: B003, Title: Co so du lieu, Author: Tran Thi B, Barcode: 978-0-596-52068-7, Total Loans: 3 (cac detailId: 2,6,12) |
-| 10 | Kiem tra dong 4 | Xem dong thu tu | Code: B010, Title: Mang may tinh, Author: Hoang Thi D, Barcode: 978-0-201-63361-0, Total Loans: 1 (detailId: 14) |
-| 11 | Kiem tra thu tu | Xem thu tu cac dong | Sap xep giam dan: B007(6) > B001(5) > B003(3) > B010(1) |
-| 12 | Click vao dong B007 | Click dong dau tien | Panel chi tiet hien thi "Detail: Borrowings of Book B007 - Thiet ke phan mem" |
-| 13 | Kiem tra bang chi tiet | Xem bang Borrowing Details | 6 dong: (1) Tran Thi Binh - 10/01/2026 - 15/03/2026 - 150,000. (2) Nguyen Minh Tuan - 15/01/2026 - 12/02/2026 - 0. (3) Pham Thi Lan - 01/02/2026 - 05/03/2026 - 76,000. (4) Hoang Van Em - 05/03/2026 - 10/04/2026 - 150,000. (5) Nguyen Minh Tuan - 01/04/2026 - 28/04/2026 - 0. (6) Tran Thi Binh - 10/05/2026 - NULL - 0 |
-| 14 | Click dong B001 | Click dong thu hai | Panel chi tiet cap nhat cho B001 - Lap trinh Java |
-| 15 | Kiem tra bang chi tiet B001 | Xem bang | 5 dong hien thi thong tin muon cua B001 |
+| Scenario | Expected result |
+|----------|-----------------|
+| 1. Mo ung dung | Giao dien dang nhap hien thi voi o Username, Password, nut Login |
+| 2. Nhap Username `staff01`, Password `pass123`, nhan Login | Dang nhap thanh cong, hien thi HomeFrm |
+| 3. Chon menu "Statistics", chon "Statistics of Borrowed Books" | StatBorrowedFrm hien thi voi o StartDate, EndDate, nut Search |
+| 4. Nhap StartDate `01/01/2026`, EndDate `08/06/2026`, nhan Search | Bang ket qua hien thi 4 dong |
+| 5. Kiem tra dong 1 | Code: B007, Title: Thiet ke phan mem, Author: Le Van C, Barcode: 978-1-491-95035-7, Total Loans: 6 |
+| 6. Kiem tra dong 2 | Code: B001, Title: Lap trinh Java, Author: Nguyen Van A, Barcode: 978-0-13-468599-1, Total Loans: 5 |
+| 7. Kiem tra dong 3 | Code: B003, Title: Co so du lieu, Author: Tran Thi B, Barcode: 978-0-596-52068-7, Total Loans: 3 |
+| 8. Kiem tra dong 4 | Code: B010, Title: Mang may tinh, Author: Hoang Thi D, Barcode: 978-0-201-63361-0, Total Loans: 1 |
+| 9. Kiem tra thu tu | Sap xep giam dan: B007(6) > B001(5) > B003(3) > B010(1) |
+| 10. Click vao dong B007 | Panel chi tiet hien thi "Detail: Borrowings of Book B007 - Thiet ke phan mem" |
+| 11. Kiem tra bang chi tiet | 6 dong hien thi: (1) Tran Thi Binh - 10/01/2026 - 15/03/2026 - 150,000. (2) Nguyen Minh Tuan - 15/01/2026 - 12/02/2026 - 0. (3) Pham Thi Lan - 01/02/2026 - 05/03/2026 - 76,000. (4) Hoang Van Em - 05/03/2026 - 10/04/2026 - 150,000. (5) Nguyen Minh Tuan - 01/04/2026 - 28/04/2026 - 0. (6) Tran Thi Binh - 10/05/2026 - NULL - 0 |
 
-**Database sau khi test:**
+### Database sau khi test
 
-**tblUser** (khong thay doi)
-
-| userId | fullName | username | password |
-|--------|----------|----------|----------|
-| 1 | Tran Van Admin | admin | admin123 |
-| 2 | Le Thi Staff | staff01 | pass123 |
-
-**tblReader** (khong thay doi)
-
-| readerId | fullName | dateOfBirth | address | barcode |
-|----------|----------|-------------|---------|---------|
-| 10 | Tran Thi Binh | 1997-05-10 | 789 Cach Mang T8, Q3, TP.HCM | RDR-2024-0010 |
-| 15 | Nguyen Minh Tuan | 1998-03-15 | 123 Le Loi, Q1, TP.HCM | RDR-2024-0015 |
-| 18 | Pham Thi Lan | 1995-07-20 | 456 Nguyen Hue, Q1, TP.HCM | RDR-2024-0018 |
-| 20 | Hoang Van Em | 2000-11-05 | 321 Vo Van Tan, Q3, TP.HCM | RDR-2024-0020 |
-
-**tblBook** (khong thay doi)
-
-| bookId | title | author | barcode | coverPrice |
-|--------|-------|--------|---------|------------|
-| 1 | Lap trinh Java | Nguyen Van A | 978-0-13-468599-1 | 450,000 |
-| 3 | Co so du lieu | Tran Thi B | 978-0-596-52068-7 | 380,000 |
-| 7 | Thiet ke phan mem | Le Van C | 978-1-491-95035-7 | 750,000 |
-| 10 | Mang may tinh | Hoang Thi D | 978-0-201-63361-0 | 320,000 |
-
-**tblLoan** (khong thay doi)
-
-| loanId | loanDate | readerId | userId |
-|--------|----------|----------|--------|
-| 101 | 2026-01-10 | 10 | 2 |
-| 102 | 2026-01-15 | 15 | 2 |
-| 103 | 2026-02-01 | 18 | 2 |
-| 104 | 2026-03-05 | 20 | 2 |
-| 105 | 2026-04-01 | 15 | 2 |
-| 106 | 2026-05-10 | 10 | 2 |
-
-**tblLoanDetail** (khong thay doi - day la chuc nang chi doc, khong sua database)
-
-| detailId | loanId | bookId | borrowDate | dueDate | returnDate | fine |
-|----------|--------|--------|------------|---------|------------|------|
-| 1 | 101 | 1 | 2026-01-10 | 2026-02-10 | 2026-02-05 | 0 |
-| 2 | 101 | 3 | 2026-01-10 | 2026-02-10 | 2026-02-08 | 0 |
-| 3 | 101 | 7 | 2026-01-10 | 2026-02-10 | 2026-03-15 | 150,000 |
-| 4 | 102 | 1 | 2026-01-15 | 2026-02-15 | 2026-02-10 | 0 |
-| 5 | 102 | 7 | 2026-01-15 | 2026-02-15 | 2026-02-12 | 0 |
-| 6 | 103 | 3 | 2026-02-01 | 2026-03-01 | 2026-02-28 | 0 |
-| 7 | 103 | 7 | 2026-02-01 | 2026-03-01 | 2026-03-05 | 76,000 |
-| 8 | 104 | 1 | 2026-03-05 | 2026-04-05 | 2026-04-01 | 0 |
-| 9 | 104 | 7 | 2026-03-05 | 2026-04-05 | 2026-04-10 | 150,000 |
-| 10 | 105 | 7 | 2026-04-01 | 2026-05-01 | 2026-04-28 | 0 |
-| 11 | 105 | 1 | 2026-04-01 | 2026-05-01 | 2026-04-30 | 0 |
-| 12 | 105 | 3 | 2026-04-01 | 2026-05-01 | 2026-05-10 | 38,000 |
-| 13 | 106 | 7 | 2026-05-10 | 2026-06-10 | NULL | 0 |
-| 14 | 106 | 10 | 2026-05-10 | 2026-06-10 | NULL | 0 |
-| 15 | 106 | 1 | 2026-05-10 | 2026-06-10 | 2026-06-05 | 0 |
+Database khong thay doi. Day la chuc nang chi doc (read-only), khong sua doi du lieu.
