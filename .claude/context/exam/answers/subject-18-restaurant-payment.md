@@ -139,6 +139,64 @@ Nhà hàng quản lý việc thanh toán cho khách. Khi khách yêu cầu thanh
 | Order → Invoice | 1-1 | Mỗi đơn hàng có 1 hóa đơn |
 | Coupon → Invoice | 1-n | Một coupon áp dụng cho nhiều hóa đơn |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công -> HomeFrm xuất hiện:
+  một tùy chọn thanh toán -> subPayment
+
+Chọn Payment -> PaymentFrm xuất hiện:
+  combobox chọn bàn có đơn chưa thanh toán -> inTable
+  thông tin đơn hàng -> outOrderInfo
+  bảng chi tiết hóa đơn -> outsubListOrderDetail
+  tổng tiền -> outTotalAmount
+  nút thêm mã giảm giá -> subAddCoupon
+  ô nhập mã giảm giá -> inCouponCode
+  nút áp dụng mã -> subApplyCoupon
+  thông tin mã giảm giá -> outCouponInfo
+  nút xác nhận -> subConfirm
+
+Khi mở PaymentFrm -> hệ thống lấy danh sách bàn có đơn chưa thanh toán -> cần phương thức:
+  tên: getTablesWithActiveOrder()
+  đầu vào: (không có)
+  đầu ra: list of Table
+  gán cho entity class: Table.
+
+Chọn bàn -> hệ thống lấy đơn hàng theo bàn -> cần phương thức:
+  tên: getActiveOrderByTable()
+  đầu vào: tableId (int)
+  đầu ra: Order
+  gán cho entity class: Order.
+
+Chọn bàn -> hệ thống lấy chi tiết đơn hàng -> cần phương thức:
+  tên: getOrderDetails()
+  đầu vào: orderId (int)
+  đầu ra: list of OrderDetail
+  gán cho entity class: OrderDetail.
+
+Nhập mã giảm giá -> hệ thống tìm coupon -> cần phương thức:
+  tên: getCouponByCode()
+  đầu vào: code (String)
+  đầu ra: Coupon
+  gán cho entity class: Coupon.
+
+Nhấn Confirm -> hệ thống lưu hóa đơn -> cần phương thức:
+  tên: addInvoice()
+  đầu vào: invoice (Invoice)
+  đầu ra: boolean
+  gán cho entity class: Invoice.
+
+Nhấn Confirm -> hệ thống cập nhật trạng thái đơn hàng -> cần phương thức:
+  tên: updateOrderStatus()
+  đầu vào: orderId (int), status (String)
+  đầu ra: boolean
+  gán cho entity class: Order.
+
+### Summary
+View classes: HomeFrm, PaymentFrm
+Methods: getTablesWithActiveOrder(), getActiveOrderByTable(), getOrderDetails(), getCouponByCode(), addInvoice(), updateOrderStatus()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh

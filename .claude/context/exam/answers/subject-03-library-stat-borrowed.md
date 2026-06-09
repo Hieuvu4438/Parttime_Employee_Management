@@ -119,6 +119,68 @@ He thong thu vien cho phep nhan vien thong ke so luot muon sach trong mot khoang
 | Reader -> LoanDetail | Gian tiep (qua Loan) | Doc gia lien ket voi chi tiet muon thong qua phieu muon |
 | Book -> Loan | Gian tiep (qua LoanDetail) | Sach lien ket voi phieu muon thong qua chi tiet muon |
 
+### Classes diagram (analysis)
+
+Analysis this module:
+
+Enter the system -> The login interface is appeared -> need a class: LoginFrm
+  input for username -> inUsername
+  input for password -> inPassword
+  a submit to login -> subLogin
+
+Enter the username/password -> the system must check if the login is correct -> need a method:
+  name: checkLogin()
+  input: username, password (of the class User)
+  output: boolean
+  assign to the entity class: User.
+
+Once login successful -> main interface appears -> need a class: HomeFrm
+  an option to manage statistics -> subStatistics
+
+Staff selects Statistics -> The statistics form appears -> need a class: StatBorrowedFrm
+  input for start date -> inStartDate
+  input for end date -> inEndDate
+  a submit to search -> subSearch
+  output for book statistics table -> outBookTable
+  output for detail label -> outDetailLabel
+  output for detail table -> outDetailTable
+  a submit to export -> subExport
+  a submit to go back -> subBack
+
+Staff enters dates and clicks Search -> The system counts loans by book -> need a method:
+  name: countLoansByBook()
+  input: startDate (Date), endDate (Date)
+  output: List<Map> (bookId, totalLoans)
+  assign to the entity class: LoanDetail.
+
+The system must get book info for each result -> need a method:
+  name: getBookById()
+  input: bookId (int)
+  output: Book
+  assign to the entity class: Book.
+
+Staff clicks a book row -> The system shows borrowing details -> need a method:
+  name: findBorrowingDetailsByBookId()
+  input: bookId (int), startDate (Date), endDate (Date)
+  output: List<Map> (readerName, borrowDate, returnDate, fine)
+  assign to the entity class: LoanDetail.
+
+The system must get reader info for each detail -> need a method:
+  name: getReaderById()
+  input: readerId (int)
+  output: Reader
+  assign to the entity class: Reader.
+
+Staff clicks Export -> The system generates CSV -> need a method:
+  name: exportCSV()
+  input: data (List<Map>)
+  output: String (filePath)
+  assign to: no entity class (utility method).
+
+### Summary
+View classes: LoginFrm, HomeFrm, StatBorrowedFrm
+Methods: checkLogin(), countLoansByBook(), getBookById(), findBorrowingDetailsByBookId(), getReaderById(), exportCSV()
+
 ---
 
 ## Cau 3: Thiet ke tinh (1.5 diem)

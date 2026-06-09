@@ -189,6 +189,36 @@ He thong quan ly nhan vien ban thoi gian cua chuoi nha hang. Moi nha hang (ten, 
 | Shift → Attendance | 1-n | Mot ca co nhieu cham cong |
 | User → Wage | 1-n | Mot staff tao nhieu luong |
 
+### Classes diagram (analysis)
+
+Phan tich module nay (bo qua buoc dang nhap):
+
+Sau khi dang nhap thanh cong -> Giao dien Home xuat hien:
+- mot lua chon tinh luong -> subWages
+
+Chon tinh luong -> Giao dien tinh luong xuat hien:
+- o nhap ngay bat dau tuan -> inStartDate
+- o nhap ngay ket thuc tuan -> inEndDate
+- nut View -> subView
+- bang luong tong hop (click duoc) -> outsubListWage
+- bang chi tiet luong -> outListWageDetail
+
+Nhap ngay va nhan View -> he thong tinh luong -> can phuong thuc:
+- ten: calculateWages()
+- dau vao: startDate, endDate
+- dau ra: danh sach Wage
+- gan cho entity class: Wage.
+
+Nhan vao dong NV -> he thong lay chi tiet -> can phuong thuc:
+- ten: getWageDetail()
+- dau vao: employeeId, startDate, endDate
+- dau ra: danh sach WageDetail
+- gan cho entity class: WageDetail.
+
+### Tom tat
+View classes: HomeFrm, WageFrm
+Methods: calculateWages(), getWageDetail()
+
 ---
 
 ## Cau 3: Thiet ke tinh — Giao dien va class diagram chi tiet

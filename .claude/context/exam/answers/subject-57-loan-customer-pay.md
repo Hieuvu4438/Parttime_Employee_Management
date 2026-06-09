@@ -172,6 +172,92 @@ Hệ thống quản lý cho vay trả góp. Công ty hợp tác với nhiều đ
 +------------------+
 ```
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công → HomeFrm:
+  Nút chọn "Customer paying" → subCustomerPayment
+
+Staff chọn Customer paying → SearchContractView xuất hiện:
+  Ô nhập mã hợp đồng → inContractCode
+  Nút Search → subSearch
+
+Staff nhập mã HĐ và nhấn Search → ContractDetailView xuất hiện:
+  Thông tin khách hàng (tên, SĐT, địa chỉ) → outCustomerInfo
+  Thông tin hợp đồng → outContractInfo
+  Danh sách sản phẩm trong hợp đồng → outContractItemList
+  Lịch sử thanh toán → outPaymentHistory
+  Tổng dư nợ → outOutstandingBalance
+  Số tiền cần thanh toán → outPayableAmount
+  Bảng lịch trả góp (có checkbox chọn kỳ) → inoutPaymentSchedule
+  Ô nhập số tiền thanh toán → inPaymentAmount
+  Nút Confirm → subConfirm
+
+Staff chọn kỳ và nhấn Confirm → InvoiceView xuất hiện:
+  Hóa đơn thanh toán → outInvoice
+  Nút Save → subSave
+
+Phân tích phương thức:
+
+Tìm kiếm hợp đồng theo mã:
+  Tên: getContractByCode()
+  Đầu vào: code (String)
+  Đầu ra: Contract
+  Gán cho entity class: Contract.
+
+Lấy thông tin khách hàng:
+  Tên: getCustomerById()
+  Đầu vào: customerId (int)
+  Đầu ra: Customer
+  Gán cho entity class: Customer.
+
+Lấy danh sách sản phẩm trong hợp đồng:
+  Tên: getItemsByContractId()
+  Đầu vào: contractId (int)
+  Đầu ra: List<ContractItem>
+  Gán cho entity class: ContractItem.
+
+Lấy lịch sử thanh toán:
+  Tên: getPaymentsByContractId()
+  Đầu vào: contractId (int)
+  Đầu ra: List<Payment>
+  Gán cho entity class: Payment.
+
+Lấy lịch trả góp:
+  Tên: getScheduleByContractId()
+  Đầu vào: contractId (int)
+  Đầu ra: List<PaymentSchedule>
+  Gán cho entity class: PaymentSchedule.
+
+Tính tổng dư nợ:
+  Tên: getOutstandingBalance()
+  Đầu vào: contractId (int)
+  Đầu ra: double
+  Gán cho entity class: PaymentSchedule.
+
+Lưu phiếu thanh toán:
+  Tên: insertPayment()
+  Đầu vào: payment (Payment)
+  Đầu ra: boolean
+  Gán cho entity class: Payment.
+
+Cập nhật trạng thái kỳ thanh toán:
+  Tên: updateScheduleStatus()
+  Đầu vào: scheduleId (int), status (String)
+  Đầu ra: boolean
+  Gán cho entity class: PaymentSchedule.
+
+Cập nhật trạng thái hợp đồng:
+  Tên: updateContractStatus()
+  Đầu vào: contractId (int), status (String)
+  Đầu ra: boolean
+  Gán cho entity class: Contract.
+
+### Tóm tắt
+View classes: HomeFrm, SearchContractView, ContractDetailView, InvoiceView
+Phương thức: getContractByCode(), getCustomerById(), getItemsByContractId(), getPaymentsByContractId(), getScheduleByContractId(), getOutstandingBalance(), insertPayment(), updateScheduleStatus(), updateContractStatus()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh

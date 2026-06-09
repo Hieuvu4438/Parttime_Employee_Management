@@ -138,6 +138,54 @@ User 1 --- n FoodInvoice
 | FoodSize → FoodInvoiceDetail | 1-n (Association) | Mot mon-size xuat hien trong nhieu chi tiet |
 | User → FoodInvoice | 1-n (Association) | Mot nhan vien tao nhieu hoa don |
 
+### Classes diagram (analysis)
+
+Phan tich module nay (bo qua buoc dang nhap):
+
+Sau khi dang nhap thanh cong -> Giao dien Home xuat hien:
+- mot lua chon ban do an -> subSellingFood
+
+Chon ban do an -> Giao dien ban do an xuat hien:
+- o nhap ten mon -> inFoodName
+- nut Search -> subSearch
+- bang danh sach mon tim duoc (click duoc) -> outsubFoodList
+- combobox chon size (S/M/L) -> inSize
+- o nhap so luong -> inQuantity
+- nut OK -> subOK
+- bang hoa don -> outInvoiceTable
+- hien thi tong tien -> outTotal
+- nut Pay -> subPay
+
+Nhap ten va Search -> he thong tim mon -> can phuong thuc:
+- ten: searchFoodByName()
+- dau vao: keyword
+- dau ra: danh sach FoodItem
+- gan cho entity class: FoodItem.
+
+Click vao mon -> he thong lay size -> can phuong thuc:
+- ten: getSizesByFoodItem()
+- dau vao: foodItemId
+- dau ra: danh sach FoodSize
+- gan cho entity class: FoodSize.
+
+Chon size, so luong, OK -> mon duoc them vao hoa don (hien thi tren bang).
+
+Nhan Pay -> he thong tao hoa don -> can phuong thuc:
+- ten: addFoodInvoice()
+- dau vao: doi tuong FoodInvoice
+- dau ra: int (ID hoa don)
+- gan cho entity class: FoodInvoice.
+
+He thong them chi tiet hoa don -> can phuong thuc:
+- ten: addInvoiceDetail()
+- dau vao: doi tuong FoodInvoiceDetail
+- dau ra: boolean
+- gan cho entity class: FoodInvoiceDetail.
+
+### Tom tat
+View classes: HomeFrm, SellFoodFrm
+Methods: searchFoodByName(), getSizesByFoodItem(), addFoodInvoice(), addInvoiceDetail()
+
 ---
 
 ## Cau 3: Thiet ke tinh — Giao dien va class diagram chi tiet

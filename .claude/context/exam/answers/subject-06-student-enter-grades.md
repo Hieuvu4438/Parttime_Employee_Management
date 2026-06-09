@@ -168,6 +168,64 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep giao vi
 | User → Student | 1-1 | Mot tai khoan User ung voi mot Student |
 | User → Class (teacherId) | 1-n | Mot giao vien day nhieu lop. VD: GV001 day CL001, CL002 |
 
+### Classes diagram (analysis)
+
+Phân tích module này:
+
+Đăng nhập vào hệ thống → Giao diện Login xuất hiện → cần class: LoginFrm
+  Ô nhập username → inUsername
+  Ô nhập password → inPassword
+  Nút Login → subLogin
+
+Nhập username/password → Hệ thống phải kiểm tra đăng nhập → cần phương thức:
+  Tên: validateLogin()
+  Đầu vào: username, password (thuộc class User)
+  Đầu ra: boolean
+  Gán cho entity class: User.
+
+Đăng nhập thành công → Giao diện Home xuất hiện → cần class: HomeFrm
+  Menu Grade → menuGrade
+  Menu Student → menuStudent
+  Menu Subject → menuSubject
+  Menu Schedule → menuSchedule
+  Nút Logout → subLogout
+
+Teacher chọn Enter grades by class → Giao diện nhập điểm xuất hiện → cần class: EnterGradeFrm
+  Combobox chọn môn học → inSubject
+  Combobox chọn lớp học → inClass
+  Bảng nhập điểm sinh viên → tblGrade
+  Nút Confirm → subConfirm
+  Nút Cancel → subCancel
+  Nút Refresh → subRefresh
+
+Teacher chọn môn → Hệ thống tải danh sách môn của teacher → cần phương thức:
+  Tên: getSubjectsByTeacher()
+  Đầu vào: teacherId (int)
+  Đầu ra: List<Subject>
+  Gán cho entity class: Subject.
+
+Teacher chọn lớp → Hệ thống tải danh sách sinh viên trong lớp → cần phương thức:
+  Tên: getStudentsByClass()
+  Đầu vào: classId (int)
+  Đầu ra: List<Student>
+  Gán cho entity class: Student.
+
+Teacher nhập điểm và nhấn Confirm → Hệ thống tính điểm tổng kết → cần phương thức:
+  Tên: calculateFinalScore()
+  Đầu vào: component1 (double), component2 (double), component3 (double), examScore (double)
+  Đầu ra: double
+  Gán cho entity class: Grade.
+
+Hệ thống lưu điểm vào database → cần phương thức:
+  Tên: saveGrades()
+  Đầu vào: classId (int), grades (List<Grade>)
+  Đầu ra: boolean
+  Gán cho entity class: Grade.
+
+### Tóm tắt
+View classes: LoginFrm, HomeFrm, EnterGradeFrm
+Phương thức: validateLogin(), getSubjectsByTeacher(), getStudentsByClass(), calculateFinalScore(), saveGrades()
+
 ---
 
 ## Cau 3: Thiet ke tinh (1.5 diem)

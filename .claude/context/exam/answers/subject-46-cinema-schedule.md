@@ -174,6 +174,66 @@ User 1 --- n Showtime
 | User → Showtime | 1-n (Association) | Mot nhan vien tao nhieu suat chieu |
 | Movie → ScreenRoom | n-n (qua Showtime) | Phim chieu o nhieu phong, phong chieu nhieu phim |
 
+### Classes diagram (analysis)
+
+Phan tich module nay (bo qua buoc dang nhap):
+
+Sau khi dang nhap thanh cong -> Giao dien Home xuat hien:
+- mot lua chon quan ly suat chieu -> subScheduleShowing
+
+Chon quan ly suat chieu -> Giao dien quan ly xuat hien:
+- combobox chon phim -> inMovie
+- combobox chon phong chieu -> inScreenRoom
+- o nhap ngay chieu -> inDate
+- o nhap gio chieu -> inTime
+- o nhap gia ve mac dinh -> inTicketPrice
+- nut Add -> subAdd
+- bang danh sach suat chieu (click duoc) -> outsubShowtimeTable
+
+Mo giao dien -> he thong tai DS phim -> can phuong thuc:
+- ten: getAllMovies()
+- dau vao: khong
+- dau ra: danh sach Movie
+- gan cho entity class: Movie.
+
+He thong tai DS phong -> can phuong thuc:
+- ten: getAllScreenRooms()
+- dau vao: khong
+- dau ra: danh sach ScreenRoom
+- gan cho entity class: ScreenRoom.
+
+Nhan Add -> he thong kiem tra trung lich -> can phuong thuc:
+- ten: checkConflict()
+- dau vao: screenRoomId, date, time
+- dau ra: boolean
+- gan cho entity class: Showtime.
+
+He thong them suat chieu -> can phuong thuc:
+- ten: addShowtime()
+- dau vao: doi tuong Showtime
+- dau ra: int (ID suat chieu)
+- gan cho entity class: Showtime.
+
+Hien thi giao dien gia tung ghe:
+- bang gia tung ghe (co the edit) -> outsubSeatTable
+- nut Confirm -> subConfirm
+
+He thong lay ghe theo phong -> can phuong thuc:
+- ten: getSeatsByRoom()
+- dau vao: screenRoomId
+- dau ra: danh sach Seat
+- gan cho entity class: Seat.
+
+Nhan Confirm -> he thong luu gia tung ghe -> can phuong thuc:
+- ten: addSeatPricing()
+- dau vao: doi tuong SeatPricing
+- dau ra: boolean
+- gan cho entity class: SeatPricing.
+
+### Tom tat
+View classes: HomeFrm, ScheduleShowtimeFrm, SeatPricingFrm
+Methods: getAllMovies(), getAllScreenRooms(), checkConflict(), addShowtime(), getSeatsByRoom(), addSeatPricing()
+
 ---
 
 ## Cau 3: Thiet ke tinh — Giao dien va class diagram chi tiet

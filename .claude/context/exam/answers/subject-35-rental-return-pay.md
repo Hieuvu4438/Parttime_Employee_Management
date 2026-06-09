@@ -54,6 +54,54 @@ Hệ thống quản lý cho thuê sách. **Đầu sách** (BookTitle) có mã, t
 | Payment | Entity | Đối tượng phiếu thanh toán |
 | User | Entity | Đối tượng nhân viên |
 
+### Classes diagram (analysis)
+
+**Phân tích từ kịch bản (Câu 1):**
+
+Bước 1: Staff đăng nhập, chọn Return and pay. View class: **HomeFrm**, **ReturnBookFrm**.
+Bước 2: Giao diện ReturnBookFrm: ô nhập tên KH, nút Search. UI: `inCustomerName` (JTextField — nhập tên KH), `subSearchCustomer` (JButton — tìm KH).
+Bước 3-5: Staff nhập tên, nhấn Search, danh sách KH hiển thị, click chọn KH. UI: `outsubListCustomer` (JTable — danh sách KH, click chọn được).
+Bước 6: Hệ thống hiển thị danh sách sách đang mượn. UI: `outListBorrowedBooks` (JTable — danh sách sách đang mượn, có checkbox).
+Bước 7-8: Staff tick chọn sách, nhập trạng thái và tiền phạt. UI: `inStatus` (JTextField — nhập trạng thái sách), `inFine` (JTextField — nhập tiền phạt).
+Bước 9: Staff nhấn Payment. UI: `subPayment` (JButton — hiển thị hóa đơn).
+Bước 10: Hệ thống hiển thị hóa đơn. UI: `outInvoice` (JTextArea — hóa đơn thanh toán).
+Bước 11: Staff nhấn Confirm. UI: `subConfirm` (JButton — xác nhận thanh toán).
+
+**Các view class:**
+
+| View class | Loại | Mô tả |
+|------------|------|-------|
+| HomeFrm | Form | Giao diện chính, chứa menu Return and pay |
+| ReturnBookFrm | Form | Giao diện trả sách và thanh toán |
+
+**Các UI element:**
+
+| UI Element | Kiểu | View class | Mô tả |
+|------------|------|------------|-------|
+| `inCustomerName` | JTextField | ReturnBookFrm | Ô nhập tên khách hàng để tìm kiếm |
+| `subSearchCustomer` | JButton | ReturnBookFrm | Nút Search tìm kiếm khách hàng |
+| `outsubListCustomer` | JTable | ReturnBookFrm | Bảng danh sách khách hàng, click để chọn |
+| `outListBorrowedBooks` | JTable | ReturnBookFrm | Bảng sách đang mượn (mã, tên, ngày mượn, giá thuê, tiền thuê, checkbox) |
+| `inStatus` | JTextField | ReturnBookFrm | Ô nhập trạng thái sách (binh thuong / hu hong) |
+| `inFine` | JTextField | ReturnBookFrm | Ô nhập tiền phạt |
+| `subPayment` | JButton | ReturnBookFrm | Nút Payment — hiển thị hóa đơn |
+| `outInvoice` | JTextArea | ReturnBookFrm | Khu vực hiển thị hóa đơn thanh toán |
+| `subConfirm` | JButton | ReturnBookFrm | Nút Confirm — xác nhận thanh toán |
+
+**Các method:**
+
+| Method | Input | Output | Entity |
+|--------|-------|--------|--------|
+| `searchCustomerByName()` | name | List\<Customer\> | Customer |
+| `getUnreturnedDetails()` | customerId | List\<RentalSlipDetail\> | RentalSlipDetail |
+| `updateReturn()` | detailId, returnDate, status, fine | boolean | RentalSlipDetail |
+| `insertPayment()` | payment (rentalSlipId, userId, paymentDate, totalAmount) | boolean | Payment |
+
+**Tong hop:**
+
+- View classes: HomeFrm, ReturnBookFrm
+- Methods: searchCustomerByName(), getUnreturnedDetails(), updateReturn(), insertPayment()
+
 ### Bảng quan hệ
 
 | Entity 1 | Entity 2 | Kiểu | Mô tả |

@@ -153,6 +153,71 @@ Reader n --- n Book
 | Reader → Loan | 1-n (Association) | Một bạn đọc có nhiều phiếu mượn |
 | User → Loan | 1-n (Association) | Một thủ thư tạo nhiều phiếu mượn |
 
+### Classes diagram (analysis)
+
+Phân tích module này:
+
+Đăng nhập vào hệ thống → Giao diện Login xuất hiện → cần class: LoginFrm
+  Ô nhập username → inUsername
+  Ô nhập password → inPassword
+  Nút Login → subLogin
+
+Nhập username/password → Hệ thống phải kiểm tra đăng nhập → cần phương thức:
+  Tên: checkLogin()
+  Đầu vào: username, password (thuộc class User)
+  Đầu ra: boolean
+  Gán cho entity class: User.
+
+Đăng nhập thành công → Giao diện Home xuất hiện → cần class: HomeFrm
+  Nút chọn Borrowing → subBorrowing
+  Nút chọn Returning → subReturning
+  Nút chọn Statistics → subStatistics
+
+Staff chọn Borrowing → Giao diện Borrowing xuất hiện → cần class: BorrowBookFrm
+  Ô nhập mã thẻ bạn đọc → inReaderBarcode
+  Nút Scan bạn đọc → subScanReader
+  Vùng hiển thị thông tin bạn đọc → outReaderInfo
+  Bảng sách chưa trả → outListUnreturnedBooks
+  Bảng sách đã trả → outListReturnedBooks
+  Ô nhập barcode sách → inBookBarcode
+  Nút Scan sách → subScanBook
+  Bảng sách đang mượn → outListBorrowedBooks
+  Nút Submit → subSubmit
+
+Staff quét thẻ bạn đọc → Hệ thống tìm thông tin bạn đọc → cần phương thức:
+  Tên: getReaderByBarcode()
+  Đầu vào: barcode (String)
+  Đầu ra: Reader
+  Gán cho entity class: Reader.
+
+Hệ thống hiển thị sách chưa trả → cần phương thức:
+  Tên: getUnreturnedBooks()
+  Đầu vào: readerId (int)
+  Đầu ra: List<Book>
+  Gán cho entity class: Book.
+
+Staff quét sách → Hệ thống tìm sách theo barcode → cần phương thức:
+  Tên: getBookByBarcode()
+  Đầu vào: barcode (String)
+  Đầu ra: Book
+  Gán cho entity class: Book.
+
+Staff nhấn Submit → Hệ thống lưu phiếu mượn → cần phương thức:
+  Tên: addLoan()
+  Đầu vào: loan (Loan)
+  Đầu ra: boolean
+  Gán cho entity class: Loan.
+
+Hệ thống lưu chi tiết mượn → cần phương thức:
+  Tên: addLoanDetail()
+  Đầu vào: loanDetail (LoanDetail)
+  Đầu ra: boolean
+  Gán cho entity class: LoanDetail.
+
+### Tóm tắt
+View classes: LoginFrm, HomeFrm, BorrowBookFrm
+Phương thức: checkLogin(), getReaderByBarcode(), getUnreturnedBooks(), getBookByBarcode(), addLoan(), addLoanDetail()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh — Giao diện và class diagram chi tiết (1.5 điểm)

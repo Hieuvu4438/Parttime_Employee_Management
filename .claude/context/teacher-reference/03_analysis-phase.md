@@ -101,7 +101,7 @@ From the hotel sample, initial classes include:
 - Booking;
 - BookedRoom;
 - UsedService;
-- RoomStat;
+- RoomStat;`
 - HotelStat;
 - ClientStat;
 - ServiceStat;

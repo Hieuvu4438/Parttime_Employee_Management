@@ -49,6 +49,41 @@ Hệ thống nhà hàng quản lý quá trình đặt món và thanh toán. Khá
 | Invoice | id (PK), orderId (FK), customerId (FK), invoiceDate, totalOrders, totalAmount, paymentMethod |
 | User | id (PK), username, password, fullName, role |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công -> HomeFrm xuất hiện:
+  menu thống kê -> mnuStatistic
+  mục doanh thu theo tháng -> mnuMonthlyRevenue
+
+Chọn Monthly revenue -> MonthlyRevenueFrm xuất hiện:
+  bảng thống kê 12 tháng (clickable) -> dgvMonthlyStat
+  bảng chi tiết hóa đơn -> dgvInvoiceDetail
+  nút quay lại -> btnBack
+
+Khi mở form -> hệ thống tự động lấy doanh thu theo tháng -> cần phương thức:
+  tên: getMonthlyRevenue()
+  đầu vào: (không có)
+  đầu ra: list of Object[] {monthYear, totalGuests, totalRevenue}
+  gán cho entity class: Invoice (dữ liệu từ Invoice).
+
+Click vào tháng -> hệ thống lấy hóa đơn theo tháng -> cần phương thức:
+  tên: getInvoicesByMonth()
+  đầu vào: year (int), month (int)
+  đầu ra: list of Invoice
+  gán cho entity class: Invoice.
+
+Click vào tháng -> hệ thống lấy thông tin khách hàng -> cần phương thức:
+  tên: getCustomerById()
+  đầu vào: customerId (int)
+  đầu ra: Customer
+  gán cho entity class: Customer.
+
+### Summary
+View classes: HomeFrm, MonthlyRevenueFrm
+Methods: getMonthlyRevenue(), getInvoicesByMonth(), getCustomerById()
+
 ### Quan hệ
 
 ```

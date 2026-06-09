@@ -188,6 +188,76 @@ Hệ thống quản lý thuê sân bóng đá mini. Sân bóng có nhiều sân 
 | ImportInvoice → ImportInvoiceDetail | 1-n | Một phiếu nhập có nhiều chi tiết sản phẩm |
 | Product → ImportInvoiceDetail | 1-n | Một sản phẩm xuất hiện trong nhiều phiếu nhập |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Sau khi đăng nhập thành công -> HomeFrm xuất hiện:
+  một lựa chọn để cập nhật sản phẩm đã sử dụng -> subUpdateItems
+
+Chọn Update used items -> UpdateSessionItemsFrm xuất hiện:
+  ô nhập tên khách hàng -> inCustomerName
+  nút Search -> subSearchCustomer
+  bảng danh sách khách hàng (click được) -> outsubCustomerList
+
+Nhập tên khách hàng, nhấn Search -> cần phương thức:
+  tên: searchCustomer()
+  đầu vào: keyword
+  đầu ra: List<Customer>
+  gán cho entity class: Customer.
+
+Nhấn vào khách hàng "Nguyen Van A" -> hiển thị danh sách booking:
+  bảng danh sách booking đang hoạt động -> outBookingList
+  nút Checkout cho mỗi booking -> subCheckout
+
+Click khách hàng -> cần phương thức:
+  tên: getActiveBookings()
+  đầu vào: customerId
+  đầu ra: List<Booking>
+  gán cho entity class: Booking.
+
+Nhấn nút Checkout -> hiển thị giao diện cập nhật phiên thuê:
+  thông tin phiên (sân, ngày, giờ) -> outSessionInfo
+  ô nhập giờ nhận sân -> inCheckinTime
+  ô nhập giờ trả sân -> inCheckoutTime
+  ô nhập tiền thuê -> inRentAmount
+  nút Thêm sản phẩm -> subAddItem
+  bảng danh sách sản phẩm đã sử dụng -> outItemList
+  tổng tiền sản phẩm -> outTotal
+  nút Confirm -> subConfirm
+
+Nhập giờ nhận, giờ trả -> cập nhật nội bộ.
+
+Nhấn Thêm sản phẩm -> hiển thị giao diện tìm sản phẩm:
+  ô nhập tên sản phẩm -> inProductName
+  nút Search -> subSearchProduct
+  bảng danh sách sản phẩm (click được) -> outsubProductList
+  ô nhập đơn giá -> inUnitPrice
+  ô nhập số lượng -> inQuantity
+  nút OK -> subOK
+
+Nhập tên sản phẩm, nhấn Search -> cần phương thức:
+  tên: searchProduct()
+  đầu vào: keyword
+  đầu ra: List<Product>
+  gán cho entity class: Product.
+
+Chọn sản phẩm, nhập số lượng, nhấn OK -> cần phương thức:
+  tên: addSessionProduct()
+  đầu vào: sessionId, productId, unitPrice, quantity
+  đầu ra: boolean
+  gán cho entity class: SessionProduct.
+
+Nhấn Confirm -> cần phương thức:
+  tên: updateSession()
+  đầu vào: sessionId, checkinTime, checkoutTime, rentAmount
+  đầu ra: boolean
+  gán cho entity class: BookingSession.
+
+### Summary
+View classes: HomeFrm, UpdateSessionItemsFrm
+Methods: searchCustomer(), getActiveBookings(), searchProduct(), addSessionProduct(), updateSession()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh

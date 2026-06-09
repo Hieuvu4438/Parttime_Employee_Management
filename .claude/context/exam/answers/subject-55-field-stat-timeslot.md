@@ -139,6 +139,36 @@ Hệ thống quản lý cho thuê sân bóng đá mini. Mỗi sân bóng có mã
 +------------------+
 ```
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Sau khi đăng nhập thành công -> HomeFrm xuất hiện:
+  một lựa chọn để thống kê khung giờ -> subStatisticTimeSlot
+
+Chọn Statistics of time slot -> StatisticTimeSlotFrm xuất hiện:
+  ô nhập ngày bắt đầu -> inStartDate
+  ô nhập ngày kết thức -> inEndDate
+  nút Search -> subSearch
+  bảng thống kê khung giờ (click được) -> outsubTimeSlotTable
+  bảng chi tiết đặt sân -> outBookingDetailTable
+
+Nhập ngày bắt đầu, ngày kết thúc, nhấn Search -> cần phương thức:
+  tên: getTimeSlotStatistics()
+  đầu vào: startDate, endDate
+  đầu ra: List<Object[]> (timeSlot, sessionDate, totalBookings, totalRevenue)
+  gán cho entity class: BookingSession.
+
+Nhấn vào dòng "18:00-19:00" -> cần phương thức:
+  tên: getBookingDetailsByTimeSlot()
+  đầu vào: timeSlot, startDate, endDate
+  đầu ra: List<Object[]> (bookingId, customerName, courtName, sessionDate, startTime, rentAmount)
+  gán cho entity class: BookingSession.
+
+### Summary
+View classes: HomeFrm, StatisticTimeSlotFrm
+Methods: getTimeSlotStatistics(), getBookingDetailsByTimeSlot()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh

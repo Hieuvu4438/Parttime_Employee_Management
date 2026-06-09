@@ -161,6 +161,49 @@ User 1 --- n CancellationInvoice
 | Invoice → CancellationInvoice | 1-0..1 (Association) | Mot hoa don co the co 1 hoa don huy |
 | User → CancellationInvoice | 1-n (Association) | Mot nhan vien tao nhieu hoa don huy |
 
+### Classes diagram (analysis)
+
+Analysis this module (exclude login step):
+
+Once login successful -> HomeFrm appears:
+  an option to cancel ticket -> subCancelTicket
+
+Choose Cancel ticket -> CancelTicketFrm appears:
+  input ticket code -> inTicketCode
+  a button search -> subSearch
+  display ticket info -> outTicketInfo
+  a button cancel -> subCancel
+  display fine invoice -> outFineInvoice
+  a button OK -> subOK
+
+Enter ticket code and search -> system finds invoice by code -> need a method:
+  name: getInvoiceByCode()
+  input: code (String)
+  output: Invoice
+  assign to entity class: Invoice.
+
+Search -> system gets invoice details -> need a method:
+  name: getDetailsByInvoice()
+  input: invoiceId (int)
+  output: list of InvoiceDetail
+  assign to entity class: InvoiceDetail.
+
+Click OK -> system updates invoice status to cancelled -> need a method:
+  name: updateStatus()
+  input: invoiceId (int), status (String)
+  output: boolean
+  assign to entity class: Invoice.
+
+Click OK -> system creates cancellation invoice -> need a method:
+  name: addCancellation()
+  input: ci (CancellationInvoice)
+  output: boolean
+  assign to entity class: CancellationInvoice.
+
+### Summary
+View classes: HomeFrm, CancelTicketFrm
+Methods: getInvoiceByCode(), getDetailsByInvoice(), updateStatus(), addCancellation()
+
 ---
 
 ## Cau 3: Thiet ke tinh — Giao dien va class diagram chi tiet (1.5 diem)

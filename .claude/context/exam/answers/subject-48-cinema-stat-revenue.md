@@ -169,6 +169,50 @@ User 1 --- n Invoice
 | Invoice → Ticket | 1-n (Composition) | Hoa don chua nhieu ve |
 | User → Invoice | 1-n (Association) | Mot nhan vien tao nhieu hoa don |
 
+### Classes diagram (analysis)
+
+Phan tich module nay (bo qua buoc dang nhap):
+
+Sau khi dang nhap thanh cong -> Giao dien Home xuat hien:
+- mot lua chon thong ke doanh thu -> subRevenueStatistics
+
+Chon thong ke doanh thu -> Giao dien thong ke xuat hien:
+- combobox chon kieu thong ke (Theo phim / Theo rap) -> inStatType
+- o nhap ngay bat dau -> inStartDate
+- o nhap ngay ket thuc -> inEndDate
+- nut View -> subView
+- bang phim/rap (click duoc) -> outsubMovieTable
+- bang suat chieu (click duoc) -> outsubShowtimeTable
+- bang hoa don -> outInvoiceTable
+
+Chon kieu, nhap ngay, nhan View -> he thong thong ke theo phim -> can phuong thuc:
+- ten: getMovieRevenue()
+- dau vao: startDate, endDate
+- dau ra: danh sach MovieRevenue
+- gan cho entity class: Movie.
+
+Neu chon theo rap -> can phuong thuc:
+- ten: getCinemaRevenue()
+- dau vao: startDate, endDate
+- dau ra: danh sach CinemaRevenue
+- gan cho entity class: Cinema.
+
+Click vao phim -> he thong lay chi tiet suat chieu -> can phuong thuc:
+- ten: getShowtimeRevenue()
+- dau vao: movieId, startDate, endDate
+- dau ra: danh sach ShowtimeRevenue
+- gan cho entity class: Showtime.
+
+Click vao suat chieu -> he thong lay danh sach hoa don -> can phuong thuc:
+- ten: getInvoicesByShowtime()
+- dau vao: showtimeId
+- dau ra: danh sach Invoice
+- gan cho entity class: Invoice.
+
+### Tom tat
+View classes: HomeFrm, RevenueStatFrm
+Methods: getMovieRevenue(), getCinemaRevenue(), getShowtimeRevenue(), getInvoicesByShowtime()
+
 ---
 
 ## Cau 3: Thiet ke tinh — Giao dien va class diagram chi tiet

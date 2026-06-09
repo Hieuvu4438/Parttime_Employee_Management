@@ -77,6 +77,47 @@ Tập trung vào chức năng nhập hàng:
 | Costume | RentalSlipDetail | 1 : N | Một trang phục xuất hiện trong nhiều chi tiết phiếu thuê |
 | User | RentalSlip | 1 : N | Một nhân viên tạo nhiều phiếu thuê |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công → HomeView:
+  tùy chọn nhập trang phục → subImportCostume
+
+Chọn Import costume → hiển thị ImportCostumeFrm:
+  ô nhập tên nhà cung cấp → inProviderName
+  nút tìm kiếm → subSearchProvider
+  nút thêm nhà cung cấp mới → subAddNewProvider
+
+Nhập tên nhà cung cấp "ABC Fashion", nhấn Search → hiển thị danh sách:
+  bảng nhà cung cấp (click chọn) → outProviderList
+
+Click chọn nhà cung cấp "ABC Fashion" → hiển thị giao diện nhập trang phục:
+  nhãn nhà cung cấp đã chọn → outSelectedProvider
+  ô nhập tên trang phục → inCostumeName
+  nút tìm kiếm trang phục → subSearchCostume
+
+Nhập "Vest nam", nhấn Search → hiển thị danh sách trang phục:
+  bảng trang phục (click chọn) → outCostumeList
+
+Chọn trang phục, nhập số lượng và đơn giá:
+  ô nhập số lượng → inQuantity
+  ô nhập đơn giá → inUnitPrice
+  nút thêm vào hóa đơn → subAddItem
+
+Nhấn Add to invoice → cập nhật hóa đơn:
+  bảng chi tiết hóa đơn → outInvoiceTable
+  tổng tiền hóa đơn → outTotal
+
+(Lặp lại cho trang phục khác: "Váy dạ hội đỏ" × 5)
+
+Nhấn Confirm → subConfirm
+  hệ thống lưu hóa đơn, cập nhật tồn kho, in hóa đơn
+
+### Tóm tắt
+View classes: HomeView, ImportCostumeFrm
+Methods: searchProvider(), addProvider(), searchCostume(), createInvoice(), addDetail(), updateStock()
+
 ### ASCII Class Diagram
 
 ```

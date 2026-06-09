@@ -187,6 +187,72 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep nhan vi
 | TimeSlot → Class | 1-n | Mot khung gio co nhieu lop. VD: Slot1 (07:00–09:00) co 5 lop |
 | Subject → Subject (Prerequisite) | n-n | Quan he tu tham chieu. VD: CS201 yeu cau CS101, CS202 yeu cau CS101 va CS102 |
 
+### Classes diagram (analysis)
+
+Phân tích module này:
+
+Đăng nhập vào hệ thống → Giao diện Login xuất hiện → cần class: LoginFrm
+  Ô nhập username → inUsername
+  Ô nhập password → inPassword
+  Nút Login → subLogin
+
+Nhập username/password → Hệ thống phải kiểm tra đăng nhập → cần phương thức:
+  Tên: validateLogin()
+  Đầu vào: username, password (thuộc class User)
+  Đầu ra: boolean
+  Gán cho entity class: User.
+
+Đăng nhập thành công → Giao diện Home xuất hiện → cần class: HomeFrm
+  Menu Schedule → menuSchedule
+  Menu Student → menuStudent
+  Menu Subject → menuSubject
+  Menu Grade → menuGrade
+  Nút Logout → subLogout
+
+Staff chọn Schedule → Giao diện lập lịch lớp học xuất hiện → cần class: ClassSchedulerFrm
+  Combobox chọn môn học → inSubject
+  Combobox chọn tiet hoc (Section) → inSection
+  Bảng danh sách lop hoc → tblSchedule
+  Nút Add New Class → subAddClass
+  Nút Confirm → subConfirm
+  Nút Cancel → subCancel
+  Nút Refresh → subRefresh
+
+Staff chọn môn học → Hệ thống tải danh sách Section → cần phương thức:
+  Tên: getSectionsBySubject()
+  Đầu vào: subjectId (int)
+  Đầu ra: List<String>
+  Gán cho entity class: Subject.
+
+Staff chọn Section → Hệ thống tải danh sách lớp → cần phương thức:
+  Tên: getClassesBySubjectSection()
+  Đầu vào: subjectId (int), section (String)
+  Đầu ra: List<Class>
+  Gán cho entity class: Class.
+
+Staff nhấn Add New Class → Dialog thêm lớp xuất hiện → cần class: AddClassDialog
+  Combobox chọn phòng học → inClassroom
+  Combobox chọn khung giờ → inTimeSlot
+  Ô nhập sĩ số tối đa → inMaxStudents
+  Nút OK → subOK
+  Nút Cancel → subCancel
+
+Staff chọn phòng, khung giờ, nhấn OK → Hệ thống kiểm tra trùng lịch → cần phương thức:
+  Tên: checkConflict()
+  Đầu vào: classroomId (int), timeSlotId (int)
+  Đầu ra: boolean
+  Gán cho entity class: Class.
+
+Staff nhấn Confirm → Hệ thống lưu lớp học → cần phương thức:
+  Tên: insertClass()
+  Đầu vào: cls (Class)
+  Đầu ra: boolean
+  Gán cho entity class: Class.
+
+### Tóm tắt
+View classes: LoginFrm, HomeFrm, ClassSchedulerFrm, AddClassDialog
+Phương thức: validateLogin(), getSectionsBySubject(), getClassesBySubjectSection(), checkConflict(), insertClass()
+
 ---
 
 ## Cau 3: Thiet ke tinh (1.5 diem)

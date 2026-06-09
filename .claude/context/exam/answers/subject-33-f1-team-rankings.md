@@ -114,6 +114,48 @@ v                  |       +------------------+
 +-----------------------------+
 ```
 
+### Classes diagram (analysis)
+
+**Phân tích từ kịch bản (Câu 1):**
+
+Bước 1-3: Staff đăng nhập → giao diện Home. View class: **HomeFrm**.
+Bước 4: Staff chọn Statistics → Team rankings. View class: **TeamRankingFrm**.
+Bước 5: Giao diện bảng xếp hạng đội: combobox chọn chặng đua. UI: `inRace` (ComboBox — chọn chặng đua).
+Bước 6: Staff chọn "Silverstone GP".
+Bước 7-8: Hệ thống hiển thị bảng xếp hạng đội. UI: `outsubListTeamStanding` (Table — bảng xếp hạng đội, click chọn dòng được).
+Bước 9: Staff nhấn vào dòng "Red Bull Racing".
+Bước 10: Hệ thống hiển thị chi tiết kết quả từng chặng của đội. UI: `outListRaceDetail` (Table — chi tiết kết quả từng chặng).
+Bước 11: Staff nhấn Back. UI: `subBack` (Button — quay về bảng xếp hạng).
+
+**Các view class:**
+
+| View class | Loại | Mô tả |
+|------------|------|-------|
+| HomeFrm | Form | Giao diện chính, chứa menu Statistics → Team rankings |
+| TeamRankingFrm | Form | Giao diện xem bảng xếp hạng đội đua |
+
+**Các UI element:**
+
+| UI Element | Kiểu | View class | Mô tả |
+|------------|------|------------|-------|
+| `inRace` | ComboBox | TeamRankingFrm | Chọn chặng đua (lọc kết quả tính đến chặng đó) |
+| `outsubListTeamStanding` | Table (clickable) | TeamRankingFrm | Bảng xếp hạng: Tên đội, Chủ sở hữu, Tổng điểm, Tổng thời gian |
+| `outListRaceDetail` | Table | TeamRankingFrm | Chi tiết: Tên chặng, Tổng điểm (2 tay đua), Tổng thời gian |
+| `subBack` | Button | TeamRankingFrm | Nút Back — quay về bảng xếp hạng |
+
+**Các method:**
+
+| Method | Input | Output | Entity |
+|--------|-------|--------|--------|
+| `getAllRaces()` | - | List\<Race\> | Race |
+| `getTeamStandings()` | raceId | List\<TeamStanding\> | Team, RaceResult |
+| `getTeamRaceDetails()` | teamId, maxRaceId | List\<TeamRaceDetail\> | RaceResult, Race |
+
+**Tong hop:**
+
+- View classes: HomeFrm, TeamRankingFrm
+- Methods: getAllRaces(), getTeamStandings(), getTeamRaceDetails()
+
 ### Quan hệ
 
 | Quan hệ | Kiểu | Giải thích |

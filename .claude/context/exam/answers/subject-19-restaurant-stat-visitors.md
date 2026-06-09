@@ -60,6 +60,43 @@ Hệ thống nhà hàng quản lý việc đặt món và thanh toán cho khách
 | TimeSlot | id (PK), startTime, endTime, description |
 | User | id (PK), username, password, fullName, role |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công -> HomeFrm xuất hiện:
+  menu thống kê -> mnuStatistic
+  mục khách theo khung giờ -> mnuVisitorByTimeSlot
+
+Chọn Visitors by time slot -> StatisticVisitorFrm xuất hiện:
+  ô nhập ngày bắt đầu -> dtpStartDate
+  ô nhập ngày kết thúc -> dtpEndDate
+  nút xem -> btnView
+  bảng thống kê khung giờ (clickable) -> dgvTimeSlotStat
+  bảng chi tiết hóa đơn -> dgvInvoiceDetail
+
+Nhập ngày và nhấn View -> hệ thống lấy đơn hàng theo khoảng thời gian -> cần phương thức:
+  tên: getOrdersByDateRange()
+  đầu vào: startDate (Date), endDate (Date)
+  đầu ra: list of Order
+  gán cho entity class: Order.
+
+Click vào khung giờ -> hệ thống lấy hóa đơn theo khung giờ -> cần phương thức:
+  tên: getInvoicesByTimeSlot()
+  đầu vào: startTime (String), endTime (String), startDate (Date), endDate (Date)
+  đầu ra: list of Invoice
+  gán cho entity class: Invoice.
+
+Click vào khung giờ -> hệ thống lấy thông tin khách hàng -> cần phương thức:
+  tên: getCustomerById()
+  đầu vào: customerId (int)
+  đầu ra: Customer
+  gán cho entity class: Customer.
+
+### Summary
+View classes: HomeFrm, StatisticVisitorFrm
+Methods: getOrdersByDateRange(), getInvoicesByTimeSlot(), getCustomerById()
+
 ### Quan hệ
 
 ```

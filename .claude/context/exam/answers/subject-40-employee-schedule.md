@@ -150,6 +150,43 @@ He thong quan ly nhan vien ban thoi gian cua chuoi nha hang. Moi nha hang (ten n
 | User → Schedule | 1-n | Mot staff tao nhieu lich |
 | Employee → Shift | n-n (qua Schedule) | NV duoc xep nhieu ca |
 
+### Classes diagram (analysis)
+
+Phan tich module nay (bo qua buoc dang nhap):
+
+Sau khi dang nhap thanh cong -> Giao dien Home xuat hien:
+- mot lua chon xep lich -> subSchedule
+
+Chon xep lich -> Giao dien xep lich xuat hien:
+- bang 7 dong x 2 cot hien thi NV da duoc xep -> outScheduleTable
+- nut luu -> subSave
+
+Nhan vao mot o trong bang -> he thong lay DS dang ky -> can phuong thuc:
+- ten: getRegisteredEmployees()
+- dau vao: shiftId
+- dau ra: danh sach Employee
+- gan cho entity class: Employee.
+
+He thong lay tong gio da xep -> can phuong thuc:
+- ten: getTotalScheduledHours()
+- dau vao: employeeId, weekStartDate
+- dau ra: int (so gio)
+- gan cho entity class: Schedule.
+
+Hien thi popup chon nhan vien:
+- bang DS dang ky (click duoc) -> outsubListRegistered
+- nut chon -> subSelect
+
+Chon nhan vien va luu -> he thong luu lich -> can phuong thuc:
+- ten: addSchedule()
+- dau vao: doi tuong Schedule
+- dau ra: boolean
+- gan cho entity class: Schedule.
+
+### Tom tat
+View classes: HomeFrm, ScheduleFrm, SelectEmployeeFrm
+Methods: getRegisteredEmployees(), getTotalScheduledHours(), addSchedule()
+
 ---
 
 ## Cau 3: Thiet ke tinh — Giao dien va class diagram chi tiet

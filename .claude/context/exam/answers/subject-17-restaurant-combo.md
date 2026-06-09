@@ -94,6 +94,58 @@ Nhà hàng cho phép quản lý tạo các combo kết hợp nhiều món ăn th
 | User → Combo | 1-n | Một quản lý tạo nhiều combo |
 | Combo ↔ Dish | n-n (qua ComboDetail) | Combo chứa nhiều món, món thuộc nhiều combo |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công -> HomeFrm xuất hiện:
+  một tùy chọn quản lý combo -> subCombo
+
+Chọn Combo management -> ComboManageFrm xuất hiện:
+  danh sách combo hiện có (clickable) -> outsubListCombo
+  nút thêm combo mới -> subAddCombo
+  nút sửa -> subEdit
+  nút xóa -> subDelete
+
+Nhấn Add new combo -> AddComboFrm xuất hiện:
+  ô nhập tên combo -> inComboName
+  danh sách món trong combo -> outsubListComboDetail
+  nút thêm món -> subAddDishes
+  nút cập nhật -> subUpdate
+
+Nhấn Add dishes -> SearchDishFrm xuất hiện:
+  ô nhập tên món -> inDishName
+  nút tìm kiếm -> subSearch
+  bảng danh sách món (clickable) -> outsubListDish
+
+Nhập tên món và nhấn Search -> hệ thống tìm món theo tên -> cần phương thức:
+  tên: searchDishByName()
+  đầu vào: name (String)
+  đầu ra: list of Dish
+  gán cho entity class: Dish.
+
+Khi mở ComboManageFrm -> hệ thống lấy danh sách combo -> cần phương thức:
+  tên: getAllCombos()
+  đầu vào: (không có)
+  đầu ra: list of Combo
+  gán cho entity class: Combo.
+
+Nhấn Update -> hệ thống lưu combo -> cần phương thức:
+  tên: addCombo()
+  đầu vào: combo (Combo)
+  đầu ra: int (comboId)
+  gán cho entity class: Combo.
+
+Nhấn Update -> hệ thống lưu chi tiết combo -> cần phương thức:
+  tên: addComboDetail()
+  đầu vào: detail (ComboDetail)
+  đầu ra: boolean
+  gán cho entity class: ComboDetail.
+
+### Summary
+View classes: HomeFrm, ComboManageFrm, AddComboFrm, SearchDishFrm
+Methods: getAllCombos(), searchDishByName(), addCombo(), addComboDetail()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh

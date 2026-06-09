@@ -106,6 +106,48 @@ v                  |       +------------------+
 +-----------------------+
 ```
 
+### Classes diagram (analysis)
+
+**Phân tích từ kịch bản (Câu 1):**
+
+Bước 1-3: Staff đăng nhập → giao diện Home. View class: **HomeFrm**.
+Bước 4: Staff chọn Statistics → Racer standings. View class: **RacerStandingFrm**.
+Bước 5: Giao diện bảng xếp hạng: combobox chọn chặng đua. UI: `inRace` (ComboBox — chọn chặng đua).
+Bước 6: Staff chọn "Monaco GP".
+Bước 7-8: Hệ thống hiển thị bảng xếp hạng tay đua. UI: `outsubListStanding` (Table — bảng xếp hạng, click chọn dòng được).
+Bước 9: Staff nhấn vào dòng "Max Verstappen".
+Bước 10: Hệ thống hiển thị chi tiết kết quả từng chặng. UI: `outListDetail` (Table — chi tiết kết quả từng chặng).
+Bước 11: Staff nhấn Back. UI: `subBack` (Button — quay về bảng xếp hạng).
+
+**Các view class:**
+
+| View class | Loại | Mô tả |
+|------------|------|-------|
+| HomeFrm | Form | Giao diện chính, chứa menu Statistics → Racer standings |
+| RacerStandingFrm | Form | Giao diện xem bảng xếp hạng tay đua |
+
+**Các UI element:**
+
+| UI Element | Kiểu | View class | Mô tả |
+|------------|------|------------|-------|
+| `inRace` | ComboBox | RacerStandingFrm | Chọn chặng đua (lọc kết quả tính đến chặng đó) |
+| `outsubListStanding` | Table (clickable) | RacerStandingFrm | Bảng xếp hạng: Tên, Quốc tịch, Đội, Tổng điểm, Tổng thời gian |
+| `outListDetail` | Table | RacerStandingFrm | Chi tiết: Tên chặng, Thứ hạng, Điểm, Thời gian về đích |
+| `subBack` | Button | RacerStandingFrm | Nút Back — quay về bảng xếp hạng |
+
+**Các method:**
+
+| Method | Input | Output | Entity |
+|--------|-------|--------|--------|
+| `getAllRaces()` | - | List\<Race\> | Race |
+| `getRacerStandings()` | raceId | List\<RacerStanding\> | Driver, RaceResult |
+| `getResultsByDriver()` | driverId | List\<RaceResult\> | RaceResult |
+
+**Tong hop:**
+
+- View classes: HomeFrm, RacerStandingFrm
+- Methods: getAllRaces(), getRacerStandings(), getResultsByDriver()
+
 ### Quan hệ
 
 | Quan hệ | Kiểu | Giải thích |

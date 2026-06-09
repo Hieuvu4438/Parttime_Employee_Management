@@ -127,6 +127,59 @@ Hệ thống quản lý thuê sân bóng đá mini. Sân bóng có nhiều sân 
 | Booking → BookingSession | 1-n | Một booking có nhiều phiên thuê theo tuần |
 | Booking → Payment | 1-1 | Mỗi booking có 1 phiếu thanh toán |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Sau khi đăng nhập thành công -> HomeFrm xuất hiện:
+  một lựa chọn để thống kê doanh thu -> subRevenueStat
+
+Chọn Revenue statistics -> RevenueStatFrm xuất hiện:
+  combobox chọn kiểu thống kê (Tháng/Quý/Năm) -> inStatType
+  bảng thống kê doanh thu (click được) -> outsubRevenueTable
+  bảng chi tiết hóa đơn -> outDetailTable
+  tổng doanh thu -> outTotalRevenue
+
+Chọn "Tháng" từ combobox -> cần phương thức:
+  tên: getRevenueByMonth()
+  đầu vào: không có (lấy 12 tháng gần nhất)
+  đầu ra: List<Object[]> (monthYear, totalRevenue)
+  gán cho entity class: Payment.
+
+Nhấn vào dòng "04/2026" -> cần phương thức:
+  tên: getPaymentsByMonth()
+  đầu vào: year, month
+  đầu ra: List<Payment>
+  gán cho entity class: Payment.
+
+Chuyển sang "Quý" -> cần phương thức:
+  tên: getRevenueByQuarter()
+  đầu vào: không có
+  đầu ra: List<Object[]> (quarter, totalRevenue)
+  gán cho entity class: Payment.
+
+Nhấn vào dòng "Quý 2/2026" -> cần phương thức:
+  tên: getPaymentsByQuarter()
+  đầu vào: year, quarter
+  đầu ra: List<Payment>
+  gán cho entity class: Payment.
+
+Chuyển sang "Năm" -> cần phương thức:
+  tên: getRevenueByYear()
+  đầu vào: không có
+  đầu ra: List<Object[]> (year, totalRevenue)
+  gán cho entity class: Payment.
+
+Nhấn vào dòng "2026" -> cần phương thức:
+  tên: getPaymentsByYear()
+  đầu vào: year
+  đầu ra: List<Payment>
+  gán cho entity class: Payment.
+
+### Summary
+View classes: HomeFrm, RevenueStatFrm
+Methods: getRevenueByMonth(), getPaymentsByMonth(), getRevenueByQuarter(), getPaymentsByQuarter(), getRevenueByYear(), getPaymentsByYear()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh

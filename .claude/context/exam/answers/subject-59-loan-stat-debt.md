@@ -101,6 +101,62 @@ User 1 --- n Payment             (association)
 | tblPayment | paymentId | scheduleId → tblPaymentSchedule | paymentDate, amountPaid, method |
 | tblUser | userId | — | username, password, fullName, role |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công → HomeFrm:
+  Nút chọn "Customer statistics by debt" → subStatDebt
+
+Staff chọn Customer statistics by debt → StatDebtView xuất hiện:
+  Bảng thống kê khách hàng theo nợ (click được) → outsubCustomerStatTable
+
+Staff click khách hàng → ContractListView xuất hiện:
+  Danh sách hợp đồng của khách hàng (click được) → outsubContractList
+  Nút Back → subBack
+
+Staff click hợp đồng → ContractDetailView xuất hiện:
+  Thông tin khách hàng (tên, SĐT) → outCustomerInfo
+  Danh sách sản phẩm trong hợp đồng → outItemList
+  Danh sách thanh toán theo kỳ → outPaymentList
+  Nút Back → subBack
+
+Phân tích phương thức:
+
+Lấy thống kê khách hàng theo nợ:
+  Tên: getDebtStatistics()
+  Đầu vào: (không có)
+  Đầu ra: List<Customer> (kèm tổng dư nợ, tổng nợ còn lại)
+  Gán cho entity class: Customer.
+
+Lấy danh sách hợp đồng của khách hàng:
+  Tên: getContractsByCustomer()
+  Đầu vào: customerId (int)
+  Đầu ra: List<Contract>
+  Gán cho entity class: Contract.
+
+Lấy danh sách sản phẩm trong hợp đồng:
+  Tên: getItemsByContract()
+  Đầu vào: contractId (int)
+  Đầu ra: List<ContractItem>
+  Gán cho entity class: ContractItem.
+
+Lấy lịch trả góp theo hợp đồng:
+  Tên: getScheduleByContract()
+  Đầu vào: contractId (int)
+  Đầu ra: List<PaymentSchedule>
+  Gán cho entity class: PaymentSchedule.
+
+Lấy danh sách thanh toán theo kỳ:
+  Tên: getPaymentsBySchedule()
+  Đầu vào: scheduleId (int)
+  Đầu ra: List<Payment>
+  Gán cho entity class: Payment.
+
+### Tóm tắt
+View classes: HomeFrm, StatDebtView, ContractListView, ContractDetailView
+Phương thức: getDebtStatistics(), getContractsByCustomer(), getItemsByContract(), getScheduleByContract(), getPaymentsBySchedule()
+
 ---
 
 ## Cau 3: Thiet ke tinh

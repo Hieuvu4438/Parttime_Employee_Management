@@ -111,6 +111,45 @@ Player 1 --- * Match (as player2) (1 đấu thủ là player2 ở nhiều trận
 | opponentTotalScore | double | Tổng điểm của tất cả đối thủ đã gặp |
 | currentElo | int | Elo hiện tại (sau cập nhật) |
 
+### Classes diagram (analysis)
+
+**Phân tích từ kịch bản (Câu 1):**
+
+Bước 1-2: Staff đăng nhập → giao diện Home → chọn menu Statistics → View leaderboard. View class: **HomeFrm**, **LeaderboardFrm**.
+Bước 3: Giao diện bảng xếp hạng hiện ra: combobox Round. UI: `inRound` (ComboBox — chọn vòng đấu).
+Bước 4: Staff chọn Round 5.
+Bước 5-8: Hệ thống tải dữ liệu xếp hạng, hiển thị bảng. UI: `outsubListStanding` (Table — bảng xếp hạng, click chọn dòng được).
+Bước 9: Staff click vào đấu thủ Nguyen Van A.
+Bước 10-12: Vùng chi tiết hiển thị danh sách trận đã đấu. UI: `outListMatchDetail` (Table — chi tiết trận đấu).
+
+**Các view class:**
+
+| View class | Loại | Mô tả |
+|------------|------|-------|
+| HomeFrm | Form | Giao diện chính, chứa menu Statistics → View leaderboard |
+| LeaderboardFrm | Form | Giao diện xem bảng xếp hạng |
+
+**Các UI element:**
+
+| UI Element | Kiểu | View class | Mô tả |
+|------------|------|------------|-------|
+| `inRound` | ComboBox | LeaderboardFrm | Chọn vòng đấu (Round 1 .. Round 11) |
+| `outsubListStanding` | Table | LeaderboardFrm | Bảng xếp hạng đấu thủ (Rank, Code, Name, Total Score, Opp Total, Elo), click chọn dòng |
+| `outListMatchDetail` | Table | LeaderboardFrm | Chi tiết trận đấu của đấu thủ được chọn (Match ID, Opponent, Result, Elo Change) |
+
+**Các method:**
+
+| Method | Input | Output | Entity |
+|--------|-------|--------|--------|
+| `getRounds()` | tournamentId | List\<Round\> | Round |
+| `getAllPlayers()` | tournamentId | List\<Player\> | Player |
+| `getMatchesByPlayerUpToRound()` | playerId, roundId | List\<Match\> | Match |
+
+**Tong hop:**
+
+- View classes: HomeFrm, LeaderboardFrm
+- Methods: getRounds(), getAllPlayers(), getMatchesByPlayerUpToRound()
+
 ### Bảng quan hệ (Relationship Table)
 
 | Entity 1 | Multiplicity | Entity 2 | Mô tả |

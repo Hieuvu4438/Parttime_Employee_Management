@@ -59,6 +59,54 @@ Hệ thống quản lý cho thuê sách. Cửa hàng có nhiều **đầu sách*
 | id, rentalPrice | Attribute | Thuộc tính của RentalSlipDetail |
 | id, username, password, role | Attribute | Thuộc tính của User |
 
+### Classes diagram (analysis)
+
+**Phân tích từ kịch bản (Câu 1):**
+
+Bước 1: Staff đăng nhập, chọn Borrowing. View class: **HomeFrm**, **BorrowBookFrm**.
+Bước 2: Giao diện Borrowing: ô nhập tên KH, nút Search. UI: `inCustomerName` (JTextField — nhập tên KH), `subSearchCustomer` (JButton — tìm KH).
+Bước 3-4: Staff nhập tên, nhấn Search, danh sách KH hiển thị. UI: `outsubListCustomer` (JTable — danh sách KH, click chọn được).
+Bước 5: Giao diện thêm sách mượn: ô nhập tên sách, nút Search. UI: `inBookName` (JTextField — nhập tên sách), `subSearchBook` (JButton — tìm sách).
+Bước 6-7: Staff nhập tên sách, nhấn Search, danh sách sách hiển thị. UI: `outsubListBook` (JTable — danh sách sách, click chọn được).
+Bước 8-9: Staff click chọn sách, hệ thống thêm vào danh sách mượn. UI: `outListRentalDetail` (JTable — danh sách sách đã chọn mượn).
+Bước 10: Staff nhấn Create loan slip. UI: `subCreateSlip` (JButton — tạo phiếu mượn).
+Bước 11-12: Hệ thống lưu RentalSlip + RentalSlipDetail, in phiếu mượn, thông báo thành công.
+
+**Các view class:**
+
+| View class | Loại | Mô tả |
+|------------|------|-------|
+| HomeFrm | Form | Giao diện chính, chứa menu Borrowing |
+| BorrowBookFrm | Form | Giao diện mượn sách |
+
+**Các UI element:**
+
+| UI Element | Kiểu | View class | Mô tả |
+|------------|------|------------|-------|
+| `inCustomerName` | JTextField | BorrowBookFrm | Ô nhập tên khách hàng để tìm kiếm |
+| `subSearchCustomer` | JButton | BorrowBookFrm | Nút Search tìm kiếm khách hàng |
+| `outsubListCustomer` | JTable | BorrowBookFrm | Bảng danh sách khách hàng, click để chọn |
+| `inBookName` | JTextField | BorrowBookFrm | Ô nhập tên sách để tìm kiếm |
+| `subSearchBook` | JButton | BorrowBookFrm | Nút Search tìm kiếm sách |
+| `outsubListBook` | JTable | BorrowBookFrm | Bảng danh sách sách, click để chọn |
+| `outListRentalDetail` | JTable | BorrowBookFrm | Bảng danh sách sách đã chọn mượn |
+| `subCreateSlip` | JButton | BorrowBookFrm | Nút Create loan slip — tạo phiếu mượn |
+
+**Các method:**
+
+| Method | Input | Output | Entity |
+|--------|-------|--------|--------|
+| `searchCustomerByName()` | name | List\<Customer\> | Customer |
+| `searchBookTitleByName()` | name | List\<BookTitle\> | BookTitle |
+| `insertRentalSlip()` | rentalSlip (customerId, userId, rentalDate, totalBooks) | boolean | RentalSlip |
+| `getLatestRentalSlipId()` | - | int | RentalSlip |
+| `insertRentalSlipDetail()` | detail (rentalSlipId, bookTitleId, rentalPrice) | boolean | RentalSlipDetail |
+
+**Tong hop:**
+
+- View classes: HomeFrm, BorrowBookFrm
+- Methods: searchCustomerByName(), searchBookTitleByName(), insertRentalSlip(), getLatestRentalSlipId(), insertRentalSlipDetail()
+
 ### Bảng quan hệ
 
 | Entity 1 | Entity 2 | Kiểu | Mô tả |

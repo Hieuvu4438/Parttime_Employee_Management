@@ -164,6 +164,37 @@ User 1 --- n Invoice
 | TourDeparture → InvoiceDetail | 1-n (Association) | Mot ngay khoi hanh xuat hien trong nhieu chi tiet |
 | User → Invoice | 1-n (Association) | Mot nhan vien tao nhieu hoa don |
 
+### Classes diagram (analysis)
+
+Analysis this module (exclude login step):
+
+Once login successful -> HomeFrm appears:
+  an option Statistics -> subStatistics
+
+Choose Statistics -> SiteRevenueStatFrm appears:
+  input start date -> inStartDate
+  input end date -> inEndDate
+  a button view -> subView
+  a table of site stats (clickable) -> outsubListSiteStat
+  a table of invoice details -> outListInvoice
+  a button back -> subBack
+
+Enter dates and click View -> system gets site revenue statistics -> need a method:
+  name: getSiteRevenueStat()
+  input: startDate (Date), endDate (Date)
+  output: list of SiteStat (DTO: site, totalTours, totalVisitors, totalRevenue)
+  assign to entity class: Site (output contains Site object).
+
+Click a site row -> system gets invoices by site -> need a method:
+  name: getInvoicesBySite()
+  input: siteId (int), startDate (Date), endDate (Date)
+  output: list of InvoiceStat (DTO)
+  assign to entity class: Invoice (output derived from Invoice).
+
+### Summary
+View classes: HomeFrm, SiteRevenueStatFrm
+Methods: getSiteRevenueStat(), getInvoicesBySite()
+
 ---
 
 ## Cau 3: Thiet ke tinh — Giao dien va class diagram chi tiet (1.5 diem)

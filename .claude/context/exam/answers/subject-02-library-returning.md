@@ -117,6 +117,83 @@ He thong thu vien cho phep nhan vien quan ly viec muon va tra sach. Moi doc gia 
 | Reader -> LoanDetail | Gian tiep (qua Loan) | Doc gia lien ket voi chi tiet muon thong qua phieu muon |
 | User -> LoanDetail | Gian tiep (qua Loan) | Nhan vien lien ket voi chi tiet muon thong qua phieu muon |
 
+### Classes diagram (analysis)
+
+Analysis this module:
+
+Enter the system -> The login interface is appeared -> need a class: LoginFrm
+  input for username -> inUsername
+  input for password -> inPassword
+  a submit to login -> subLogin
+
+Enter the username/password -> the system must check if the login is correct -> need a method:
+  name: checkLogin()
+  input: username, password (of the class User)
+  output: boolean
+  assign to the entity class: User.
+
+Once login successful -> main interface appears -> need a class: HomeFrm
+  an option to manage return -> subReturn
+  an option to manage borrow -> subBorrow
+  an option to manage statistics -> subStatistics
+
+Staff selects Return -> The return book interface is appeared -> need a class: ReturnBookFrm
+  input for reader barcode -> inReaderBarcode
+  a submit to scan reader -> subScanReader
+  output for reader info -> outReaderInfo
+  input for book barcode -> inBookBarcode
+  a submit to scan book -> subScanBook
+  output for borrowed books table -> outBorrowedTable
+  output for returned books table -> outReturnedTable
+  output for total fine -> outTotalFine
+  a submit to confirm return -> subSubmit
+  a submit to print penalty slip -> subPrintPenalty
+  a submit to print loan slip -> subPrintLoan
+  a submit to done -> subDone
+
+Staff scans reader barcode -> The system must find the reader -> need a method:
+  name: getReaderByBarcode()
+  input: barcode (String)
+  output: Reader
+  assign to the entity class: Reader.
+
+The system must find the active loan of the reader -> need a method:
+  name: getActiveLoan()
+  input: readerId (int)
+  output: Loan
+  assign to the entity class: Loan.
+
+The system must get unreturned books -> need a method:
+  name: getUnreturnedByLoanId()
+  input: loanId (int)
+  output: List<LoanDetail>
+  assign to the entity class: LoanDetail.
+
+Staff scans a book to return -> The system updates return date and fine -> need a method:
+  name: returnBook()
+  input: detailId (int), returnDate (Date), fine (double)
+  output: boolean
+  assign to the entity class: LoanDetail.
+
+Staff clicks Submit -> The system finalizes the return -> need a method:
+  name: finalizeReturn()
+  input: loanId (int)
+  output: boolean
+  assign to the entity class: LoanDetail.
+
+Staff clicks Print Penalty -> The penalty slip form appears -> need a class: PenaltySlipFrm
+  output for slip code -> outSlipCode
+  output for reader name -> outReaderName
+  output for reader barcode -> outReaderBarcode
+  output for loan barcode -> outLoanBarcode
+  output for fine table -> outFineTable
+  output for total fine -> outTotalFine
+  a submit to print -> subPrint
+
+### Summary
+View classes: LoginFrm, HomeFrm, ReturnBookFrm, PenaltySlipFrm, LoanSlipFrm
+Methods: checkLogin(), getReaderByBarcode(), getActiveLoan(), getUnreturnedByLoanId(), returnBook(), finalizeReturn()
+
 ---
 
 ## Cau 3: Thiet ke tinh (1.5 diem)

@@ -118,6 +118,55 @@ Tournament 1 --- * TournamentRegistration --- * Player  (N-N qua registration)
 +-----------------------------+
 ```
 
+### Classes diagram (analysis)
+
+**Phân tích từ kịch bản (Câu 1):**
+
+Bước 1-2: Staff đăng nhập → giao diện Home. View class: **HomeFrm**.
+Bước 3: Staff chọn menu Update results → giao diện cập nhật kết quả. View class: **UpdateResultFrm**.
+Bước 4: Staff mở combobox Round, chọn Round 3. UI: `inRound` (ComboBox — chọn vòng đấu).
+Bước 5-6: Hệ thống tải danh sách trận đấu, hiển thị bảng. UI: `outsubListMatch` (Table — danh sách trận, click chọn dòng được).
+Bước 7: Staff click chọn trận M01. Vùng nhập kết quả phía dưới hiện ra.
+Bước 8: Hiển thị tên 2 đấu thủ. UI: `outPlayer1Name`, `outPlayer2Name` (Label — hiển thị tên).
+Bước 9-10: Staff nhập điểm và Elo change. UI: `inPlayer1Score`, `inPlayer2Score`, `inPlayer1EloChange`, `inPlayer2EloChange` (TextField — nhập dữ liệu).
+Bước 11: Staff nhấn Update. UI: `subUpdate` (Button — thực hiện cập nhật).
+Bước 12-16: Hệ thống kiểm tra, cập nhật DB, thông báo, reload danh sách.
+
+**Các view class:**
+
+| View class | Loại | Mô tả |
+|------------|------|-------|
+| HomeFrm | Form | Giao diện chính, chứa menu Update results |
+| UpdateResultFrm | Form | Giao diện cập nhật kết quả thi đấu |
+
+**Các UI element:**
+
+| UI Element | Kiểu | View class | Mô tả |
+|------------|------|------------|-------|
+| `inRound` | ComboBox | UpdateResultFrm | Chọn vòng đấu (Round 1 .. Round 11) |
+| `outsubListMatch` | Table | UpdateResultFrm | Bảng danh sách trận đấu, click chọn dòng |
+| `outPlayer1Name` | Label | UpdateResultFrm | Tên đấu thủ 1 (hiển thị khi chọn trận) |
+| `outPlayer2Name` | Label | UpdateResultFrm | Tên đấu thủ 2 (hiển thị khi chọn trận) |
+| `inPlayer1Score` | TextField | UpdateResultFrm | Ô nhập điểm đấu thủ 1 (0, 0.5, hoặc 1) |
+| `inPlayer2Score` | TextField | UpdateResultFrm | Ô nhập điểm đấu thủ 2 (0, 0.5, hoặc 1) |
+| `inPlayer1EloChange` | TextField | UpdateResultFrm | Ô nhập thay đổi Elo đấu thủ 1 |
+| `inPlayer2EloChange` | TextField | UpdateResultFrm | Ô nhập thay đổi Elo đấu thủ 2 |
+| `subUpdate` | Button | UpdateResultFrm | Nút Update — lưu kết quả vào DB |
+
+**Các method:**
+
+| Method | Input | Output | Entity |
+|--------|-------|--------|--------|
+| `getRounds()` | tournamentId | List\<Round\> | Round |
+| `getMatchesByRound()` | roundId | List\<Match\> | Match |
+| `updateMatchResult()` | match (id, player1Score, player2Score, player1EloChange, player2EloChange) | boolean | Match |
+| `updateElo()` | playerId, newElo | boolean | Player |
+
+**Tong hop:**
+
+- View classes: HomeFrm, UpdateResultFrm
+- Methods: getRounds(), getMatchesByRound(), updateMatchResult(), updateElo()
+
 ### Bảng quan hệ (Relationship Table)
 
 | Entity 1 | Multiplicity | Entity 2 | Mô tả |

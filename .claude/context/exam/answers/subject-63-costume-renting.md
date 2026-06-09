@@ -72,6 +72,46 @@ Hệ thống quản lý cho thuê trang phục bao gồm các thực thể chín
 | Costume | RentalSlipDetail | 1 : N | Một trang phục xuất hiện trong nhiều chi tiết phiếu thuê |
 | User | RentalSlip | 1 : N | Một nhân viên tạo nhiều phiếu thuê |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công → HomeView:
+  tùy chọn cho thuê trang phục → subCostumeRenting
+
+Chọn Costume renting → hiển thị RentalSlipFrm:
+  ô nhập tên khách hàng → inCustomerName
+  nút tìm kiếm khách hàng → subSearchCustomer
+  nút thêm khách hàng mới → subAddNewCustomer
+
+Nhập "Tran Thi B", nhấn Search → hiển thị danh sách:
+  bảng khách hàng (click chọn) → outCustomerList
+
+Click chọn khách hàng "Tran Thi B" → hiển thị giao diện thêm trang phục vào phiếu thuê:
+  nhãn khách hàng đã chọn → outSelectedCustomer
+  ô nhập tên trang phục → inCostumeName
+  nút tìm kiếm trang phục → subSearchCostume
+
+Nhập "Vest nam", nhấn Search → hiển thị danh sách trang phục:
+  bảng trang phục (click chọn) → outCostumeList
+
+Chọn trang phục, nhập số lượng:
+  ô nhập số lượng → inQuantity
+  nút thêm vào phiếu thuê → subAddItem
+
+Nhấn Add to rental slip → cập nhật phiếu thuê:
+  bảng chi tiết phiếu thuê → outRentalDetailTable
+  tổng tiền cọc → outTotalDeposit
+
+(Lặp lại cho trang phục khác: "Váy dạ hội đỏ" × 1)
+
+Nhấn Create rental slip → subCreateSlip
+  hệ thống lưu phiếu thuê, cập nhật tồn kho, in phiếu thuê, nhận tiền cọc
+
+### Tóm tắt
+View classes: HomeView, RentalSlipFrm
+Methods: searchCustomer(), addCustomer(), searchCostume(), getCostumeById(), createSlip(), addDetail(), updateStock()
+
 ### ASCII Class Diagram
 
 ```

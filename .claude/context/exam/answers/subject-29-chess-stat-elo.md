@@ -120,6 +120,42 @@ Player 1 --- * Match (as player2) (1 đấu thủ là player2 ở nhiều trận
 | score | double | Điểm đạt được (1.0, 0.5, 0.0) |
 | eloChange | int | Thay đổi Elo trận này |
 
+### Classes diagram (analysis)
+
+**Phân tích từ kịch bản (Câu 1):**
+
+Bước 1-2: Staff đăng nhập → giao diện Home → chọn menu Statistics → Elo change statistics. View class: **HomeFrm**, **EloStatFrm**.
+Bước 3: Giao diện thống kê Elo hiện ra. Hệ thống tự động tải dữ liệu (không cần nút View).
+Bước 4-8: Bảng hiển thị danh sách đấu thủ: Code, Name, YOB, Nationality, Old Elo, New Elo, Elo Change. Sắp xếp theo Elo Change DESC → New Elo DESC. UI: `outsubListEloStat` (Table — bảng thống kê Elo, click chọn dòng được).
+Bước 9: Staff click vào dòng Nguyen Van A.
+Bước 10-12: Vùng chi tiết hiển thị danh sách trận đã đấu. UI: `outListMatchDetail` (Table — chi tiết trận đấu).
+
+**Các view class:**
+
+| View class | Loại | Mô tả |
+|------------|------|-------|
+| HomeFrm | Form | Giao diện chính, chứa menu Statistics → Elo change statistics |
+| EloStatFrm | Form | Giao diện thống kê thay đổi Elo |
+
+**Các UI element:**
+
+| UI Element | Kiểu | View class | Mô tả |
+|------------|------|------------|-------|
+| `outsubListEloStat` | Table | EloStatFrm | Bảng thống kê Elo (Code, Name, YOB, Nationality, Old Elo, New Elo, Elo Change), click chọn dòng |
+| `outListMatchDetail` | Table | EloStatFrm | Chi tiết trận đấu của đấu thủ được chọn (Match ID, Opponent, Result, Score, Elo Change) |
+
+**Các method:**
+
+| Method | Input | Output | Entity |
+|--------|-------|--------|--------|
+| `getAllPlayers()` | tournamentId | List\<Player\> | Player |
+| `getMatchesByPlayerTournament()` | playerId, tournamentId | List\<Match\> | Match |
+
+**Tong hop:**
+
+- View classes: HomeFrm, EloStatFrm
+- Methods: getAllPlayers(), getMatchesByPlayerTournament()
+
 ### Bảng quan hệ (Relationship Table)
 
 | Entity 1 | Multiplicity | Entity 2 | Mô tả |

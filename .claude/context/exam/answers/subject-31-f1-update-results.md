@@ -106,6 +106,49 @@ v                  |       +------------------+
 +------------------+
 ```
 
+### Classes diagram (analysis)
+
+**Phân tích từ kịch bản (Câu 1):**
+
+Bước 1-3: Staff đăng nhập → giao diện Home. View class: **HomeFrm**.
+Bước 4: Staff chọn Update results. View class: **UpdateResultFrm**.
+Bước 5: Giao diện cập nhật kết quả: combobox chọn chặng đua. UI: `inRace` (ComboBox — chọn chặng đua).
+Bước 6: Staff chọn "Monaco GP".
+Bước 7: Hệ thống hiển thị danh sách tay đua đã đăng ký với ô nhập kết quả. UI: `outsubListDriverResult` (Table — danh sách tay đua với ô nhập).
+Bước 8: Staff nhập kết quả cho từng tay đua. UI: `inFinishTime` (TextField per row — nhập thời gian về đích), `inLapsCompleted` (TextField per row — nhập số vòng hoàn thành).
+Bước 9: Staff nhấn Save. UI: `subSave` (Button — lưu kết quả).
+Bước 10-12: Hệ thống xếp hạng theo thời gian, tính điểm (25,18,15,12,...), lưu RaceResult, thông báo thành công.
+
+**Các view class:**
+
+| View class | Loại | Mô tả |
+|------------|------|-------|
+| HomeFrm | Form | Giao diện chính, chứa menu Update results |
+| UpdateResultFrm | Form | Giao diện cập nhật kết quả chặng đua |
+
+**Các UI element:**
+
+| UI Element | Kiểu | View class | Mô tả |
+|------------|------|------------|-------|
+| `inRace` | ComboBox | UpdateResultFrm | Chọn chặng đua |
+| `outsubListDriverResult` | Table | UpdateResultFrm | Bảng: Tên tay đua, Tên đội, Finish Time (input), Laps (input) |
+| `inFinishTime` | TextField (per row) | UpdateResultFrm | Ô nhập thời gian về đích cho từng tay đua |
+| `inLapsCompleted` | TextField (per row) | UpdateResultFrm | Ô nhập số vòng hoàn thành cho từng tay đua |
+| `subSave` | Button | UpdateResultFrm | Nút Save — lưu kết quả |
+
+**Các method:**
+
+| Method | Input | Output | Entity |
+|--------|-------|--------|--------|
+| `getAllRaces()` | - | List\<Race\> | Race |
+| `getRegistrationsByRace()` | raceId | List\<RaceRegistration\> | RaceRegistration |
+| `addResults()` | List\<RaceResult\> | boolean | RaceResult |
+
+**Tong hop:**
+
+- View classes: HomeFrm, UpdateResultFrm
+- Methods: getAllRaces(), getRegistrationsByRace(), addResults()
+
 ### Quan hệ
 
 | Quan hệ | Kiểu | Giải thích |

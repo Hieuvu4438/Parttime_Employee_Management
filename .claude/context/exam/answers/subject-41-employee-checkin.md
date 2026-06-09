@@ -160,6 +160,56 @@ He thong quan ly nhan vien ban thoi gian cua chuoi nha hang. Moi nha hang (ten, 
 | Schedule → Attendance | 1-0..1 | Moi lich co the co hoac chua co ban ghi cham cong |
 | User → Attendance | 1-n | Mot staff tao nhieu cham cong |
 
+### Classes diagram (analysis)
+
+Phan tich module nay (bo qua buoc dang nhap):
+
+Sau khi dang nhap thanh cong -> Giao dien Home xuat hien:
+- mot lua chon Checkin -> subCheckin
+- mot lua chon Checkout -> subCheckout
+
+Chon Checkin -> Giao dien checkin xuat hien:
+- o nhap ma nhan vien -> inEmployeeCode
+- nut Submit -> subSubmit
+
+Nhap ma NV va Submit -> he thong tim NV theo ma -> can phuong thuc:
+- ten: getEmployeeByCode()
+- dau vao: code
+- dau ra: doi tuong Employee
+- gan cho entity class: Employee.
+
+He thong kiem tra lich hom nay -> can phuong thuc:
+- ten: getTodaySchedule()
+- dau vao: employeeId
+- dau ra: danh sach Schedule
+- gan cho entity class: Schedule.
+
+He thong kiem tra da checkin chua -> can phuong thuc:
+- ten: getTodayAttendance()
+- dau vao: employeeId, shiftId
+- dau ra: doi tuong Attendance
+- gan cho entity class: Attendance.
+
+He thong ghi nhan checkin -> can phuong thuc:
+- ten: checkin()
+- dau vao: employeeId, shiftId, checkinTime
+- dau ra: boolean
+- gan cho entity class: Attendance.
+
+Chon Checkout -> Giao dien checkout xuat hien:
+- o nhap ma nhan vien -> inEmployeeCode
+- nut Submit -> subSubmit
+
+He thong ghi nhan checkout -> can phuong thuc:
+- ten: checkout()
+- dau vao: employeeId, shiftId, checkoutTime
+- dau ra: boolean
+- gan cho entity class: Attendance.
+
+### Tom tat
+View classes: HomeFrm, CheckinFrm, CheckoutFrm
+Methods: getEmployeeByCode(), getTodaySchedule(), getTodayAttendance(), checkin(), checkout()
+
 ---
 
 ## Cau 3: Thiet ke tinh — Giao dien va class diagram chi tiet

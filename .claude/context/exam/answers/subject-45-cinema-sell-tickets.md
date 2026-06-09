@@ -145,6 +145,55 @@ Hệ thống quản lý chuỗi rạp chiếu phim. Mỗi rạp có nhiều phò
 | Ticket → Invoice | n-1 | Nhiều vé thuộc một hóa đơn |
 | FoodItem → Ticket | n-n | Đồ ăn có thể bán kèm vé hoặc riêng |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Sau khi đăng nhập thành công -> Giao diện Home xuất hiện:
+- một lựa chọn bán vé -> subSellTicket
+
+Chọn bán vé -> Giao diện bán vé xuất hiện:
+- combobox chọn phim -> inMovie
+- combobox chọn suất chiếu -> inShowtime
+- sơ đồ ghế (click được) -> outsubSeatMap
+- bảng hóa đơn -> outInvoice
+- tổng tiền -> outTotalAmount
+- nút in vé -> subPrint
+
+Mở giao diện -> hệ thống tải danh sách phim -> cần phương thức:
+- tên: getAllMovies()
+- đầu vào: không
+- đầu ra: danh sách Movie
+- gán cho entity class: Movie.
+
+Chọn phim -> hệ thống tải suất chiếu -> cần phương thức:
+- tên: getShowtimesByMovie()
+- đầu vào: movieId
+- đầu ra: danh sách Showtime
+- gán cho entity class: Showtime.
+
+Chọn suất chiếu -> hệ thống tải ghế trống -> cần phương thức:
+- tên: getAvailableSeats()
+- đầu vào: showtimeId
+- đầu ra: danh sách Seat
+- gán cho entity class: Seat.
+
+Hệ thống lấy giá từng ghế -> cần phương thức:
+- tên: getSeatPrice()
+- đầu vào: showtimeId, seatId
+- đầu ra: float (giá vé)
+- gán cho entity class: Ticket.
+
+Chọn ghế và nhấn Print -> hệ thống lưu vé -> cần phương thức:
+- tên: addTicket()
+- đầu vào: đối tượng Ticket
+- đầu ra: boolean
+- gán cho entity class: Ticket.
+
+#### Tóm tắt
+View classes: HomeFrm, SellTicketFrm
+Methods: getAllMovies(), getShowtimesByMovie(), getAvailableSeats(), getSeatPrice(), addTicket()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh

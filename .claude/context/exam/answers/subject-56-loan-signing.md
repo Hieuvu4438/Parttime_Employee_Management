@@ -176,6 +176,70 @@ Hệ thống quản lý cho vay trả góp. Công ty hợp tác với nhiều đ
 +------------------+
 ```
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công → HomeFrm:
+  Nút chọn "Sign new contract" → subSignContract
+
+Staff chọn Sign new contract → SearchCustomerView xuất hiện:
+  Ô nhập tên khách hàng → inCustomerName
+  Nút Search → subSearchCustomer
+  Danh sách khách hàng (click được) → outsubListCustomer
+
+Staff chọn khách hàng → SearchProductView xuất hiện:
+  Ô nhập tên sản phẩm → inProductName
+  Nút Search → subSearchProduct
+  Danh sách sản phẩm (click được) → outsubListProduct
+  Ô nhập số lượng → inQuantity
+  Ô nhập đơn giá → inUnitPrice
+  Nút Add → subAdd
+  Danh sách sản phẩm đã thêm vào hợp đồng → outContractItemList
+  Nút Continue → subContinue
+
+Staff nhấn Continue → LoanTermView xuất hiện:
+  Ô nhập kỳ hạn (tháng) → inLoanTerm
+  Ô nhập lãi suất (%/tháng) → inInterestRate
+  Bảng lịch trả góp tự động tính → outPaymentSchedule
+  Nút Confirm → subConfirm
+
+Phân tích phương thức:
+
+Tìm kiếm khách hàng theo tên:
+  Tên: searchCustomer()
+  Đầu vào: keyword (String)
+  Đầu ra: List<Customer>
+  Gán cho entity class: Customer.
+
+Tìm kiếm sản phẩm theo tên:
+  Tên: searchProduct()
+  Đầu vào: keyword (String)
+  Đầu ra: List<Product>
+  Gán cho entity class: Product.
+
+Lưu hợp đồng mới:
+  Tên: insertContract()
+  Đầu vào: contract (Contract)
+  Đầu ra: int (contractId)
+  Gán cho entity class: Contract.
+
+Lưu chi tiết hợp đồng:
+  Tên: insertContractItem()
+  Đầu vào: contractItem (ContractItem)
+  Đầu ra: boolean
+  Gán cho entity class: ContractItem.
+
+Lưu lịch trả góp:
+  Tên: insertPaymentSchedule()
+  Đầu vào: paymentSchedule (PaymentSchedule)
+  Đầu ra: boolean
+  Gán cho entity class: PaymentSchedule.
+
+### Tóm tắt
+View classes: HomeFrm, SearchCustomerView, SearchProductView, LoanTermView
+Phương thức: searchCustomer(), searchProduct(), insertContract(), insertContractItem(), insertPaymentSchedule()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh

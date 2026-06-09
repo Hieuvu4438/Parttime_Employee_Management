@@ -156,6 +156,71 @@ He thong quan ly kho Store Management bao gom cac thuc the sau:
                              +--------------------------+
 ```
 
+### Classes diagram (analysis)
+
+Phan tich module nay (bo qua buoc dang nhap):
+
+Sau khi dang nhap thanh cong -> HomeFrm:
+  mot lua chon de xuat hang -> subExport
+
+Chon xuat hang -> ExportFrm hien thi:
+  o tim kiem dai ly -> inSearchAgent
+  nut tim kiem dai ly -> subSearchAgent
+  nut them moi dai ly -> subAddAgent
+  bang danh sach dai ly tim duoc -> outsubListAgent
+  ten dai ly da chon -> outAgentName
+  dia chi dai ly da chon -> outAgentAddress
+  so dien thoai dai ly da chon -> outAgentPhone
+  o tim kiem hang hoa -> inSearchItem
+  nut tim kiem hang hoa -> subSearchItem
+  bang danh sach hang hoa tim duoc -> outsubListItem
+  o nhap so luong -> inQuantity
+  o nhap don gia -> inUnitPrice
+  nut them vao danh sach -> subAddToList
+  bang danh sach hang xuat -> outListExport
+  tong tien -> outTotal
+  nut xuat hoa don -> subSubmit
+
+Staff nhap ten dai ly va nhan tim kiem -> he thong truy van dai ly -> can mot phuong thuc:
+  ten: searchAgentByName()
+  dau vao: agentName (String)
+  dau ra: List<SubAgent>
+  gan cho entity class: SubAgent
+
+Staff chon dai ly -> hien thi thong tin dai ly.
+
+Staff nhap ten hang hoa va nhan tim kiem -> he thong truy van hang hoa -> can mot phuong thuc:
+  ten: searchItemByName()
+  dau vao: itemName (String)
+  dau ra: List<Item>
+  gan cho entity class: Item
+
+Staff chon hang hoa, nhap so luong va don gia, nhan them vao danh sach -> he thong kiem tra ton kho -> can mot phuong thuc:
+  ten: getStock()
+  dau vao: itemId (String)
+  dau ra: int (so luong ton kho)
+  gan cho entity class: Item
+
+Staff nhan xuat hoa don -> he thong tao phieu xuat va chi tiet -> can cac phuong thuc:
+  ten: insertExportInvoice()
+  dau vao: ExportInvoice (exportDate, totalAmount, agentId, userId)
+  dau ra: String (invoiceId moi)
+  gan cho entity class: ExportInvoice
+
+  ten: insertExportInvoiceDetails()
+  dau vao: List<ExportInvoiceDetail> (invoiceId, itemId, quantity, unitPrice, amount)
+  dau ra: boolean
+  gan cho entity class: ExportInvoiceDetail
+
+  ten: updateStock()
+  dau vao: itemId (String), qtyChange (int)
+  dau ra: boolean
+  gan cho entity class: Item
+
+### Tong hop
+View classes: HomeFrm, ExportFrm
+Methods: searchAgentByName(), searchItemByName(), getStock(), insertExportInvoice(), insertExportInvoiceDetails(), updateStock()
+
 ### Bang quan he (Relation Table)
 
 | Entity | Thuoc tinh chinh | Khoa ngoai | Entity lien ket |

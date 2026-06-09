@@ -127,6 +127,49 @@ Hệ thống quản lý cho vay trả góp bao gồm các thực thể chính: *
 | tblContract | contractId | customerId, staffId | tblCustomer(customerId), tblUser(userId) |
 | tblContractItem | contractItemId | contractId, productId | tblContract(contractId), tblProduct(productId) |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công → HomeFrm:
+  Nút chọn "Statistics" → "Statistics of product" → subStatProduct
+
+Staff chọn Statistics of product → StatProductView xuất hiện:
+  Ô nhập ngày bắt đầu → inStartDate
+  Ô nhập ngày kết thúc → inEndDate
+  Nút View → subView
+  Bảng thống kê theo danh mục sản phẩm (click được) → outsubCategoryTable
+
+Staff click danh mục → CategoryDetailView xuất hiện:
+  Bảng chi tiết sản phẩm trong danh mục (click được) → outsubItemTable
+
+Staff click sản phẩm → ProductContractListView xuất hiện:
+  Danh sách hợp đồng chứa sản phẩm → outContractList
+
+Phân tích phương thức:
+
+Lấy thống kê danh mục sản phẩm theo doanh thu:
+  Tên: getCategoryStatByRevenue()
+  Đầu vào: startDate (Date), endDate (Date)
+  Đầu ra: List<CategoryStatDTO>
+  Gán cho entity class: Product.
+
+Lấy chi tiết sản phẩm theo danh mục:
+  Tên: getItemDetailByCategory()
+  Đầu vào: category (String), startDate (Date), endDate (Date)
+  Đầu ra: List<ItemDetailDTO>
+  Gán cho entity class: Product.
+
+Lấy danh sách hợp đồng chứa sản phẩm:
+  Tên: getContractsByProduct()
+  Đầu vào: productId (int), startDate (Date), endDate (Date)
+  Đầu ra: List<Contract>
+  Gán cho entity class: Contract.
+
+### Tóm tắt
+View classes: HomeFrm, StatProductView, CategoryDetailView, ProductContractListView
+Phương thức: getCategoryStatByRevenue(), getItemDetailByCategory(), getContractsByProduct()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh

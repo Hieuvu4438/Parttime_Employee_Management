@@ -120,6 +120,49 @@ v                  |         |
 +------------------+
 ```
 
+### Classes diagram (analysis)
+
+**Phân tích từ kịch bản (Câu 1):**
+
+Bước 1-3: Staff đăng nhập → giao diện Home. View class: **HomeFrm**.
+Bước 4: Staff chọn Register to racing. View class: **RegisterRacingFrm**.
+Bước 5: Giao diện đăng ký xuất hiện: combobox chọn chặng đua, combobox chọn đội đua. UI: `inRace` (ComboBox — chọn chặng đua), `inTeam` (ComboBox — chọn đội đua).
+Bước 6-7: Staff chọn "Monaco GP" và "Red Bull Racing".
+Bước 8: Hệ thống hiển thị danh sách tay đua của đội, sắp xếp theo tên. UI: `outsubListDriver` (Table — danh sách tay đua có checkbox, click chọn được).
+Bước 9: Staff tick chọn 2 tay đua. Checkbox trong bảng.
+Bước 10: Staff nhấn Save. UI: `subSave` (Button — lưu đăng ký).
+Bước 11-12: Hệ thống kiểm tra (<=2 tay đua), lưu RaceRegistration, thông báo thành công.
+
+**Các view class:**
+
+| View class | Loại | Mô tả |
+|------------|------|-------|
+| HomeFrm | Form | Giao diện chính, chứa menu Register to racing |
+| RegisterRacingFrm | Form | Giao diện đăng ký tay đua vào chặng đua |
+
+**Các UI element:**
+
+| UI Element | Kiểu | View class | Mô tả |
+|------------|------|------------|-------|
+| `inRace` | ComboBox | RegisterRacingFrm | Chọn chặng đua |
+| `inTeam` | ComboBox | RegisterRacingFrm | Chọn đội đua |
+| `outsubListDriver` | Table (CheckBox) | RegisterRacingFrm | Danh sách tay đua, mỗi dòng có checkbox để chọn |
+| `subSave` | Button | RegisterRacingFrm | Nút Save — lưu đăng ký |
+
+**Các method:**
+
+| Method | Input | Output | Entity |
+|--------|-------|--------|--------|
+| `getAllRaces()` | - | List\<Race\> | Race |
+| `getAllTeams()` | - | List\<Team\> | Team |
+| `getDriversByTeam()` | teamId | List\<Driver\> | Driver |
+| `addRegistration()` | raceId, teamId, driverId | boolean | RaceRegistration |
+
+**Tong hop:**
+
+- View classes: HomeFrm, RegisterRacingFrm
+- Methods: getAllRaces(), getAllTeams(), getDriversByTeam(), addRegistration()
+
 ### Quan hệ
 
 | Quan hệ | Kiểu | Giải thích |

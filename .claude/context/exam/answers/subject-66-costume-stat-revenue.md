@@ -133,6 +133,33 @@ Hệ thống quản lý cho thuê trang phục. Cửa hàng có nhiều loại t
 | RentalSlip | Payment | 1 : 0..1 | Một phiếu thuê có tối đa 1 phiếu thanh toán |
 | User | RentalSlip | 1 : N | Một nhân viên tạo nhiều phiếu thuê |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công → HomeView:
+  tùy chọn thống kê doanh thu → subRevenueStat
+
+Chọn Revenue Statistics → hiển thị CostumeStatRevenueFrm:
+  combobox chọn loại thống kê (Tháng/Quý/Năm) → inStatType
+  nút xem thống kê → subView
+
+Chọn "Tháng" trong combobox → hiển thị thống kê:
+  bảng doanh thu theo tháng (click chọn) → outStatTable
+  (cột: tên tháng, tổng doanh thu, sắp xếp từ gần nhất đến xa nhất)
+
+Click chọn tháng "07/2026" → hiển thị chi tiết:
+  bảng chi tiết hóa đơn → outDetailTable
+  (cột: mã HĐ, tên khách hàng, ngày mượn, tổng số trang phục, tổng tiền)
+
+Click chọn tháng khác → cập nhật bảng chi tiết hóa đơn
+
+Thay đổi combobox sang "Quý" hoặc "Năm" → cập nhật bảng thống kê tương ứng
+
+### Tóm tắt
+View classes: HomeView, CostumeStatRevenueFrm
+Methods: getRevenueByMonth(), getRevenueByQuarter(), getRevenueByYear(), getSlipsByMonth(), getSlipsByQuarter(), getSlipsByYear()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh (Static Design)

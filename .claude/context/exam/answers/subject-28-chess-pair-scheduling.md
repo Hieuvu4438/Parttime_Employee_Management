@@ -120,6 +120,52 @@ Player 1 --- * Match (as player2) (1 đấu thủ là player2 ở nhiều trận
 | player1 | Player | Đấu thủ 1 |
 | player2 | Player | Đấu thủ 2 (null nếu bye) |
 
+### Classes diagram (analysis)
+
+**Phân tích từ kịch bản (Câu 1):**
+
+Bước 1-2: Staff đăng nhập → giao diện Home → chọn menu Scheduling. View class: **HomeFrm**, **PairSchedulingFrm**.
+Bước 3: Giao diện xếp cặp hiện ra: combobox Previous Round, BXH trống, nút Schedule bị disable. UI: `inPreviousRound` (ComboBox — chọn vòng trước).
+Bước 4: Staff chọn Round 4.
+Bước 5-6: Hệ thống tải bảng xếp hạng sau Round 4. UI: `outStanding` (Table — bảng xếp hạng hiện tại).
+Bước 7: Nút Schedule enable. Staff nhấn Schedule. UI: `subSchedule` (Button — thực hiện ghép cặp tự động).
+Bước 8-9: Hệ thống ghép cặp theo luật Swiss, hiển thị danh sách cặp đấu. UI: `outListPair` (Table — danh sách cặp đấu sau ghép).
+Bước 10: Staff kiểm tra, nhấn Save. UI: `subSave` (Button — lưu vòng đấu mới vào DB).
+Bước 11-12: Hệ thống tạo Round 5, tạo trận đấu mới, thông báo thành công.
+
+**Các view class:**
+
+| View class | Loại | Mô tả |
+|------------|------|-------|
+| HomeFrm | Form | Giao diện chính, chứa menu Scheduling |
+| PairSchedulingFrm | Form | Giao diện xếp cặp thi đấu |
+
+**Các UI element:**
+
+| UI Element | Kiểu | View class | Mô tả |
+|------------|------|------------|-------|
+| `inPreviousRound` | ComboBox | PairSchedulingFrm | Chọn vòng trước (Round 1 .. Round 10) |
+| `outStanding` | Table | PairSchedulingFrm | Bảng xếp hạng hiện tại (Rank, Code, Name, Total Score, Opp Total, Elo) |
+| `subSchedule` | Button | PairSchedulingFrm | Nút Schedule — ghép cặp tự động theo luật Swiss |
+| `outListPair` | Table | PairSchedulingFrm | Danh sách cặp đấu sau ghép (Table, Player 1, Player 2) |
+| `subSave` | Button | PairSchedulingFrm | Nút Save — lưu vòng đấu mới vào DB |
+
+**Các method:**
+
+| Method | Input | Output | Entity |
+|--------|-------|--------|--------|
+| `getRounds()` | tournamentId | List\<Round\> | Round |
+| `getAllPlayers()` | tournamentId | List\<Player\> | Player |
+| `getMatchesByPlayerUpToRound()` | playerId, roundId | List\<Match\> | Match |
+| `getAllMatchesUpToRound()` | roundId | List\<Match\> | Match |
+| `addRound()` | round (tournamentId, roundNumber) | boolean | Round |
+| `addMatch()` | match (roundId, table, player1Id, player2Id) | boolean | Match |
+
+**Tong hop:**
+
+- View classes: HomeFrm, PairSchedulingFrm
+- Methods: getRounds(), getAllPlayers(), getMatchesByPlayerUpToRound(), getAllMatchesUpToRound(), addRound(), addMatch()
+
 ### Bảng quan hệ (Relationship Table)
 
 | Entity 1 | Multiplicity | Entity 2 | Mô tả |

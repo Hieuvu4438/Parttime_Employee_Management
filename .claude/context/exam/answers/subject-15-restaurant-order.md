@@ -140,6 +140,53 @@ Nhà hàng quản lý việc gọi món cho khách. Nhà hàng có nhiều bàn 
 | Combo → ComboDetail | 1-n | Một combo chứa nhiều chi tiết món |
 | Dish → ComboDetail | 1-n | Một món xuất hiện trong nhiều combo |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công -> HomeFrm xuất hiện:
+  một tùy chọn gọi món -> subOrder
+
+Chọn Order -> OrderFrm xuất hiện:
+  combobox chọn bàn -> inTable
+  ô nhập tên món -> inDishName
+  nút tìm kiếm -> subSearch
+  bảng kết quả tìm kiếm (clickable) -> outsubListDish
+  ô nhập số lượng -> inQuantity
+  nút OK thêm món -> subOK
+  danh sách món đã chọn -> outListOrderDetail
+  nút xác nhận -> subConfirm
+
+Chọn bàn và nhập tên món, nhấn Search -> hệ thống tìm món theo tên -> cần phương thức:
+  tên: searchDishByName()
+  đầu vào: name (String)
+  đầu ra: list of Dish
+  gán cho entity class: Dish.
+
+Chọn món, nhập số lượng, nhấn OK -> thêm vào danh sách đã chọn (không cần gọi DAO).
+
+Nhấn Confirm -> hệ thống lưu đơn hàng -> cần phương thức:
+  tên: addOrder()
+  đầu vào: order (Order)
+  đầu ra: int (orderId)
+  gán cho entity class: Order.
+
+Nhấn Confirm -> hệ thống lưu chi tiết đơn hàng -> cần phương thức:
+  tên: addOrderDetail()
+  đầu vào: detail (OrderDetail)
+  đầu ra: boolean
+  gán cho entity class: OrderDetail.
+
+Khi mở form Order -> hệ thống lấy danh sách bàn -> cần phương thức:
+  tên: getAllTables()
+  đầu vào: (không có)
+  đầu ra: list of Table
+  gán cho entity class: Table.
+
+### Summary
+View classes: HomeFrm, OrderFrm
+Methods: getAllTables(), searchDishByName(), addOrder(), addOrderDetail()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh

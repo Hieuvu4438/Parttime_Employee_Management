@@ -132,6 +132,41 @@ He thong quan ly kho Store Management - Module Thong ke dai ly bao gom cac thuc 
                              +--------------------------+
 ```
 
+### Classes diagram (analysis)
+
+Phan tich module nay (bo qua buoc dang nhap):
+
+Sau khi dang nhap thanh cong -> HomeFrm:
+  mot lua chon de thong ke dai ly -> subAgentStat
+
+Chon thong ke dai ly -> AgentStatFrm hien thi:
+  o chon ngay bat dau -> inStartDate
+  o chon ngay ket thuc -> inEndDate
+  nut thong ke -> subStat
+  bang tong hop dai ly theo doanh thu -> outsubListAgentStat
+  tong doanh thu ky -> outTotalRevenue
+  tieu de chi tiet -> outSelectedTitle
+  bang chi tiet hoa don -> outListInvoiceDetail
+  tong so hoa don -> outInvoiceCount
+  tong tien cac hoa don -> outInvoiceTotal
+  nut xuat bao cao -> subExport
+
+Staff chon khoang thoi gian va nhan thong ke -> he thong truy van thong ke dai ly -> can mot phuong thuc:
+  ten: getAgentStats()
+  dau vao: fromDate (Date), toDate (Date)
+  dau ra: List<AgentStatistics>
+  gan cho entity class: SubAgent (thong ke tu ExportInvoice)
+
+Staff nhan chon mot dai ly -> he thong truy van chi tiet hoa don -> can mot phuong thuc:
+  ten: getAgentInvoices()
+  dau vao: agentId (String), fromDate (Date), toDate (Date)
+  dau ra: List<AgentInvoiceSummary>
+  gan cho entity class: ExportInvoice, ExportInvoiceDetail
+
+### Tong hop
+View classes: HomeFrm, AgentStatFrm
+Methods: getAgentStats(), getAgentInvoices()
+
 ### Bang quan he (Relation Table)
 
 | Entity | Thuoc tinh chinh | Khoa ngoai | Entity lien ket |

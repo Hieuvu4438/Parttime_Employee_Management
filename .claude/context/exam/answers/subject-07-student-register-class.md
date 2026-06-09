@@ -187,6 +187,86 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep sinh vi
 | TimeSlot → Class | 1-n | Mot khung gio co nhieu lop |
 | User → Student | 1-1 | Mot tai khoan User ung voi mot Student |
 
+### Classes diagram (analysis)
+
+Phân tích module này:
+
+Đăng nhập vào hệ thống → Giao diện Login xuất hiện → cần class: LoginFrm
+  Ô nhập username → inUsername
+  Ô nhập password → inPassword
+  Nút Login → subLogin
+
+Nhập username/password → Hệ thống phải kiểm tra đăng nhập → cần phương thức:
+  Tên: validateLogin()
+  Đầu vào: username, password (thuộc class User)
+  Đầu ra: boolean
+  Gán cho entity class: User.
+
+Đăng nhập thành công → Giao diện Home xuất hiện → cần class: HomeFrm
+  Menu Register → menuRegister
+  Menu View Schedule → menuViewSchedule
+  Menu Grade → menuGrade
+  Menu Statistics → menuStatistics
+  Nút Logout → subLogout
+
+SV chọn Register → Giao diện đăng ký lớp xuất hiện → cần class: RegisterClassFrm
+  Bảng danh sách môn học → tblSubject
+  Combobox chọn lớp → inClass
+  Hiển thị tổng tín chỉ → outTotalCredits
+  Bảng môn đã đăng ký → outRegistered
+  Nút Register → subRegister
+  Nút Remove → subRemove
+  Nút Cancel → subCancel
+
+Hệ thống tải danh sách môn học → cần phương thức:
+  Tên: getAllSubjects()
+  Đầu vào: (không)
+  Đầu ra: List<Subject>
+  Gán cho entity class: Subject.
+
+SV chọn môn → Hệ thống tải danh sách lớp theo môn → cần phương thức:
+  Tên: getClassesBySubject()
+  Đầu vào: subjectId (int)
+  Đầu ra: List<Class>
+  Gán cho entity class: Class.
+
+SV nhấn Register → Hệ thống kiểm tra tổng tín chỉ → cần phương thức:
+  Tên: checkCredits()
+  Đầu vào: registrations (List<Registration>)
+  Đầu ra: boolean
+  Gán cho entity class: Registration.
+
+Hệ thống kiểm tra trùng khung giờ → cần phương thức:
+  Tên: checkTimeConflict()
+  Đầu vào: registrations (List<Registration>)
+  Đầu ra: boolean
+  Gán cho entity class: Registration.
+
+Hệ thống kiểm tra môn tiên quyết → cần phương thức:
+  Tên: checkPrerequisites()
+  Đầu vào: studentId (int), subjectIds (List<Integer>)
+  Đầu ra: boolean
+  Gán cho entity class: Grade.
+
+Hệ thống lưu đăng ký → cần phương thức:
+  Tên: insertRegistrations()
+  Đầu vào: registrations (List<Registration>)
+  Đầu ra: boolean
+  Gán cho entity class: Registration.
+
+Đăng ký thành công → Giao diện phiếu đăng ký xuất hiện → cần class: RegistrationFormFrm
+  Hiển thị mã sinh viên → outStudentCode
+  Hiển thị tên sinh viên → outStudentName
+  Hiển thị khóa → outCourse
+  Hiển thị học kỳ → outSemester
+  Bảng môn đã đăng ký → tblRegistered
+  Nút Print → subPrint
+  Nút Close → subClose
+
+### Tóm tắt
+View classes: LoginFrm, HomeFrm, RegisterClassFrm, RegistrationFormFrm
+Phương thức: validateLogin(), getAllSubjects(), getClassesBySubject(), checkCredits(), checkTimeConflict(), checkPrerequisites(), insertRegistrations()
+
 ---
 
 ## Cau 3: Thiet ke tinh (1.5 diem)

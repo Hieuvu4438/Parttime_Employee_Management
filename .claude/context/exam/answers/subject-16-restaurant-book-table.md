@@ -116,6 +116,48 @@ Nhà hàng quản lý việc đặt bàn cho khách. Nhà hàng có nhiều bàn
 | Customer → Booking | 1-n | Một khách hàng đặt bàn nhiều lần |
 | User → Booking | 1-n | Một nhân viên xử lý nhiều đặt bàn |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Đăng nhập thành công -> HomeFrm xuất hiện:
+  một tùy chọn đặt bàn -> subBookTable
+
+Chọn Book a table -> BookTableFrm xuất hiện:
+  ô nhập ngày đặt -> inDate
+  ô nhập giờ đặt -> inTime
+  ô nhập số khách -> inNumGuests
+  nút tìm bàn trống -> subSearchTable
+  bảng danh sách bàn trống (clickable) -> outsubListTable
+  ô nhập tên khách hàng -> inCustomerName
+  nút tìm khách hàng -> subSearchCustomer
+  bảng danh sách khách hàng (clickable) -> outsubListCustomer
+  nút thêm khách mới -> subAddCustomer
+  vùng hiển thị thông tin đặt bàn -> outBookingInfo
+  nút xác nhận -> subConfirm
+
+Nhập ngày, giờ, số khách và nhấn Search -> hệ thống tìm bàn trống -> cần phương thức:
+  tên: getAvailableTables()
+  đầu vào: date (Date), time (String), numGuests (int)
+  đầu ra: list of Table
+  gán cho entity class: Table.
+
+Nhập tên khách hàng và nhấn Search -> hệ thống tìm khách hàng -> cần phương thức:
+  tên: searchCustomerByName()
+  đầu vào: name (String)
+  đầu ra: list of Customer
+  gán cho entity class: Customer.
+
+Nhấn Confirm -> hệ thống lưu đặt bàn -> cần phương thức:
+  tên: addBooking()
+  đầu vào: booking (Booking)
+  đầu ra: boolean
+  gán cho entity class: Booking.
+
+### Summary
+View classes: HomeFrm, BookTableFrm
+Methods: getAvailableTables(), searchCustomerByName(), addBooking()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh

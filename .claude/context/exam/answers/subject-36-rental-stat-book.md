@@ -52,6 +52,46 @@ Hệ thống quản lý cho thuê sách. **Đầu sách** (BookTitle) có mã, t
 | totalTimes | Derived attribute | Được tính từ RentalSlipDetail (COUNT) |
 | totalRevenue | Derived attribute | Được tính từ RentalSlipDetail (SUM) |
 
+### Classes diagram (analysis)
+
+**Phân tích từ kịch bản (Câu 1):**
+
+Bước 1: Staff đăng nhập, chọn Statistics → Statistics of book. View class: **HomeFrm**, **BookStatFrm**.
+Bước 2: Giao diện thống kê: ô nhập ngày bắt đầu, ngày kết thúc, nút View. UI: `inStartDate` (JTextField — nhập ngày bắt đầu), `inEndDate` (JTextField — nhập ngày kết thúc), `subView` (JButton — xem thống kê).
+Bước 3-4: Staff nhập ngày, nhấn View.
+Bước 5-6: Hệ thống hiển thị bảng thống kê sách. UI: `outStatTable` (JTable — bảng thống kê sách: mã, tên, tác giả, NXB, năm, tổng lần thuê, tổng doanh thu).
+Bước 7: Staff click vào dòng sách "Lap trinh Java".
+Bước 8-9: Hệ thống hiển thị bảng chi tiết hóa đơn. UI: `outDetailTable` (JTable — chi tiết hóa đơn: mã hóa đơn, tên người mượn, ngày mượn, ngày trả, tổng tiền).
+
+**Các view class:**
+
+| View class | Loại | Mô tả |
+|------------|------|-------|
+| HomeFrm | Form | Giao diện chính, chứa menu Statistics → Statistics of book |
+| BookStatFrm | Form | Giao diện thống kê sách thuê nhiều nhất |
+
+**Các UI element:**
+
+| UI Element | Kiểu | View class | Mô tả |
+|------------|------|------------|-------|
+| `inStartDate` | JTextField | BookStatFrm | Ô nhập ngày bắt đầu kỳ thống kê |
+| `inEndDate` | JTextField | BookStatFrm | Ô nhập ngày kết thúc kỳ thống kê |
+| `subView` | JButton | BookStatFrm | Nút View — xem thống kê |
+| `outStatTable` | JTable | BookStatFrm | Bảng thống kê sách (code, name, author, publisher, pubYear, totalTimes, totalRevenue) |
+| `outDetailTable` | JTable | BookStatFrm | Bảng chi tiết hóa đơn của 1 sách (rentalSlipId, customerName, rentalDate, returnDate, totalAmount) |
+
+**Các method:**
+
+| Method | Input | Output | Entity |
+|--------|-------|--------|--------|
+| `getBookStatistics()` | startDate, endDate | List\<BookStatDTO\> | BookTitle, RentalSlipDetail |
+| `getRentalDetailsByBookTitle()` | bookTitleId, startDate, endDate | List\<RentalDetailDTO\> | RentalSlipDetail, RentalSlip, Customer |
+
+**Tong hop:**
+
+- View classes: HomeFrm, BookStatFrm
+- Methods: getBookStatistics(), getRentalDetailsByBookTitle()
+
 ### Bảng quan hệ
 
 | Entity 1 | Entity 2 | Kiểu | Mô tả |

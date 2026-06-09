@@ -120,6 +120,64 @@ He thong quan ly kho Store Management - Module Nhap hang bao gom cac thuc the sa
                              +--------------------------+
 ```
 
+### Classes diagram (analysis)
+
+Phan tich module nay (bo qua buoc dang nhap):
+
+Sau khi dang nhap thanh cong -> HomeFrm:
+  mot lua chon de nhap hang -> subImport
+
+Chon nhap hang -> ImportFrm hien thi:
+  o tim kiem nha cung cap -> inSearchSupplier
+  nut tim kiem nha cung cap -> subSearchSupplier
+  nut them moi nha cung cap -> subAddSupplier
+  bang danh sach nha cung cap tim duoc -> outsubListSupplier
+  ten nha cung cap da chon -> outSupplierName
+  dia chi nha cung cap da chon -> outSupplierAddress
+  so dien thoai nha cung cap da chon -> outSupplierPhone
+  o tim kiem hang hoa -> inSearchItem
+  nut tim kiem hang hoa -> subSearchItem
+  nut them moi hang hoa -> subAddItem
+  bang danh sach hang hoa tim duoc -> outsubListItem
+  o nhap so luong -> inQuantity
+  o nhap don gia -> inUnitPrice
+  nut them vao danh sach -> subAddToList
+  bang danh sach hang nhap -> outListImport
+  tong tien -> outTotal
+  nut nhap hang -> subSubmit
+
+Staff nhap ten nha cung cap va nhan tim kiem -> he thong truy van nha cung cap -> can mot phuong thuc:
+  ten: searchSupplierByName()
+  dau vao: supplierName (String)
+  dau ra: List<Supplier>
+  gan cho entity class: Supplier
+
+Staff nhap ten hang hoa va nhan tim kiem -> he thong truy van hang hoa -> can mot phuong thuc:
+  ten: searchItemByName()
+  dau vao: itemName (String)
+  dau ra: List<Item>
+  gan cho entity class: Item
+
+Staff nhan nhap hang -> he thong tao phieu nhap va chi tiet -> can cac phuong thuc:
+  ten: insertImportInvoice()
+  dau vao: ImportInvoice (importDate, totalAmount, supplierId, userId)
+  dau ra: String (invoiceId moi)
+  gan cho entity class: ImportInvoice
+
+  ten: insertImportInvoiceDetails()
+  dau vao: List<ImportInvoiceDetail> (invoiceId, itemId, quantity, unitPrice, amount)
+  dau ra: boolean
+  gan cho entity class: ImportInvoiceDetail
+
+  ten: updateStock()
+  dau vao: itemId (String), qtyChange (int)
+  dau ra: boolean
+  gan cho entity class: Item
+
+### Tong hop
+View classes: HomeFrm, ImportFrm
+Methods: searchSupplierByName(), searchItemByName(), insertImportInvoice(), insertImportInvoiceDetails(), updateStock()
+
 ### Bang quan he (Relation Table)
 
 | Entity | Thuoc tinh chinh | Khoa ngoai | Entity lien ket |

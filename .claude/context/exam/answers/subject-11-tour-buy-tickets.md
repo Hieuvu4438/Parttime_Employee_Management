@@ -157,6 +157,60 @@ Customer n --- n Tour
 | TourDeparture → InvoiceDetail | 1-n (Association) | Mot ngay khoi hanh xuat hien trong nhieu chi tiet |
 | User → Invoice | 1-n (Association) | Mot nhan vien tao nhieu hoa don |
 
+### Classes diagram (analysis)
+
+Analysis this module (exclude login step):
+
+Once login successful -> HomeFrm appears:
+  an option to buy tickets -> subBuyTickets
+
+Choose Buy tickets -> SearchTourFrm appears:
+  input destination -> inDestination
+  a button search -> subSearch
+  a table of results (clickable) -> outsubListTour
+
+Enter destination and search -> system searches tours by destination -> need a method:
+  name: searchByDestination()
+  input: destination (String)
+  output: list of Tour
+  assign to entity class: Tour.
+
+Select a tour -> BuyTicketFrm appears:
+  display tour info -> outTourInfo
+  display departure info -> outDepartureInfo
+  input representative name -> inRepresentative
+  input id number -> inIdNumber
+  input id type -> inIdType
+  input address -> inAddress
+  input phone -> inPhone
+  input email -> inEmail
+  input number of guests -> inNumGuests
+  display total amount -> outTotalAmount
+  a button pay -> subPay
+  display/print invoice -> outInvoice
+
+Enter customer info and click Pay -> system finds or creates customer -> need a method:
+  name: findCustomer()
+  input: idNumber (String)
+  output: Customer
+  assign to entity class: Customer.
+
+Click Pay -> system creates invoice -> need a method:
+  name: addInvoice()
+  input: invoice (Invoice)
+  output: boolean
+  assign to entity class: Invoice.
+
+Click Pay -> system creates invoice detail -> need a method:
+  name: addInvoiceDetail()
+  input: detail (InvoiceDetail)
+  output: boolean
+  assign to entity class: InvoiceDetail.
+
+### Summary
+View classes: HomeFrm, SearchTourFrm, BuyTicketFrm
+Methods: searchByDestination(), findCustomer(), addInvoice(), addInvoiceDetail()
+
 ---
 
 ## Cau 3: Thiet ke tinh — Giao dien va class diagram chi tiet (1.5 diem)

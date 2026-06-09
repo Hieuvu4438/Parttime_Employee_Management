@@ -116,6 +116,64 @@ Nhà cung cấp (Supplier) cung cấp hàng hóa cho sân bóng đá mini. Khi n
 | Product → ImportInvoiceDetail | 1-n | Một sản phẩm xuất hiện trong nhiều chi tiết nhập |
 | User → ImportInvoice | 1-n | Một nhân viên lập nhiều hóa đơn nhập |
 
+### Classes diagram (analysis)
+
+Phân tích module này (bỏ qua bước đăng nhập):
+
+Sau khi đăng nhập thành công -> HomeFrm xuất hiện:
+  một lựa chọn để nhập hàng -> subImportGoods
+
+Chọn Import Goods -> ImportGoodsFrm xuất hiện:
+  ô nhập tên nhà cung cấp -> inSupplierName
+  nút Search -> subSearchSupplier
+  bảng kết quả nhà cung cấp (click được) -> outsubSupplierTable
+  nút Add New Supplier -> subAddSupplier
+
+Nhập tên nhà cung cấp, nhấn Search -> cần phương thức:
+  tên: searchSupplier()
+  đầu vào: keyword
+  đầu ra: List<Supplier>
+  gán cho entity class: Supplier.
+
+Nhấn vào nhà cung cấp "Coca Cola Company" -> hiển thị giao diện tìm hàng hóa:
+  ô nhập tên hàng hóa -> inProductName
+  nút Search -> subSearchProduct
+  bảng kết quả hàng hóa (click được) -> outsubProductTable
+  ô nhập số lượng -> inQuantity
+  ô nhập đơn giá -> inUnitPrice
+  nút Add -> subAdd
+  bảng hóa đơn nhập -> outInvoiceTable
+  tổng tiền -> outTotal
+  nút Submit -> subSubmit
+
+Nhập tên hàng, nhấn Search -> cần phương thức:
+  tên: searchProduct()
+  đầu vào: keyword
+  đầu ra: List<Product>
+  gán cho entity class: Product.
+
+Chọn hàng, nhập số lượng, đơn giá, nhấn Add -> cần phương thức:
+  tên: addInvoiceItem()
+  đầu vào: productId, quantity, unitPrice
+  đầu ra: chi tiết hóa đơn (thêm vào bảng)
+  gán cho: tính toán nội bộ.
+
+Nhấn Submit -> cần phương thức:
+  tên: createImportInvoice()
+  đầu vào: supplierId, userId, totalAmount, details
+  đầu ra: invoiceId
+  gán cho entity class: ImportInvoice.
+
+Sau khi tạo hóa đơn -> cần phương thức:
+  tên: addInvoiceDetails()
+  đầu vào: invoiceId, details (productId, quantity, unitPrice, amount)
+  đầu ra: boolean
+  gán cho entity class: ImportInvoiceDetail.
+
+### Summary
+View classes: HomeFrm, ImportGoodsFrm
+Methods: searchSupplier(), searchProduct(), addInvoiceItem(), createImportInvoice(), addInvoiceDetails()
+
 ---
 
 ## Câu 3: Thiết kế tĩnh
