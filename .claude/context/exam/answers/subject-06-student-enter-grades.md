@@ -20,7 +20,7 @@
 | 7 | Teacher nhap diem tung SV: SV2026001 — TP1: 8.0, TP2: 7.5, TP3: 9.0, Diem thi: 8.0 | He thong hien thi diem da nhap trong cac o tuong ung. Bang cap nhat: \|SV2026001\|Nguyen Van A\|8.0\|7.5\|9.0\|8.0\| | Nhap diem SV thu nhat |
 | 8 | Tiep tuc nhap: SV2026002 — TP1: 6.0, TP2: 7.0, TP3: 8.0, Diem thi: 7.5 | Bang cap nhat: \|SV2026002\|Tran Thi B\|6.0\|7.0\|8.0\|7.5\| | Nhap diem SV thu hai |
 | 9 | Tiep tuc nhap: SV2026003 — TP1: 9.0, TP2: 8.5, TP3: 9.5, Diem thi: 9.0 | Bang cap nhat: \|SV2026003\|Le Van C\|9.0\|8.5\|9.5\|9.0\| | Nhap diem SV thu ba |
-| 10 | Teacher nhan nut "Confirm" | He thong tinh FinalScore = 10%×TP1 + 10%×TP2 + 20%×TP3 + 60%×Diem thi cho tung SV. Hien thi cot FinalScore: SV01=8.15, SV02=7.30, SV03=9.05. Luu vao database | Tinh diem va luu |
+| 10 | Teacher nhan nut "Confirm" | He thong tinh FinalScore = 10%×TP1 + 10%×TP2 + 20%×TP3 + 60%×Diem thi cho tung SV. Hien thi cot FinalScore: SV01=8.15, SV02=7.40, SV03=9.05. Luu vao database | Tinh diem va luu |
 | 11 | He thong hien thi thong bao: "Grades saved successfully for class CL001. 3 students graded." | Nhan OK, quay lai EnterGradeFrm | Hoan tat |
 
 ### Kich ban ngoai le
@@ -55,9 +55,9 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep giao vi
 
 | Danh tu | Phan loai | Ly do |
 |---------|-----------|-------|
-| Student | Entity | Doi tuong chinh, co ma SV, ten, ngay sinh, email, khoa hoc |
+| Student | Entity | Doi tuong chinh, co ma SV, password, ten, ngay sinh, khoa hoc, que quan, dia chi |
 | Subject | Entity | Mon hoc, co ma mon, ten mon, so tin chi |
-| Class | Entity | Lop hoc cu the, co ma lop, thuoc mon hoc, giao vien |
+| Class | Entity | Lop hoc cu the, co ma lop, ten lop, so SV toi da, phong hoc, gio co dinh trong tuan |
 | Registration | Entity | Bang dang ky, lien ket sinh vien voi lop hoc |
 | Grade | Entity | Bang diem, luu diem thanh phan, diem thi, diem tong ket |
 | User | Entity | Tai khoan nguoi dung (teacher, student) |
@@ -68,6 +68,12 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep giao vi
 | ExamScore | Attribute | Thuoc tinh cua Grade, diem thi |
 | FinalScore | Attribute | Thuoc tinh cua Grade, diem tong ket (tinh toan) |
 | Semester | Attribute | Thuoc tinh cua Registration |
+| Password | Attribute | Thuoc tinh cua Student |
+| Hometown | Attribute | Thuoc tinh cua Student (que quan) |
+| Address | Attribute | Thuoc tinh cua Student (dia chi) |
+| Classroom | Attribute | Thuoc tinh cua Class (phong hoc) |
+| TimeSlot | Attribute | Thuoc tinh cua Class (gio co dinh trong tuan) |
+| Prerequisite | Entity | Quan he n-n giua Subject va Subject (mon tien quyet) |
 
 ### Buoc 3: Xac dinh quan he
 
@@ -77,6 +83,8 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep giao vi
 4. **Registration — Grade**: Mot dang ky co mot bang diem (1-1). Moi Grade lien ket voi mot Registration duy nhat.
 5. **User — Student**: Mot User lien ket voi mot Student (1-1). Student ke thua hoac tham chieu den User.
 6. **User — Teacher (Class.teacherId)**: Mot User (teacher) co the day nhieu lop (1-n). Moi Class co mot teacherId tham chieu den User.
+7. **Subject — Prerequisite — Subject**: Quan he n-n giua mon hoc va mon tien quyet. Mot mon co nhieu mon tien quyet, va mot mon co the la tien quyet cua nhieu mon. Duoc tach bang bang trung gian tblPrerequisite.
+8. **Class — Classroom**: Moi lop hoc thuoc ve mot phong hoc (n-1). Moi phong hoc co the dung cho nhieu lop.
 
 ### Buoc 4: Class Diagram (ASCII art)
 
@@ -91,7 +99,11 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep giao vi
 | - subjectName:   |        | - section: String|
 |   String         |        | - maxStudents:   |
 | - credits: int   |        |   int            |
-+------------------+        +------------------+
++------------------+        | - classroom:     |
+                            |   String         |
+                            | - timeSlot:      |
+                            |   String         |
+                            +------------------+
                                      |*
                                      |1
                               +------------------+
@@ -136,22 +148,28 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep giao vi
 |   String         |
 | - studentName:   |        +------------------+
 |   String         |        |    <<entity>>    |
-| - email: String  |        |      User        |
-| - dob: Date      |        +------------------+
-| - major: String  |        | - userId: int    |
-| - userId: int    |        | - username:      |
-+------------------+        |   String         |
-        |1                  | - password:      |
-        | 1                 |   String         |
-        v                   | - role: String   |
-+------------------+        +------------------+
-|    <<entity>>    |                |1
-|      User        |                |
-+------------------+                v
-| - userId: int    |        +------------------+
-| - username:      |        |  Student / Staff |
-|   String         |        |  (role-based)    |
-| - password:      |        +------------------+
+| - password:      |        |      User        |
+|   String         |        +------------------+
+| - email: String  |        | - userId: int    |
+| - dob: Date      |        | - username:      |
+| - major: String  |        |   String         |
+| - hometown:      |        | - password:      |
+|   String         |        |   String         |
+| - address:       |        | - role: String   |
+|   String         |        +------------------+
+| - userId: int    |                |1
++------------------+                |
+        |1                          v
+        | 1                 +------------------+
+        v                   |  Student / Staff |
++------------------+        |  (role-based)    |
+|    <<entity>>    |        +------------------+
+|      User        |
++------------------+
+| - userId: int    |
+| - username:      |
+|   String         |
+| - password:      |
 |   String         |
 | - role: String   |
 +------------------+
@@ -167,6 +185,7 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep giao vi
 | Registration → Grade | 1-1 | Moi dang ky co mot bang diem duy nhat. VD: Reg001 co Grade001 |
 | User → Student | 1-1 | Mot tai khoan User ung voi mot Student |
 | User → Class (teacherId) | 1-n | Mot giao vien day nhieu lop. VD: GV001 day CL001, CL002 |
+| Subject → Prerequisite → Subject | n-n | Mon tien quyet. VD: CS201 yeu cau hoan thanh CS101 truoc. Duoc tach bang bang trung gian tblPrerequisite(subjectId, prerequisiteId) |
 
 ### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
 
@@ -196,9 +215,9 @@ Stereotype sử dụng: `<<entity>>` cho entity class, `<<boundary>>` cho view c
 
 | Class | Stereotype | Thuộc tính (Ngăn 2) | Phương thức (Ngăn 3) |
 |-------|-----------|----------------------|----------------------|
-| Student | `<<entity>>` | `-studentId: int`, `-studentCode: String`, `-studentName: String`, `-email: String`, `-dob: Date`, `-major: String`, `-userId: int` | `+getStudentsByClass(classId: int): List<Student>` |
+| Student | `<<entity>>` | `-studentId: int`, `-studentCode: String`, `-studentName: String`, `-password: String`, `-email: String`, `-dob: Date`, `-major: String`, `-hometown: String`, `-address: String`, `-userId: int` | `+getStudentsByClass(classId: int): List<Student>` |
 | Subject | `<<entity>>` | `-subjectId: int`, `-subjectCode: String`, `-subjectName: String`, `-credits: int` | `+getSubjectsByTeacher(teacherId: int): List<Subject>` |
-| Class | `<<entity>>` | `-classId: int`, `-subjectId: int`, `-teacherId: int`, `-section: String`, `-maxStudents: int` | `+getClassesBySubjectTeacher(subjectId: int, teacherId: int): List<Class>` |
+| Class | `<<entity>>` | `-classId: int`, `-subjectId: int`, `-teacherId: int`, `-classroom: String`, `-timeSlot: String`, `-section: String`, `-maxStudents: int` | `+getClassesBySubjectTeacher(subjectId: int, teacherId: int): List<Class>` |
 | Registration | `<<entity>>` | `-regId: int`, `-studentId: int`, `-classId: int`, `-semester: String`, `-regDate: Date`, `-status: String` | `+getRegistrationsByClass(classId: int): List<Registration>` |
 | Grade | `<<entity>>` | `-gradeId: int`, `-regId: int`, `-component1: float`, `-component2: float`, `-component3: float`, `-examScore: float`, `-finalScore: float` | `+calculateFinalScore(): float`, `+saveGrades(): boolean` |
 | User | `<<entity>>` | `-userId: int`, `-username: String`, `-password: String`, `-role: String` | `+validateLogin(username: String, password: String): boolean` |
@@ -242,6 +261,8 @@ Ghi multiplicity ở cả 2 đầu của đường kết nối. Click vào đư�
 | Registration | Grade | Association | 1 → 1 | Mỗi đăng ký có một bảng điểm |
 | User | Student | Association | 1 → 1 | Mỗi tài khoản User ứng với một Student |
 | User | Class | Association | 1 → * | Mỗi giáo viên dạy nhiều lớp (qua teacherId) |
+| Subject | Prerequisite | Association | 1 → * | Mỗi môn có nhiều môn tiên quyết |
+| Prerequisite | Subject | Association | * → 1 | Mỗi prerequisite tham chiếu đến 1 môn tiên quyết |
 
 **8. Ví dụ cụ thể trên Visual Paradigm:**
 
@@ -381,9 +402,12 @@ public class Student {
     private int studentId;
     private String studentCode;    // "SV2026001"
     private String studentName;    // "Nguyen Van A"
+    private String password;       // "@Stu2026A"
     private String email;          // "nva@gmail.com"
     private Date dob;              // 2004-03-15
     private String major;          // "Computer Science"
+    private String hometown;       // "Ha Noi"
+    private String address;        // "123 Tran Hung Dao"
     private int userId;            // FK -> tblUser
     private User user;              // object attribute
     private List<Registration> registrations; // object attribute
@@ -396,8 +420,7 @@ public class Subject {
     private String subjectCode;    // "CS101"
     private String subjectName;    // "Lap trinh Java"
     private int credits;           // 3
-    private int prerequisiteId;    // FK -> tblSubject
-    private Subject prerequisite;  // object attribute
+    private List<Subject> prerequisites; // danh sach mon tien quyet (n-n qua tblPrerequisite)
     private List<Class> classes;   // object attribute
     // getters, setters
 }
@@ -407,8 +430,8 @@ public class Class {
     private int classId;
     private int subjectId;         // FK -> tblSubject
     private int teacherId;         // FK -> tblUser (teacher)
-    private int classroomId;       // FK -> tblClassroom
-    private int timeSlotId;        // FK -> tblTimeSlot
+    private String classroom;      // "A101"
+    private String timeSlot;       // "Thu 2, 7:30-9:30"
     private int maxStudents;       // 40
     private String section;        // "Section 1"
     private Subject subject;       // object attribute
@@ -472,9 +495,12 @@ public class User {
 | StudentID | INT | PRIMARY KEY, AUTO_INCREMENT |
 | StudentCode | VARCHAR(20) | NOT NULL, UNIQUE |
 | StudentName | VARCHAR(100) | NOT NULL |
+| Password | VARCHAR(100) | NOT NULL |
 | Email | VARCHAR(100) | UNIQUE |
 | DOB | DATE | |
 | Major | VARCHAR(50) | |
+| Hometown | VARCHAR(100) | |
+| Address | VARCHAR(200) | |
 | UserID | INT | FOREIGN KEY → tblUser(UserID) |
 
 **tblSubject**
@@ -484,7 +510,13 @@ public class User {
 | SubjectCode | VARCHAR(20) | NOT NULL, UNIQUE |
 | SubjectName | VARCHAR(100) | NOT NULL |
 | Credits | INT | NOT NULL, CHECK (Credits > 0) |
-| PrerequisiteID | INT | FOREIGN KEY → tblSubject(SubjectID), NULL allowed |
+
+**tblPrerequisite** (bang trung gian quan he n-n giua Subject va Subject)
+| Column | Type | Constraint |
+|--------|------|-----------|
+| SubjectID | INT | FOREIGN KEY → tblSubject(SubjectID), NOT NULL |
+| PrerequisiteID | INT | FOREIGN KEY → tblSubject(SubjectID), NOT NULL |
+| PRIMARY KEY | (SubjectID, PrerequisiteID) | |
 
 **tblClass**
 | Column | Type | Constraint |
@@ -492,8 +524,8 @@ public class User {
 | ClassID | INT | PRIMARY KEY, AUTO_INCREMENT |
 | SubjectID | INT | FOREIGN KEY → tblSubject(SubjectID), NOT NULL |
 | TeacherID | INT | FOREIGN KEY → tblUser(UserID), NOT NULL |
-| ClassroomID | INT | FOREIGN KEY → tblClassroom(ClassroomID) |
-| TimeSlotID | INT | FOREIGN KEY → tblTimeSlot(TimeSlotID) |
+| Classroom | VARCHAR(50) | NOT NULL |
+| TimeSlot | VARCHAR(100) | NOT NULL |
 | MaxStudents | INT | NOT NULL, CHECK (MaxStudents > 0) |
 | Section | VARCHAR(20) | NOT NULL |
 
@@ -549,8 +581,8 @@ public class User {
 3. Tao lifelines:
    - Actor: Teacher
    - Boundary: LoginFrm, HomeFrm, EnterGradeFrm
-   - Control: GradeController
-   - Entity: Subject, Class, Student, Registration, Grade
+   - Control: UserDAO, SubjectDAO, ClassDAO, RegistrationDAO, GradeDAO
+   - Entity: User, Subject, Class, Student, Registration, Grade
 4. Ve message flow tu tren xuong theo cac buoc trong bang
 5. Them alt fragment cho dieu kien (diem khong hop le, thieu diem)
 6. Them loop fragment cho viec nhap diem tung SV
@@ -559,7 +591,7 @@ public class User {
 ### ASCII Sequence Diagram
 
 ```
-Teacher   LoginFrm  HomeFrm  EnterGradeFrm  GradeController  Subject  Class  Student  Registration  Grade
+Teacher   LoginFrm   UserDAO   HomeFrm   EnterGradeFrm   SubjectDAO   ClassDAO   RegistrationDAO   GradeDAO   Grade
   |          |         |          |               |              |       |        |          |          |
   |--------->|         |          |               |              |       |        |          |          |
   | login()  |         |          |               |              |       |        |          |          |
@@ -629,32 +661,35 @@ Teacher   LoginFrm  HomeFrm  EnterGradeFrm  GradeController  Subject  Class  Stu
 | Buoc | Message | Tu | Den | Mo ta |
 |------|---------|-----|-----|--------|
 | 1 | login() | Teacher | LoginFrm | Teacher nhap username/password va nhan Login |
-| 2 | validate() | LoginFrm | HomeFrm | LoginFrm xac thuc thong tin dang nhap |
-| 3 | showHome() | HomeFrm | Teacher | Hien thi giao dien trang chu voi menu |
-| 4 | clickEnterGrade() | Teacher | HomeFrm | Teacher chon menu Grade → Enter grades by class |
-| 5 | openGrade() | HomeFrm | EnterGradeFrm | Mo form nhap diem |
-| 6 | getSubjectsByTeacher() | EnterGradeFrm | GradeController | Lay danh sach mon hoc cua teacher |
-| 7 | querySubjects() | GradeController | Subject | Truy van database lay mon hoc theo teacherId |
-| 8 | subjectList | Subject | GradeController | Tra ve danh sach mon hoc |
-| 9 | updateSubjectCbo() | GradeController | EnterGradeFrm | Cap nhat combobox Subject |
-| 10 | selectSubject() | Teacher | EnterGradeFrm | Teacher chon mon "CS101" |
-| 11 | getClassesBySubjectTeacher() | EnterGradeFrm | GradeController | Lay lop theo mon va teacher |
-| 12 | queryClasses() | GradeController | Class | Truy van database lay lop theo subjectId va teacherId |
-| 13 | classList | Class | GradeController | Tra ve danh sach lop |
-| 14 | updateClassCbo() | GradeController | EnterGradeFrm | Cap nhat combobox Class |
-| 15 | selectClass() | Teacher | EnterGradeFrm | Teacher chon lop "CL001" |
-| 16 | getStudentsByClass() | EnterGradeFrm | GradeController | Lay danh sach SV trong lop |
-| 17 | queryStudents() | GradeController | Student | Truy van database lay SV theo classId (qua Registration) |
-| 18 | studentList | Student | GradeController | Tra ve danh sach SV |
-| 19 | displayStudentTable() | GradeController | EnterGradeFrm | Hien thi bang SV voi cot diem trong |
-| 20 | enterScores() | Teacher | EnterGradeFrm | Teacher nhap diem cho tung SV |
-| 21 | clickConfirm() | Teacher | EnterGradeFrm | Teacher nhan nut Confirm |
-| 22 | saveGrades() | EnterGradeFrm | GradeController | Luu diem vao database |
-| 23 | calculateFinalScore() | GradeController | Grade | Tinh diem tong ket cho tung SV |
-| 24 | insertGrade() | GradeController | Grade | INSERT/UPDATE tblGrade |
-| 25 | success | Grade | GradeController | Luu thanh cong |
-| 26 | showSuccess() | GradeController | EnterGradeFrm | Hien thi thong bao thanh cong |
-| 27 | showMsg | EnterGradeFrm | Teacher | Thong bao "Grades saved successfully!" |
+| 2 | validate() | LoginFrm | UserDAO | Goi UserDAO.validate(username, password) |
+| 3 | query DB | UserDAO | Database | Truy van tblUser kiem tra dang nhap |
+| 4 | return true | UserDAO | LoginFrm | Tra ve true neu dang nhap hop le |
+| 5 | openHome() | LoginFrm | HomeFrm | Mo giao dien trang chu |
+| 6 | showHome | HomeFrm | Teacher | Hien thi menu |
+| 7 | clickEnterGrade() | Teacher | HomeFrm | Teacher chon menu Grade → Enter grades by class |
+| 8 | openGrade() | HomeFrm | EnterGradeFrm | Mo form nhap diem |
+| 9 | getByTeacher(teacherId) | EnterGradeFrm | SubjectDAO | Lay danh sach mon hoc cua teacher |
+| 10 | query DB | SubjectDAO | Database | Truy van tblSubject JOIN tblClass theo teacherId |
+| 11 | return List<Subject> | SubjectDAO | EnterGradeFrm | Tra ve danh sach mon hoc |
+| 12 | updateSubjectCbo() | EnterGradeFrm | UI | Cap nhat combobox Subject |
+| 13 | selectSubject() | Teacher | EnterGradeFrm | Teacher chon mon "CS101" |
+| 14 | getBySubjectAndTeacher(subjectId, teacherId) | EnterGradeFrm | ClassDAO | Lay lop theo mon va teacher |
+| 15 | query DB | ClassDAO | Database | Truy van tblClass |
+| 16 | return List<Class> | ClassDAO | EnterGradeFrm | Tra ve danh sach lop |
+| 17 | updateClassCbo() | EnterGradeFrm | UI | Cap nhat combobox Class |
+| 18 | selectClass() | Teacher | EnterGradeFrm | Teacher chon lop "CL001" |
+| 19 | getByClass(classId) | EnterGradeFrm | RegistrationDAO | Lay danh sach dang ky cua lop |
+| 20 | query DB | RegistrationDAO | Database | Truy van tblRegistration JOIN tblStudent |
+| 21 | return List<Registration> | RegistrationDAO | EnterGradeFrm | Tra ve danh sach SV co dang ky |
+| 22 | displayStudentTable() | EnterGradeFrm | UI | Hien thi bang SV voi cot diem trong |
+| 23 | enterScores() | Teacher | EnterGradeFrm | Teacher nhap diem tung SV |
+| 24 | clickConfirm() | Teacher | EnterGradeFrm | Teacher nhan nut Confirm |
+| 25 | loop cho tung SV | EnterGradeFrm | Grade | Tinh finalScore = 10%×TP1 + 10%×TP2 + 20%×TP3 + 60%×Diem thi |
+| 26 | insert(grade) | EnterGradeFrm | GradeDAO | INSERT INTO tblGrade |
+| 27 | insert DB | GradeDAO | Database | Luu diem vao database |
+| 28 | return true | GradeDAO | EnterGradeFrm | Luu thanh cong |
+| 29 | showSuccess() | EnterGradeFrm | UI | Hien thi thong bao thanh cong |
+| 30 | showMsg | EnterGradeFrm | Teacher | "Grades saved successfully for class CL001" |
 
 ---
 
@@ -685,11 +720,11 @@ tblUser:
 | 4 | SV2026003 | @Stu2026C | student |
 
 tblStudent:
-| StudentID | StudentCode | StudentName | Email | DOB | Major | UserID |
-|-----------|-------------|-------------|-------|-----|-------|--------|
-| 1 | SV2026001 | Nguyen Van A | nva@gmail.com | 2004-03-15 | Computer Science | 2 |
-| 2 | SV2026002 | Tran Thi B | ttb@gmail.com | 2004-07-22 | Computer Science | 3 |
-| 3 | SV2026003 | Le Van C | lvc@gmail.com | 2004-01-10 | Computer Science | 4 |
+| StudentID | StudentCode | StudentName | Password | Email | DOB | Major | Hometown | Address | UserID |
+|-----------|-------------|-------------|----------|-------|-----|-------|----------|---------|--------|
+| 1 | SV2026001 | Nguyen Van A | @Stu2026A | nva@gmail.com | 2004-03-15 | Computer Science | Ha Noi | 123 Tran Hung Dao | 2 |
+| 2 | SV2026002 | Tran Thi B | @Stu2026B | ttb@gmail.com | 2004-07-22 | Computer Science | Hai Phong | 456 Le Loi | 3 |
+| 3 | SV2026003 | Le Van C | @Stu2026C | lvc@gmail.com | 2004-01-10 | Computer Science | Da Nang | 789 Nguyen Hue | 4 |
 
 tblSubject:
 | SubjectID | SubjectCode | SubjectName | Credits | PrerequisiteID |
@@ -697,9 +732,9 @@ tblSubject:
 | 1 | CS101 | Lap trinh Java | 3 | NULL |
 
 tblClass:
-| ClassID | SubjectID | TeacherID | ClassroomID | TimeSlotID | MaxStudents | Section |
-|---------|-----------|-----------|-------------|------------|-------------|---------|
-| 1 | 1 | 1 | 1 | 1 | 40 | Section 1 |
+| ClassID | SubjectID | TeacherID | Classroom | TimeSlot | MaxStudents | Section |
+|---------|-----------|-----------|-----------|----------|-------------|---------|
+| 1 | 1 | 1 | A101 | Thu 2, 7:30-9:30 | 40 | Section 1 |
 
 tblRegistration:
 | RegID | StudentID | ClassID | Semester | RegDate | Status |
@@ -708,7 +743,12 @@ tblRegistration:
 | 2 | 2 | 1 | 2026-1 | 2026-06-01 | registered |
 | 3 | 3 | 1 | 2026-1 | 2026-06-01 | registered |
 
-tblGrade: (rong)
+tblPrerequisite: (0 dong — CS101 khong co mon tien quyet)
+
+tblGrade:
+| GradeID | RegID | Component1 | Component2 | Component3 | ExamScore | FinalScore |
+|---------|-------|------------|------------|------------|-----------|------------|
+| (0 dong — chua co diem) | | | | | | |
 
 **Kich ban test:**
 
@@ -719,10 +759,12 @@ tblGrade: (rong)
 | 3 | Nhan menu "Grade" → "Enter grades by class" | Hien thi EnterGradeFrm, combobox Subject rong |
 | 4 | Chon Subject "CS101 — Lap trinh Java" | Combobox Class cap nhat: CL001 (Section 1, Thu 2, A101) |
 | 5 | Chon Class "CL001" | Bang SV hien thi 3 dong: SV2026001, SV2026002, SV2026003. Cot diem trong |
-| 6 | Nhap diem SV2026001: TP1=8.0, TP2=7.5, TP3=9.0, Diem thi=8.0 | Bang cap nhat dong SV2026001 |
-| 7 | Nhap diem SV2026002: TP1=6.0, TP2=7.0, TP3=8.0, Diem thi=7.5 | Bang cap nhat dong SV2026002 |
-| 8 | Nhap diem SV2026003: TP1=9.0, TP2=8.5, TP3=9.5, Diem thi=9.0 | Bang cap nhat dong SV2026003 |
-| 9 | Nhan nut "Confirm" | He thong tinh FinalScore (10%×TP1 + 10%×TP2 + 20%×TP3 + 60%×Diem thi). SV01: 0.1×8 + 0.1×7.5 + 0.2×9 + 0.6×8 = 8.15. SV02: 0.1×6 + 0.1×7 + 0.2×8 + 0.6×7.5 = 7.40. SV03: 0.1×9 + 0.1×8.5 + 0.2×9.5 + 0.6×9 = 9.05. Hien thi cot FinalScore. Thong bao: "Grades saved successfully for class CL001. 3 students graded." |
+| 6 | **Kiem tra DB truoc khi nhap diem** | tblGrade van con 0 dong — chua co diem nao duoc luu |
+| 7 | Nhap diem SV2026001: TP1=8.0, TP2=7.5, TP3=9.0, Diem thi=8.0 | Bang cap nhat dong SV2026001 |
+| 8 | Nhap diem SV2026002: TP1=6.0, TP2=7.0, TP3=8.0, Diem thi=7.5 | Bang cap nhat dong SV2026002 |
+| 9 | Nhap diem SV2026003: TP1=9.0, TP2=8.5, TP3=9.5, Diem thi=9.0 | Bang cap nhat dong SV2026003 |
+| 10 | Nhan nut "Confirm" | He thong tinh FinalScore (10%×TP1 + 10%×TP2 + 20%×TP3 + 60%×Diem thi). SV01: 0.1×8 + 0.1×7.5 + 0.2×9 + 0.6×8 = 8.15. SV02: 0.1×6 + 0.1×7 + 0.2×8 + 0.6×7.5 = 7.40. SV03: 0.1×9 + 0.1×8.5 + 0.2×9.5 + 0.6×9 = 9.05. Hien thi cot FinalScore. Thong bao: "Grades saved successfully for class CL001. 3 students graded." |
+| 11 | **Kiem tra DB sau khi luu** | tblGrade co 3 dong moi voi diem chinh xac cua SV01, SV02, SV03 |
 
 **Database sau khi chay test:**
 
