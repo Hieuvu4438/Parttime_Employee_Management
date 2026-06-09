@@ -127,6 +127,74 @@ Hệ thống quản lý thuê sân bóng đá mini. Sân bóng có nhiều sân 
 | Booking → BookingSession | 1-n | Một booking có nhiều phiên thuê theo tuần |
 | Booking → Payment | 1-1 | Mỗi booking có 1 phiếu thanh toán |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**Các bước vẽ tổng quan:**
+
+1. Mở Visual Paradigm → New → Class Diagram (trong danh mục Diagrams).
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity: Court, Customer, Booking, BookingSession, Payment, User.
+3. Tạo view class boxes từ các interface: HomeFrm, RevenueStatFrm.
+4. Vẽ relationships giữa các class theo bảng quan hệ bên dưới.
+5. Thêm multiplicities và role names cho mỗi đường kết nối.
+
+**Cấu trúc 1 class box (3 ngăn):**
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> Payment`.
+- **Ngăn 2 (thuộc tính):** Mỗi thuộc tính ghi dạng `-attributeName: Type`. Ví dụ: `-paymentDate: Date`, `-totalAmount: double`.
+- **Ngăn 3 (phương thức):** Mỗi phương thức ghi dạng `+methodName(params): ReturnType`. Ví dụ: `+getRevenueByMonth(): List<Object[]>`.
+
+**Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Court | `<<entity>>` | -id: int, -code: String, -courtName: String, -courtType: String, -pricePerSession: double, -status: String | getter/setter |
+| Customer | `<<entity>>` | -id: int, -code: String, -customerName: String, -phoneNumber: String, -address: String | getter/setter |
+| Booking | `<<entity>>` | -id: int, -bookingDate: Date, -startDate: Date, -endDate: Date, -timeSlot: String, -dayOfWeek: String, -totalSessions: int, -totalAmount: double, -deposit: double, -status: String | getter/setter |
+| BookingSession | `<<entity>>` | -id: int, -sessionDate: Date, -startTime: String, -endTime: String, -checkinTime: String, -checkoutTime: String, -rentAmount: double, -status: String | getter/setter |
+| Payment | `<<entity>>` | -id: int, -paymentDate: Date, -rentTotal: double, -productTotal: double, -totalAmount: double, -depositDeducted: double, -finalAmount: double, -method: String, -status: String | +getRevenueByMonth(): List<Object[]>, +getRevenueByQuarter(): List<Object[]>, +getRevenueByYear(): List<Object[]>, +getPaymentsByMonth(year: int, month: int): List<Payment>, +getPaymentsByQuarter(year: int, quarter: int): List<Payment>, +getPaymentsByYear(year: int): List<Payment> |
+| User | `<<entity>>` | -id: int, -username: String, -password: String, -fullName: String, -role: String | +checkLogin(username: String, password: String): boolean |
+
+**Bảng chi tiết view classes:**
+
+| View class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| HomeFrm | `<<boundary>>` | subRevenueStat: JButton |
+| RevenueStatFrm | `<<boundary>>` | inStatType: JComboBox ("Tháng", "Quý", "Năm"), outsubRevenueTable: JTable (clickable), outDetailTable: JTable, outTotalRevenue: JLabel |
+
+**Cách vẽ quan hệ:**
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Customer → Booking.
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Booking ◆→ BookingSession.
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: RevenueStatFrm → PaymentDAO.
+
+**Cách ghi multiplicity:**
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: Court "1" --- "n" Booking.
+
+**Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|--------------|------------|
+| Court | Booking | Association | 1 — n | Một sân được nhiều khách đặt |
+| Customer | Booking | Association | 1 — n | Một khách hàng có nhiều booking |
+| Booking | BookingSession | Composition | 1 — n | Một booking có nhiều phiên thuê theo tuần |
+| Booking | Payment | Association | 1 — 1 | Mỗi booking có 1 phiếu thanh toán |
+| RevenueStatFrm | PaymentDAO | Dependency | — | Frm sử dụng PaymentDAO để thống kê doanh thu |
+
+**Ví dụ cụ thể trên Visual Paradigm:**
+
+1. **Vẽ quan hệ Booking → Payment (Association 1-1):**
+   - Kéo class Booking lên canvas, kéo class Payment bên phải.
+   - Chọn tool "Association" → click vào Booking, kéo đến Payment.
+   - Đặt multiplicity "1" phía Booking, "1" phía Payment.
+   - Không cần diamond vì đây là Association.
+
+2. **Vẽ dependency RevenueStatFrm → PaymentDAO:**
+   - Chọn tool "Dependency" (đường dashed) → click vào RevenueStatFrm, kéo đến PaymentDAO.
+   - Mũi tên tam giác rỗng (▷) tự động hiển thị phía PaymentDAO.
+
 ### Classes diagram (analysis)
 
 Phân tích module này (bỏ qua bước đăng nhập):
@@ -225,6 +293,17 @@ Methods: getRevenueByMonth(), getPaymentsByMonth(), getRevenueByQuarter(), getPa
 | PaymentDAO | `getPaymentsByMonth(int year, int month): ArrayList<Payment>` | Lấy chi tiết hóa đơn trong 1 tháng cụ thể, mỗi Payment bao gồm: paymentId, customerName, courtName, paymentDate, totalAmount |
 | PaymentDAO | `getPaymentsByQuarter(int year, int quarter): ArrayList<Payment>` | Lấy chi tiết hóa đơn trong 1 quý cụ thể |
 | PaymentDAO | `getPaymentsByYear(int year): ArrayList<Payment>` | Lấy chi tiết hóa đơn trong 1 năm cụ thể |
+
+### Entity classes
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Court | Entity | id: int (PK), code: String, courtName: String, courtType: String, pricePerSession: double, status: String |
+| Customer | Entity | id: int (PK), code: String, customerName: String, phoneNumber: String, address: String |
+| Booking | Entity | id: int (PK), bookingDate: Date, startDate: Date, endDate: Date, timeSlot: String, dayOfWeek: String, totalSessions: int, totalAmount: double, deposit: double, status: String, court: Court, customer: Customer |
+| BookingSession | Entity | id: int (PK), sessionDate: Date, startTime: String, endTime: String, checkinTime: String, checkoutTime: String, rentAmount: double, status: String, booking: Booking |
+| Payment | Entity | id: int (PK), paymentDate: Date, rentTotal: double, productTotal: double, totalAmount: double, depositDeducted: double, finalAmount: double, method: String, status: String, booking: Booking |
+| User | Entity | id: int (PK), username: String, password: String, fullName: String, role: String |
 
 ### Entity types sử dụng
 

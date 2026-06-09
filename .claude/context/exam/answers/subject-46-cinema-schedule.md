@@ -174,6 +174,83 @@ User 1 --- n Showtime
 | User → Showtime | 1-n (Association) | Mot nhan vien tao nhieu suat chieu |
 | Movie → ScreenRoom | n-n (qua Showtime) | Phim chieu o nhieu phong, phong chieu nhieu phim |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**Các bước vẽ tổng quan:**
+
+1. Mở Visual Paradigm → New → Class Diagram (trong danh mục Diagrams).
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity: Cinema, ScreenRoom, Seat, Movie, Showtime, SeatPricing, User.
+3. Tạo view class boxes từ các interface: HomeFrm, ScheduleShowtimeFrm, SeatPricingFrm.
+4. Vẽ relationships giữa các class theo bảng quan hệ bên dưới.
+5. Thêm multiplicities và role names cho mỗi đường kết nối.
+
+**Cấu trúc 1 class box (3 ngăn):**
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> Showtime`.
+- **Ngăn 2 (thuộc tính):** Mỗi thuộc tính ghi dạng `-attributeName: Type`. Ví dụ: `-time: String`, `-ticketPrice: float`.
+- **Ngăn 3 (phương thức):** Mỗi phương thức ghi dạng `+methodName(params): ReturnType`. Ví dụ: `+checkConflict(screenRoomId: int, date: Date, time: String): boolean`.
+
+**Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Cinema | `<<entity>>` | -id: int, -code: String, -name: String, -address: String, -intro: String | getter/setter |
+| ScreenRoom | `<<entity>>` | -id: int, -code: String, -numSeats: int, -characteristics: String | getter/setter |
+| Seat | `<<entity>>` | -id: int, -seatNumber: String, -seatType: String | +getSeatsByRoom(screenRoomId: int): List<Seat> |
+| Movie | `<<entity>>` | -id: int, -code: String, -title: String, -type: String, -year: int, -description: String | +getAllMovies(): List<Movie> |
+| Showtime | `<<entity>>` | -id: int, -time: String, -date: Date, -ticketPrice: float | +checkConflict(screenRoomId: int, date: Date, time: String): boolean, +addShowtime(showtime: Showtime): int |
+| SeatPricing | `<<entity>>` | -id: int, -price: float | +addSeatPricing(sp: SeatPricing): boolean |
+| User | `<<entity>>` | -id: int, -username: String, -password: String, -role: String | +checkLogin(username: String, password: String): boolean |
+
+**Bảng chi tiết view classes:**
+
+| View class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| HomeFrm | `<<boundary>>` | subScheduleShowing: JButton |
+| ScheduleShowtimeFrm | `<<boundary>>` | inMovie: JComboBox, inScreenRoom: JComboBox, inDate: JTextField, inTime: JTextField, inTicketPrice: JTextField, subAdd: JButton, outsubShowtimeTable: JTable |
+| SeatPricingFrm | `<<boundary>>` | outShowtimeInfo: JLabel, outsubSeatTable: JTable, subConfirm: JButton |
+
+**Cách vẽ quan hệ:**
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Movie → Showtime.
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Cinema ◆→ ScreenRoom.
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: ScheduleShowtimeFrm → MovieDAO.
+
+**Cách ghi multiplicity:**
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: Cinema "1" --- "n" ScreenRoom.
+
+**Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|--------------|------------|
+| Cinema | ScreenRoom | Composition | 1 — n | Một rạp có nhiều phòng, phòng không tồn tại nếu không có rạp |
+| ScreenRoom | Seat | Composition | 1 — n | Một phòng có nhiều ghế, ghế không tồn tại nếu không có phòng |
+| Movie | Showtime | Association | 1 — n | Một phim có nhiều suất chiếu |
+| ScreenRoom | Showtime | Association | 1 — n | Một phòng có nhiều suất chiếu |
+| Showtime | SeatPricing | Composition | 1 — n | Một suất chiếu có nhiều bảng giá ghế, giá ghế không tồn tại nếu không có suất chiếu |
+| Seat | SeatPricing | Association | 1 — n | Một ghế có bảng giá ở nhiều suất chiếu |
+| User | Showtime | Association | 1 — n | Một nhân viên tạo nhiều suất chiếu |
+| ScheduleShowtimeFrm | MovieDAO | Dependency | — | Frm sử dụng MovieDAO |
+| ScheduleShowtimeFrm | ScreenRoomDAO | Dependency | — | Frm sử dụng ScreenRoomDAO |
+| ScheduleShowtimeFrm | ShowtimeDAO | Dependency | — | Frm sử dụng ShowtimeDAO |
+| SeatPricingFrm | SeatDAO | Dependency | — | Frm sử dụng SeatDAO |
+| SeatPricingFrm | SeatPricingDAO | Dependency | — | Frm sử dụng SeatPricingDAO |
+
+**Ví dụ cụ thể trên Visual Paradigm:**
+
+1. **Vẽ quan hệ Showtime → SeatPricing (Composition 1-n):**
+   - Kéo class Showtime lên canvas, kéo class SeatPricing bên dưới.
+   - Chọn tool "Association" → click vào Showtime, kéo đến SeatPricing.
+   - Click chuột phải vào đường kết nối → đặt multiplicity "1" phía Showtime, "n" phía SeatPricing.
+   - Click chuột phải → "Association End" → phía Showtime đặt "filled diamond" (◆).
+
+2. **Vẽ dependency ScheduleShowtimeFrm → ShowtimeDAO:**
+   - Chọn tool "Dependency" (đường dashed) → click vào ScheduleShowtimeFrm, kéo đến ShowtimeDAO.
+   - Mũi tên tam giác rỗng (▷) tự động hiển thị phía ShowtimeDAO.
+
 ### Classes diagram (analysis)
 
 Phan tich module nay (bo qua buoc dang nhap):

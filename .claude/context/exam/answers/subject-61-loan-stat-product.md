@@ -127,6 +127,74 @@ Hệ thống quản lý cho vay trả góp bao gồm các thực thể chính: *
 | tblContract | contractId | customerId, staffId | tblCustomer(customerId), tblUser(userId) |
 | tblContractItem | contractItemId | contractId, productId | tblContract(contractId), tblProduct(productId) |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**1. Các bước vẽ tổng quan:**
+- Bước 1: Mở Visual Paradigm → File → New → chọn **Class Diagram**
+- Bước 2: Tạo các entity class box (hình chữ nhật 3 ngăn) cho: Customer, Partner, Product, Contract, ContractItem, User
+- Bước 3: Tạo các view class box từ giao diện: HomeFrm, StatProductView, CategoryDetailView, ProductContractListView
+- Bước 4: Vẽ các đường quan hệ (association, composition) giữa các class
+- Bước 5: Ghi multiplicity (1, n) và role name ở hai đầu đường kết nối
+
+**2. Cấu trúc 1 class box (3 ngăn):**
+- Ngăn 1 (tên class): ghi stereotype `<<entity>>` hoặc `<<boundary>>` + tên class. Ví dụ: `<<entity>> Product`
+- Ngăn 2 (thuộc tính): ghi theo định dạng `-attributeName: Type`. Ví dụ: `-productId: int`, `-category: String`
+- Ngăn 3 (phương thức): ghi theo định dạng `+methodName(params): ReturnType`. Ví dụ: `+getCategoryStatByRevenue(startDate: Date, endDate: Date): List<CategoryStatDTO>`
+
+**3. Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Customer | <<entity>> | -customerId: int, -name: String, -phone: String, -address: String, -idCard: String, -dateOfBirth: Date | +getCustomerById(customerId: int): Customer |
+| Partner | <<entity>> | -partnerId: int, -name: String, -phone: String, -address: String, -representativeName: String | |
+| Product | <<entity>> | -productId: int, -name: String, -category: String, -unitPrice: double, -description: String, -partnerId: int | +getCategoryStatByRevenue(startDate: Date, endDate: Date): List<CategoryStatDTO>, +getItemDetailByCategory(category: String, startDate: Date, endDate: Date): List<ItemDetailDTO>, +getProductById(productId: int): Product |
+| Contract | <<entity>> | -contractId: int, -contractCode: String, -contractDate: Date, -totalLoanValue: double, -totalInterest: double, -status: String, -customerId: int, -staffId: int | +getContractsByProduct(productId: int, startDate: Date, endDate: Date): List<ContractDTO> |
+| ContractItem | <<entity>> | -contractItemId: int, -contractId: int, -productId: int, -quantity: int, -unitPrice: double, -interest: double, -subtotal: double | |
+| User | <<entity>> | -userId: int, -username: String, -password: String, -fullName: String, -role: String | |
+
+**4. Bảng chi tiết view classes:**
+
+| View Class | UI Elements |
+|------------|-------------|
+| HomeFrm | subStatProduct: JButton (nút chọn Statistics of product) |
+| StatProductView | inStartDate: JTextField (ô nhập ngày bắt đầu), inEndDate: JTextField (ô nhập ngày kết thúc), subView: JButton (nút View), outsubCategoryTable: JTable (bảng thống kê danh mục click được) |
+| CategoryDetailView | outsubItemTable: JTable (bảng chi tiết SP trong danh mục click được) |
+| ProductContractListView | outContractList: JTable (danh sách HĐ chứa SP) |
+
+**5. Cách vẽ quan hệ:**
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Customer → Contract
+- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Contract ◆→ ContractItem
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: StatProductView ---> ProductDAO
+
+**6. Cách ghi multiplicity:**
+- 1..1 → ghi "1" ở một đầu
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: Customer (1) --- (n) Contract
+
+**7. Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|---------------|-------------|------------|
+| Customer | Contract | Association | 1 : n | Một khách hàng có nhiều hợp đồng |
+| Contract | ContractItem | Composition | 1 : n | Hợp đồng chứa nhiều chi tiết SP |
+| Product | ContractItem | Association | 1 : n | Một sản phẩm xuất hiện trong nhiều chi tiết HĐ |
+| User | Contract | Association | 1 : n | Một nhân viên tạo nhiều hợp đồng |
+| Partner | Product | Association | 1 : n | Một đối tác cung cấp nhiều sản phẩm |
+
+**8. Ví dụ cụ thể trên Visual Paradigm:**
+
+Ví dụ 1 — Vẽ quan hệ Association Partner → Product (1:n):
+- Kéo class Partner vào canvas, kéo class Product vào bên phải
+- Chọn công cụ **Association**, click vào Partner kéo sang Product
+- Đặt Multiplicity: Partner "1", Product "n"
+
+Ví dụ 2 — Vẽ quan hệ Composition Contract ◆→ ContractItem:
+- Kéo class Contract vào canvas, kéo class ContractItem vào bên phải
+- Chọn công cụ **Composition**, click vào Contract rồi kéo sang ContractItem
+- Kim cương filled nằm ở phía Contract (parent)
+- Đặt Multiplicity: Contract "1", ContractItem "n"
+
 ### Classes diagram (analysis)
 
 Phân tích module này (bỏ qua bước đăng nhập):

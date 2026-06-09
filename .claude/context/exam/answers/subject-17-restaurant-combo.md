@@ -94,6 +94,97 @@ Nhà hàng cho phép quản lý tạo các combo kết hợp nhiều món ăn th
 | User → Combo | 1-n | Một quản lý tạo nhiều combo |
 | Combo ↔ Dish | n-n (qua ComboDetail) | Combo chứa nhiều món, món thuộc nhiều combo |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+1. Mở Visual Paradigm → New → Class Diagram.
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity class.
+3. Tạo view class boxes từ các interface (form) của module.
+4. Vẽ mối quan hệ (relationship) giữa các class.
+5. Ghi multiplicity và role name cho mỗi mối quan hệ.
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+Mỗi class trong Visual Paradigm được vẽ dưới dạng hình chữ nhật chia 3 ngăn:
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> Combo`, `<<boundary>> AddComboFrm`, `<<control>> ComboDAO`.
+- **Ngăn 2 (thuộc tính):** Liệt kê các thuộc tính theo format `-attributeName: Type`. Ví dụ: `-id: int`, `-name: String`, `-totalPrice: float`.
+- **Ngăn 3 (phương thức):** Liệt kê các phương thức theo format `+methodName(params): ReturnType`. Ví dụ: `+addCombo(combo: Combo): int`.
+
+Trong Visual Paradigm, click đúp vào class box để chỉnh sửa tên, tab Attributes để thêm thuộc tính, tab Operations để thêm phương thức.
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Combo | <<entity>> | -id: int, -name: String, -totalPrice: float | +getAllCombos(): List<Combo>, +addCombo(combo: Combo): int |
+| Dish | <<entity>> | -id: int, -code: String, -type: String, -name: String, -description: String, -price: float | +searchDishByName(name: String): List<Dish> |
+| ComboDetail | <<entity>> | -id: int, -quantity: int | +addComboDetail(detail: ComboDetail): boolean |
+| User | <<entity>> | -id: int, -username: String, -password: String, -role: String | (không có) |
+
+#### 4. Bảng chi tiết view classes
+
+| View Class | Stereotype | UI Elements | Mô tả |
+|-----------|-----------|-------------|-------|
+| HomeFrm | <<boundary>> | -subCombo: JButton | Giao diện chính, chứa nút chọn Combo management |
+| ComboManageFrm | <<boundary>> | -outsubListCombo: JTable, -subAddCombo: JButton, -subEdit: JButton, -subDelete: JButton | Giao diện quản lý danh sách combo |
+| AddComboFrm | <<boundary>> | -inComboName: JTextField, -outsubListComboDetail: JTable, -subAddDishes: JButton, -subUpdate: JButton | Giao diện thêm/sửa combo |
+| SearchDishFrm | <<boundary>> | -inDishName: JTextField, -subSearch: JButton, -outsubListDish: JTable | Giao diện tìm kiếm món ăn |
+
+Quy tắc đặt tên UI elements:
+- Tiền tố `in` → input (ô nhập liệu): inComboName, inDishName
+- Tiền tố `out` → output (vùng hiển thị): (không có)
+- Tiền tố `outsub` → clickable output (bảng click được): outsubListCombo, outsubListComboDetail, outsubListDish
+- Tiền tố `sub` → submit (nút bấm): subAddCombo, subEdit, subDelete, subAddDishes, subUpdate, subSearch
+
+#### 5. Cách vẽ quan hệ
+
+Trong Visual Paradigm, sử dụng palette Relationships ở bên phải để chọn kiểu quan hệ:
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: User → Combo (quản lý tham chiếu đến combo).
+- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập. Ví dụ: Combo → ComboDetail (chi tiết combo tham chiếu combo nhưng món ăn vẫn tồn tại độc lập).
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent.
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: AddComboFrm → DishDAO (form sử dụng DAO để tìm món).
+
+#### 6. Cách ghi multiplicity
+
+Trong Visual Paradigm, click vào đường kết nối → tab Properties → chỉnh Source Multiplicity và Target Multiplicity:
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi multiplicity ở cả 2 đầu của đường kết nối.
+
+Ví dụ: Combo (1) → (n) ComboDetail nghĩa là một combo có nhiều chi tiết món.
+
+#### 7. Bảng quan hệ chi tiết
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|---|---|---|---|---|
+| Combo | ComboDetail | Composition | 1 - n | Một combo chứa nhiều chi tiết món; chi tiết không tồn tại nếu không có combo |
+| Dish | ComboDetail | Association | 1 - n | Một món ăn xuất hiện trong nhiều combo khác nhau |
+| User | Combo | Association | 1 - n | Một quản lý tạo nhiều combo |
+
+Quan hệ n-n giữa Combo và Dish được tách thành hai quan hệ 1-n qua bảng trung gian ComboDetail.
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ quan hệ Combo → ComboDetail (1-n, Composition)**
+1. Tạo class `<<entity>> Combo` với các thuộc tính: -id: int, -name: String, -totalPrice: float.
+2. Tạo class `<<entity>> ComboDetail` với các thuộc tính: -id: int, -quantity: int.
+3. Chọn công cụ **Composition** từ palette Relationships (đầu kim cương filled ◆).
+4. Click vào class Combo → kéo đến class ComboDetail.
+5. Click vào đường kết nối → Properties → set Source Multiplicity = 1, Target Multiplicity = *.
+6. Kết quả: Combo (1) ◆----(*) ComboDetail.
+
+**Ví dụ 2: Vẽ quan hệ Dish → ComboDetail (1-n, Association)**
+1. Tạo class `<<entity>> Dish` với các thuộc tính: -id: int, -code: String, -type: String, -name: String, -description: String, -price: float.
+2. Chọn công cụ **Association** từ palette Relationships (mũi tên tam giác rỗng ▷).
+3. Click vào class Dish → kéo đến class ComboDetail.
+4. Click vào đường kết nối → Properties → set Source Multiplicity = 1, Target Multiplicity = *.
+5. Đặt tên association: "appears in" (tùy chọn).
+6. Kết quả: Dish (1) ▷----(*) ComboDetail.
+
 ### Classes diagram (analysis)
 
 Phân tích module này (bỏ qua bước đăng nhập):

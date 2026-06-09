@@ -172,6 +172,77 @@ Hệ thống quản lý cho vay trả góp. Công ty hợp tác với nhiều đ
 +------------------+
 ```
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**1. Các bước vẽ tổng quan:**
+- Bước 1: Mở Visual Paradigm → File → New → chọn **Class Diagram**
+- Bước 2: Tạo các entity class box (hình chữ nhật 3 ngăn) cho: Customer, Partner, Product, Contract, ContractItem, PaymentSchedule, Payment, User
+- Bước 3: Tạo các view class box từ giao diện: HomeFrm, SearchContractView, ContractDetailView, InvoiceView
+- Bước 4: Vẽ các đường quan hệ (association, composition) giữa các class
+- Bước 5: Ghi multiplicity (1, n) và role name ở hai đầu đường kết nối
+
+**2. Cấu trúc 1 class box (3 ngăn):**
+- Ngăn 1 (tên class): ghi stereotype `<<entity>>` hoặc `<<boundary>>` + tên class. Ví dụ: `<<entity>> Payment`
+- Ngăn 2 (thuộc tính): ghi theo định dạng `-attributeName: Type`. Ví dụ: `-paymentId: int`, `-amountPaid: double`
+- Ngăn 3 (phương thức): ghi theo định dạng `+methodName(params): ReturnType`. Ví dụ: `+insertPayment(payment: Payment): boolean`
+
+**3. Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Customer | <<entity>> | -customerId: int, -customerName: String, -phoneNumber: String, -address: String, -idCard: String | +getCustomerById(customerId: int): Customer |
+| Partner | <<entity>> | -partnerId: int, -partnerName: String, -address: String, -phoneNumber: String, -branch: String | |
+| Product | <<entity>> | -productId: int, -productName: String, -unitPrice: double, -description: String | |
+| Contract | <<entity>> | -contractId: int, -customerId: int, -partnerId: int, -signingDate: Date, -totalLoanAmount: double, -loanTerm: int, -interestRate: double, -status: String | +getContractByCode(code: String): Contract, +updateContractStatus(contractId: int, status: String): boolean |
+| ContractItem | <<entity>> | -contractItemId: int, -contractId: int, -productId: int, -quantity: int, -unitPrice: double, -amount: double | +getItemsByContractId(contractId: int): List<ContractItem> |
+| PaymentSchedule | <<entity>> | -scheduleId: int, -contractId: int, -periodNumber: int, -dueDate: Date, -amount: double, -outstandingBalance: double, -status: String | +getScheduleByContractId(contractId: int): List<PaymentSchedule>, +getOutstandingBalance(contractId: int): double, +updateScheduleStatus(scheduleId: int, status: String): boolean |
+| Payment | <<entity>> | -paymentId: int, -contractId: int, -scheduleId: int, -paymentDate: Date, -amountPaid: double, -method: String, -note: String | +getPaymentsByContractId(contractId: int): List<Payment>, +insertPayment(payment: Payment): boolean |
+| User | <<entity>> | -userId: int, -username: String, -password: String, -fullName: String, -role: String | |
+
+**4. Bảng chi tiết view classes:**
+
+| View Class | UI Elements |
+|------------|-------------|
+| HomeFrm | subCustomerPayment: JButton (nút chọn Customer paying) |
+| SearchContractView | inContractCode: JTextField (ô nhập mã HĐ), subSearch: JButton (nút Search) |
+| ContractDetailView | outCustomerInfo: JLabel (thông tin KH), outContractInfo: JLabel (thông tin HĐ), outContractItemList: JTable (SP trong HĐ), outPaymentHistory: JTable (lịch sử TT), outOutstandingBalance: JLabel (tổng dư nợ), outPayableAmount: JLabel (số tiền cần TT), inoutPaymentSchedule: JTable (lịch trả góp + checkbox), inPaymentAmount: JTextField (số tiền TT), subConfirm: JButton (nút Confirm) |
+| InvoiceView | outInvoice: JPanel (hóa đơn), subSave: JButton (nút Save) |
+
+**5. Cách vẽ quan hệ:**
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Customer → Contract
+- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Contract ◆→ ContractItem
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: ContractDetailView ---> ContractDAO
+
+**6. Cách ghi multiplicity:**
+- 1..1 → ghi "1" ở một đầu
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: PaymentSchedule (1) --- (n) Payment
+
+**7. Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|---------------|-------------|------------|
+| Customer | Contract | Association | 1 : n | Một khách hàng có nhiều hợp đồng |
+| Partner | Contract | Association | 1 : n | Một đối tác có nhiều hợp đồng |
+| Contract | ContractItem | Composition | 1 : n | Hợp đồng chứa nhiều chi tiết SP |
+| Product | ContractItem | Association | 1 : n | Một sản phẩm xuất hiện trong nhiều chi tiết HĐ |
+| Contract | PaymentSchedule | Composition | 1 : n | Hợp đồng chứa nhiều kỳ thanh toán |
+| PaymentSchedule | Payment | Composition | 1 : n | Một kỳ có nhiều phiếu thanh toán |
+
+**8. Ví dụ cụ thể trên Visual Paradigm:**
+
+Ví dụ 1 — Vẽ quan hệ Composition PaymentSchedule ◆→ Payment:
+- Kéo class PaymentSchedule vào canvas, kéo class Payment vào bên phải
+- Chọn công cụ **Composition**, click vào PaymentSchedule rồi kéo sang Payment
+- Kim cương filled nằm ở phía PaymentSchedule (parent)
+- Đặt Multiplicity: PaymentSchedule "1", Payment "n"
+
+Ví dụ 2 — Vẽ dependency ContractDetailView ---> ContractDAO:
+- Kéo class ContractDetailView (<<boundary>>) và ContractDAO (<<control>>) vào canvas
+- Chọn công cụ **Dependency** (đường dashed mũi tên), click vào ContractDetailView kéo sang ContractDAO
+- Mũi tên chỉ từ View sang DAO, thể hiện View sử dụng DAO để truy vấn dữ liệu
+
 ### Classes diagram (analysis)
 
 Phân tích module này (bỏ qua bước đăng nhập):

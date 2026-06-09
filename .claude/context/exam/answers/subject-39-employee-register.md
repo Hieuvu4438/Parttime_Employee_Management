@@ -164,6 +164,106 @@ Chọn ca và lưu -> hệ thống lưu đăng ký -> cần phương thức:
 View classes: HomeFrm, SearchEmployeeFrm, RegisterShiftFrm
 Methods: searchEmployee(), addRegistrationShift()
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+| Bước | Thao tác |
+|------|----------|
+| 1 | Mở Visual Paradigm → File → New → chọn **Class Diagram** |
+| 2 | Tạo các entity class box (hình chữ nhật 3 ngăn): Restaurant, Employee, Shift, RegistrationShift, User |
+| 3 | Tạo các view class box từ giao diện: HomeFrm, SearchEmployeeFrm, RegisterShiftFrm |
+| 4 | Vẽ các đường quan hệ (association) giữa các class |
+| 5 | Ghi multiplicity và role name cho mỗi quan hệ |
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+Mỗi class trong Visual Paradigm là hình chữ nhật chia 3 ngăn:
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>` hoặc `<<boundary>>` rồi đến tên class. Ví dụ: `<<entity>> RegistrationShift`, `<<boundary>> RegisterShiftFrm`
+- **Ngăn 2 (thuộc tính):** Ghi từng thuộc tính theo format `-tenThuocTinh: KieuDuLieu`. Dùng `-` cho private. Ví dụ: `-id: int`, `-registeredTime: DateTime`
+- **Ngăn 3 (phương thức):** Ghi từng phương thức theo format `+tenPhuongThuc(thamSo): KieuTraVe`. Dùng `+` cho public. Ví dụ: `+searchEmployee(keyword: String): List<Employee>`
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Restaurant | `<<entity>>` | `-id: int`, `-restaurantName: String`, `-address: String`, `-description: String` | — |
+| Employee | `<<entity>>` | `-id: int`, `-code: String`, `-fullName: String`, `-phoneNumber: String`, `-email: String`, `-dob: Date`, `-contractDate: Date`, `-restaurantID: int` | `+searchEmployee(keyword: String): List<Employee>` |
+| Shift | `<<entity>>` | `-id: int`, `-date: Date`, `-shiftNumber: int`, `-description: String`, `-startDate: Date`, `-endDate: Date` | — |
+| RegistrationShift | `<<entity>>` | `-id: int`, `-registeredTime: DateTime`, `-status: String`, `-description: String`, `-employeeID: int`, `-shiftID: int`, `-userID: int` | `+addRegistrationShift(rs: RegistrationShift): boolean` |
+| User | `<<entity>>` | `-id: int`, `-username: String`, `-password: String`, `-role: String`, `-description: String` | — |
+
+#### 4. Bảng chi tiết view classes
+
+**HomeFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kiểu | Mô tả |
+|------------|--------|------|-------|
+| `mnuRegister` | sub | JMenuItem | Menu-item "Register for next week" |
+
+**SearchEmployeeFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kiểu | Mô tả |
+|------------|--------|------|-------|
+| `inKeyword` | in | JTextField | Ô nhập tên nhân viên |
+| `subSearch` | sub | JButton | Nút Search |
+| `outsubListEmployee` | outsub | JTable | Bảng danh sách NV (click chọn được) |
+
+**RegisterShiftFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kiểu | Mô tả |
+|------------|--------|------|-------|
+| `outEmployeeInfo` | out | JLabel | Thông tin nhân viên (chỉ đọc) |
+| `inoutShifts` | inout | JTable | Bảng 7×2 checkbox (Thứ 2-CN × Ca 1/Ca 2) |
+| `subSave` | sub | JButton | Nút Save |
+
+#### 5. Cách vẽ quan hệ
+
+| Kiểu quan hệ | Ký hiệu Visual Paradigm | Khi nào dùng |
+|---------------|------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng (▷) | Quan hệ tham chiếu thông thường giữa 2 class |
+| **Aggregation** | Đường liền nét, đầu kim cương rỗng (◇) ở đầu "chứa" | "Contain" nhưng child có thể tồn tại độc lập |
+| **Composition** | Đường liền nét, đầu kim cương filled (◆) ở đầu "chứa" | "Contain" nhưng child KHÔNG tồn tại nếu không có parent |
+| **Dependency** | Đường dashed (nét đứt), mũi tên tam giác rỗng (▷) | "Sử dụng" tạm thời (view class gọi DAO class) |
+
+#### 6. Cách ghi multiplicity
+
+- **1..1** → ghi `1` ở một đầu của đường kết nối
+- **0..\*** hoặc **1..\*** → ghi `n` hoặc `*` ở đầu kia
+- Ghi multiplicity ở **cả 2 đầu** của đường kết nối
+
+Ví dụ: Employee(1) ←——→ (n) RegistrationShift nghĩa là 1 nhân viên có nhiều đăng ký ca.
+
+#### 7. Bảng quan hệ chi tiết (Visual Paradigm)
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Role name | Giải thích |
+|----|-----|---------------|-------------|-----------|------------|
+| Restaurant | Employee | Aggregation | 1 — n | employs | Một nhà hàng có nhiều nhân viên |
+| Employee | RegistrationShift | Composition | 1 — n | registers | NV có nhiều đăng ký, đăng ký không tồn tại nếu không có NV |
+| Shift | RegistrationShift | Association | 1 — n | assignedTo | Một ca có nhiều NV đăng ký |
+| User | RegistrationShift | Association | 1 — n | createdBy | Một staff tạo nhiều đăng ký |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ quan hệ Employee → RegistrationShift (Composition 1-n)**
+
+1. Chọn công cụ **Composition** (đường liền nét đầu kim cương filled ◆) từ toolbox.
+2. Click vào `Employee` (phía "chứa"), kéo sang `RegistrationShift` (phía "bị chứa").
+3. Click chuột phải vào đường kết nối → **Open Specification**.
+4. Tại mục **From** (Employee): multiplicity = `1`, role name = `registers`.
+5. Tại mục **To** (RegistrationShift): multiplicity = `*`.
+6. Nhấn OK. Đầu kim cương filled (◆) nằm phía `Employee`.
+
+**Ví dụ 2: Vẽ quan hệ Shift → RegistrationShift (Association 1-n)**
+
+1. Chọn công cụ **Association** (đường liền nét mũi tên rỗng) từ toolbox.
+2. Click vào `Shift`, kéo sang `RegistrationShift`.
+3. Click chuột phải → **Open Specification**.
+4. Tại mục **From** (Shift): multiplicity = `1`, role name = `assignedTo`.
+5. Tại mục **To** (RegistrationShift): multiplicity = `*`.
+6. Nhấn OK.
+
 ---
 
 ## Câu 3: Thiết kế tĩnh
@@ -226,15 +326,15 @@ Methods: searchEmployee(), addRegistrationShift()
 | RegistrationShiftDAO | `getRegistrationByEmployee(employeeId, startDate, endDate): List<RegistrationShift>` | Lấy đăng ký hiện tại của NV trong tuần |
 | RegistrationShiftDAO | `saveRegistration(employeeId, shiftIds, userId): boolean` | Lưu danh sách đăng ký ca mới |
 
-### Entity types sử dụng
+### Entity classes (Design phase)
 
-| Entity | Vai trò trong module |
-|--------|---------------------|
-| Employee | Nhân viên cần đăng ký ca, hiển thị trong bảng tìm kiếm |
-| Shift | Ca làm việc trong tuần, hiển thị trong bảng 7×2 checkbox |
-| RegistrationShift | Bản ghi đăng ký, lưu vào database khi staff nhấn Save |
-| Restaurant | Thông tin nhà hàng, hiển thị trong thông tin NV |
-| User | Nhân viên văn phòng thực hiện đăng ký |
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Restaurant | Model | id: int (PK), restaurantName: String, address: String, description: String |
+| Employee | Model | id: int (PK), code: String, fullName: String, phoneNumber: String, email: String, dob: Date, contractDate: Date, restaurant: Restaurant |
+| Shift | Model | id: int (PK), date: Date, shiftNumber: int, description: String, startDate: Date, endDate: Date |
+| RegistrationShift | Model | id: int (PK), registeredTime: DateTime, status: String, description: String, employee: Employee, shift: Shift, user: User |
+| User | Model | id: int (PK), username: String, password: String, role: String, description: String |
 
 ### Database Schema
 

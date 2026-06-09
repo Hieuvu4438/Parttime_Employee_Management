@@ -120,6 +120,92 @@ He thong quan ly kho Store Management - Module Nhap hang bao gom cac thuc the sa
                              +--------------------------+
 ```
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+| Bước | Thao tác trên Visual Paradigm |
+|------|-------------------------------|
+| 1 | Mở Visual Paradigm → File → New → chọn **Class Diagram** |
+| 2 | Tạo các entity class boxes (hình chữ nhật 3 ngăn) cho: User, Item, Supplier, ImportInvoice, ImportInvoiceDetail |
+| 3 | Tạo các view class boxes từ giao diện: HomeFrm, ImportFrm |
+| 4 | Vẽ các đường kết nối (relationships) giữa các class theo bảng quan hệ bên dưới |
+| 5 | Ghi multiplicity (1, N) và role name trên từng đầu đường kết nối |
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+Mỗi class trong Visual Paradigm được thể hiện bằng hình chữ nhật chia 3 ngăn:
+
+| Ngăn | Nội dung | Ví dụ ImportInvoice |
+|------|----------|---------------------|
+| Ngăn 1 — Tên class | Stereotype `<<entity>>` hoặc `<<boundary>>` + tên class | `<<entity>> ImportInvoice` |
+| Ngăn 2 — Thuộc tính | Định dạng `-tenThuocTinh: KieuDuLieu` | `-invoiceId: String` `-importDate: Date` `-totalAmount: float` |
+| Ngăn 3 — Phương thức | Định dạng `+tenPhuongThuc(thamSo): KieuTraVe` | `+insertImportInvoice(inv: ImportInvoice): String` |
+
+Cách thao tác: Kéo biểu tượng Class từ panel bên trái vào canvas → double-click để chỉnh sửa tên → click phải chọn "Add Attribute" hoặc "Add Operation".
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| User | `<<entity>>` | `-userId: String`, `-username: String`, `-password: String`, `-fullName: String`, `-role: String` | — |
+| Item | `<<entity>>` | `-itemId: String`, `-itemName: String`, `-description: String`, `-stockQuantity: int` | `+searchItemByName(name: String): List<Item>`, `+addItem(item: Item): String`, `+updateStock(itemId: String, qty: int): boolean` |
+| Supplier | `<<entity>>` | `-supplierId: String`, `-supplierName: String`, `-address: String`, `-phone: String` | `+searchSupplierByName(name: String): List<Supplier>`, `+addSupplier(s: Supplier): boolean` |
+| ImportInvoice | `<<entity>>` | `-invoiceId: String`, `-importDate: Date`, `-totalAmount: float`, `-supplierId: String`, `-userId: String` | `+insertImportInvoice(inv: ImportInvoice): String` |
+| ImportInvoiceDetail | `<<entity>>` | `-detailId: String`, `-invoiceId: String`, `-itemId: String`, `-quantity: int`, `-unitPrice: float`, `-amount: float` | `+insertImportInvoiceDetails(details: List): boolean` |
+
+#### 4. Bảng chi tiết view classes
+
+| View class | Stereotype | UI elements (prefix convention) |
+|------------|-----------|--------------------------------|
+| HomeFrm | `<<boundary>>` | `subImport` (Button — chọn chức năng nhập hàng) |
+| ImportFrm | `<<boundary>>` | `inSearchSupplier` (TextField — nhập tên NCC), `subSearchSupplier` (Button — tìm NCC), `subAddSupplier` (Button — thêm NCC mới), `outsubListSupplier` (Table — danh sách NCC, click chọn), `outSupplierName` (Label — tên NCC đã chọn), `outSupplierAddress` (Label — địa chỉ), `outSupplierPhone` (Label — SĐT), `inSearchItem` (TextField — nhập tên hàng hóa), `subSearchItem` (Button — tìm hàng), `subAddItem` (Button — thêm hàng mới), `outsubListItem` (Table — danh sách hàng hóa, click chọn), `inQuantity` (TextField — nhập số lượng), `inUnitPrice` (TextField — nhập đơn giá), `subAddToList` (Button — thêm vào danh sách), `outListImport` (Table — danh sách hàng nhập), `outTotal` (Label — tổng tiền), `subSubmit` (Button — nhập hàng) |
+
+Quy tắc prefix: `in` = nhập liệu, `out` = hiển thị, `sub` = gửi/nhấn, `outsub` = hiển thị + click chọn.
+
+#### 5. Cách vẽ quan hệ
+
+| Kiểu quan hệ | Ký hiệu trên Visual Paradigm | Khi nào dùng |
+|---------------|------------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng ▷ | Quan hệ tham chiếu thông thường |
+| **Aggregation** | Đường liền nét, đầu kim cương rỗng ◇ | "Contain" nhưng child tồn tại độc lập |
+| **Composition** | Đường liền nét, đầu kim cương filled ◆ | "Contain" nhưng child KHÔNG tồn tại nếu không có parent |
+| **Dependency** | Đường dashed, mũi tên tam giác rỗng ▷ | "Sử dụng" tạm thời (view gọi DAO) |
+
+#### 6. Cách ghi multiplicity
+
+| Multiplicity | Cách ghi trên VP | Ý nghĩa |
+|-------------|------------------|---------|
+| 1..1 | `1` | Đúng 1 đối tượng |
+| 0..* hoặc 1..* | `N` hoặc `*` | Nhiều đối tượng |
+
+#### 7. Bảng quan hệ chi tiết
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|-------------|------------|
+| User | ImportInvoice | Association | 1 --- N | Một nhân viên tạo nhiều phiếu nhập |
+| Supplier | ImportInvoice | Association | 1 --- N | Một nhà cung cấp có nhiều phiếu nhập |
+| ImportInvoice | ImportInvoiceDetail | Composition | 1 --- N | Chi tiết phiếu nhập không tồn tại nếu không có phiếu nhập cha |
+| Item | ImportInvoiceDetail | Association | 1 --- N | Một hàng hóa xuất hiện trong nhiều chi tiết phiếu nhập |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ quan hệ ImportInvoice (1) --- (N) ImportInvoiceDetail (Composition)**
+
+1. Tạo class `ImportInvoice` với stereotype `<<entity>>`, thêm attribute: `-invoiceId: String`, `-importDate: Date`, `-totalAmount: float`.
+2. Tạo class `ImportInvoiceDetail` với stereotype `<<entity>>`, thêm attribute: `-detailId: String`, `-quantity: int`, `-unitPrice: float`, `-amount: float`.
+3. Kéo tool **Composition** từ panel → click vào `ImportInvoice` → kéo sang `ImportInvoiceDetail`.
+4. Đặt multiplicity: đầu ImportInvoice = `1`, đầu ImportInvoiceDetail = `N`.
+5. Thêm role name ở đầu ImportInvoiceDetail: `details`.
+
+**Ví dụ 2: Vẽ quan hệ Supplier (1) --- (N) ImportInvoice (Association)**
+
+1. Tạo class `Supplier` với attribute: `-supplierId: String`, `-supplierName: String`, `-address: String`, `-phone: String`.
+2. Kéo tool **Association** từ panel → click vào `Supplier` → kéo sang `ImportInvoice`.
+3. Đặt multiplicity: đầu Supplier = `1`, đầu ImportInvoice = `N`.
+
+---
+
 ### Classes diagram (analysis)
 
 Phan tich module nay (bo qua buoc dang nhap):
@@ -230,6 +316,16 @@ Methods: searchSupplierByName(), searchItemByName(), insertImportInvoice(), inse
 | ImportInvoiceDAO | tblImportInvoice | insert(ImportInvoice invoice): String, getById(String invoiceId): ImportInvoice |
 | ImportInvoiceDetailDAO | tblImportInvoiceDetail | insertBatch(List<ImportInvoiceDetail> details): boolean |
 | UserDAO | tblUser | getById(String userId): User |
+
+### Entity classes (Design phase)
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Item | Entity | id: int (PK), itemId: String, itemName: String, description: String |
+| Supplier | Entity | id: int (PK), supplierId: String, supplierName: String, address: String, phone: String |
+| ImportInvoice | Entity | id: int (PK), invoiceId: String, importDate: Date, totalAmount: float, supplier: Supplier (object), user: User (object) |
+| ImportInvoiceDetail | Entity | id: int (PK), importInvoice: ImportInvoice (object), item: Item (object), quantity: int, unitPrice: float, amount: float |
+| User | Entity | id: int (PK), userId: String, username: String, password: String, fullName: String, role: String |
 
 ### Entity Types
 

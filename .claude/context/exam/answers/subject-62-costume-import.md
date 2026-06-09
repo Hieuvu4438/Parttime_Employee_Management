@@ -183,6 +183,77 @@ Methods: searchProvider(), addProvider(), searchCostume(), createInvoice(), addD
 | tblRentalSlip | rentalSlipId | customerId, staffId | tblCustomer(customerId), tblUser(userId) |
 | tblRentalSlipDetail | detailId | rentalSlipId, costumeId | tblRentalSlip(rentalSlipId), tblCostume(costumeId) |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**1. Các bước vẽ tổng quan:**
+- Bước 1: Mở Visual Paradigm → File → New → chọn **Class Diagram**
+- Bước 2: Tạo các entity class box (hình chữ nhật 3 ngăn) cho: Provider, Costume, ImportInvoice, ImportInvoiceDetail, Customer, RentalSlip, RentalSlipDetail, User
+- Bước 3: Tạo các view class box từ giao diện: HomeView, ImportCostumeFrm
+- Bước 4: Vẽ các đường quan hệ (association, composition) giữa các class
+- Bước 5: Ghi multiplicity (1, n) và role name ở hai đầu đường kết nối
+
+**2. Cấu trúc 1 class box (3 ngăn):**
+- Ngăn 1 (tên class): ghi stereotype `<<entity>>` hoặc `<<boundary>>` + tên class. Ví dụ: `<<entity>> ImportInvoice`
+- Ngăn 2 (thuộc tính): ghi theo định dạng `-attributeName: Type`. Ví dụ: `-invoiceId: int`, `-totalAmount: double`
+- Ngăn 3 (phương thức): ghi theo định dạng `+methodName(params): ReturnType`. Ví dụ: `+createInvoice(invoice: ImportInvoice): int`
+
+**3. Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Provider | <<entity>> | -providerId: int, -name: String, -phone: String, -address: String, -email: String | +searchByName(keyword: String): List<Provider> |
+| Costume | <<entity>> | -costumeId: int, -name: String, -category: String, -unitPrice: double, -quantityInStock: int, -status: String | +searchByName(keyword: String): List<Costume>, +updateStock(costumeId: int, qty: int): boolean |
+| ImportInvoice | <<entity>> | -invoiceId: int, -invoiceDate: Date, -totalAmount: double, -provider: Provider, -staff: User | +createInvoice(invoice: ImportInvoice): int |
+| ImportInvoiceDetail | <<entity>> | -detailId: int, -invoice: ImportInvoice, -costume: Costume, -quantity: int, -unitPrice: double, -subtotal: double | +addDetail(detail: ImportInvoiceDetail): boolean |
+| Customer | <<entity>> | -customerId: int, -name: String, -phone: String, -address: String, -email: String | |
+| RentalSlip | <<entity>> | -rentalSlipId: int, -rentalDate: Date, -totalDeposit: double, -status: String, -customer: Customer, -staff: User | |
+| RentalSlipDetail | <<entity>> | -detailId: int, -rentalSlip: RentalSlip, -costume: Costume, -quantity: int, -unitDeposit: double, -subtotal: double | |
+| User | <<entity>> | -userId: int, -username: String, -password: String, -fullName: String, -role: String | |
+
+**4. Bảng chi tiết view classes:**
+
+| View Class | UI Elements |
+|------------|-------------|
+| HomeView | subImportCostume: JButton (nút chọn Import costume) |
+| ImportCostumeFrm | inProviderName: JTextField (ô nhập tên NCC), subSearchProvider: JButton (nút Search NCC), subAddNewProvider: JButton (nút thêm NCC mới), outProviderList: JTable (danh sách NCC click được), outSelectedProvider: JLabel (NCC đã chọn), inCostumeName: JTextField (ô nhập tên trang phục), subSearchCostume: JButton (nút Search trang phục), outCostumeList: JTable (danh sách trang phục click được), inQuantity: JTextField (ô nhập số lượng), inUnitPrice: JTextField (ô nhập đơn giá), subAddItem: JButton (nút Add to invoice), outInvoiceTable: JTable (bảng chi tiết hóa đơn), outTotal: JLabel (tổng tiền), subConfirm: JButton (nút Confirm) |
+
+**5. Cách vẽ quan hệ:**
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Provider → ImportInvoice
+- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: ImportInvoice ◆→ ImportInvoiceDetail
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: ImportCostumeFrm ---> CostumeDAO
+
+**6. Cách ghi multiplicity:**
+- 1..1 → ghi "1" ở một đầu
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: Provider (1) --- (n) ImportInvoice
+
+**7. Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|---------------|-------------|------------|
+| Provider | ImportInvoice | Association | 1 : n | Một nhà cung cấp có nhiều hóa đơn nhập hàng |
+| ImportInvoice | ImportInvoiceDetail | Composition | 1 : n | Hóa đơn nhập chứa nhiều chi tiết trang phục |
+| Costume | ImportInvoiceDetail | Association | 1 : n | Một trang phục xuất hiện trong nhiều chi tiết hóa đơn |
+| User | ImportInvoice | Association | 1 : n | Một nhân viên tạo nhiều hóa đơn nhập hàng |
+| Customer | RentalSlip | Association | 1 : n | Một khách hàng có nhiều phiếu thuê |
+| RentalSlip | RentalSlipDetail | Composition | 1 : n | Phiếu thuê chứa nhiều chi tiết trang phục |
+| Costume | RentalSlipDetail | Association | 1 : n | Một trang phục xuất hiện trong nhiều chi tiết phiếu thuê |
+| User | RentalSlip | Association | 1 : n | Một nhân viên tạo nhiều phiếu thuê |
+
+**8. Ví dụ cụ thể trên Visual Paradigm:**
+
+Ví dụ 1 — Vẽ quan hệ Composition ImportInvoice ◆→ ImportInvoiceDetail:
+- Kéo class ImportInvoice vào canvas, kéo class ImportInvoiceDetail vào bên phải
+- Chọn công cụ **Composition**, click vào ImportInvoice rồi kéo sang ImportInvoiceDetail
+- Kim cương filled nằm ở phía ImportInvoice (parent)
+- Đặt Multiplicity: ImportInvoice "1", ImportInvoiceDetail "n"
+
+Ví dụ 2 — Vẽ quan hệ Association Provider → ImportInvoice (1:n):
+- Kéo class Provider và ImportInvoice vào canvas
+- Chọn công cụ **Association**, click vào Provider kéo sang ImportInvoice
+- Đặt Multiplicity: Provider "1", ImportInvoice "n"
+
 ---
 
 ## Câu 3: Thiết kế tĩnh
@@ -239,61 +310,69 @@ Methods: searchProvider(), addProvider(), searchCostume(), createInvoice(), addD
 | `addDetail(detail)` | `boolean` | Thêm 1 chi tiết hóa đơn vào tblImportInvoiceDetail |
 | `getDetailsByInvoiceId(invoiceId)` | `List<ImportInvoiceDetail>` | Lấy danh sách chi tiết theo mã hóa đơn |
 
-### Entity Types
+### Entity classes (Design phase)
 
-| Entity | Mô tả |
-|--------|-------|
-| `Provider` | Nhà cung cấp: providerId, name, phone, address, email |
-| `Costume` | Trang phục: costumeId, name, category, unitPrice, quantityInStock, status |
-| `ImportInvoice` | Hóa đơn nhập hàng: invoiceId, invoiceDate, totalAmount, providerId, staffId |
-| `ImportInvoiceDetail` | Chi tiết hóa đơn: detailId, invoiceId, costumeId, quantity, unitPrice, subtotal |
-| `User` | Nhân viên: userId, username, password, fullName, role |
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Provider | Model | id: int, name: String, phone: String, address: String, email: String |
+| Costume | Model | id: int, name: String, category: String, unitPrice: double, quantityInStock: int, status: String |
+| ImportInvoice | Model | id: int, invoiceDate: Date, totalAmount: double, provider: Provider, staff: User |
+| ImportInvoiceDetail | Model | id: int, invoice: ImportInvoice, costume: Costume, quantity: int, unitPrice: double, subtotal: double |
+| User | Model | id: int, username: String, password: String, fullName: String, role: String |
 
-### Database Schema
+### Database Design
 
-```sql
-CREATE TABLE tblProvider (
-    providerId  VARCHAR(10) PRIMARY KEY,
-    name        NVARCHAR(100),
-    phone       VARCHAR(15),
-    address     NVARCHAR(200),
-    email       VARCHAR(100)
-);
+**tblProvider:**
 
-CREATE TABLE tblCostume (
-    costumeId       VARCHAR(10) PRIMARY KEY,
-    name            NVARCHAR(100),
-    category        NVARCHAR(50),
-    unitPrice       DECIMAL(15,2),
-    quantityInStock INT,
-    status          VARCHAR(20)
-);
+| Column | Type | Constraint |
+|--------|------|------------|
+| providerId | VARCHAR(10) | PRIMARY KEY |
+| name | NVARCHAR(100) | NOT NULL |
+| phone | VARCHAR(15) | |
+| address | NVARCHAR(200) | |
+| email | VARCHAR(100) | |
 
-CREATE TABLE tblUser (
-    userId      VARCHAR(10) PRIMARY KEY,
-    username    VARCHAR(50),
-    password    VARCHAR(100),
-    fullName    NVARCHAR(100),
-    role        VARCHAR(20)
-);
+**tblCostume:**
 
-CREATE TABLE tblImportInvoice (
-    invoiceId   VARCHAR(10) PRIMARY KEY,
-    invoiceDate DATE,
-    totalAmount DECIMAL(15,2),
-    providerId  VARCHAR(10) REFERENCES tblProvider(providerId),
-    staffId     VARCHAR(10) REFERENCES tblUser(userId)
-);
+| Column | Type | Constraint |
+|--------|------|------------|
+| costumeId | VARCHAR(10) | PRIMARY KEY |
+| name | NVARCHAR(100) | NOT NULL |
+| category | NVARCHAR(50) | |
+| unitPrice | DECIMAL(15,2) | NOT NULL |
+| quantityInStock | INT | DEFAULT 0 |
+| status | VARCHAR(20) | |
 
-CREATE TABLE tblImportInvoiceDetail (
-    detailId    VARCHAR(10) PRIMARY KEY,
-    invoiceId   VARCHAR(10) REFERENCES tblImportInvoice(invoiceId),
-    costumeId   VARCHAR(10) REFERENCES tblCostume(costumeId),
-    quantity    INT,
-    unitPrice   DECIMAL(15,2),
-    subtotal    DECIMAL(15,2)
-);
-```
+**tblUser:**
+
+| Column | Type | Constraint |
+|--------|------|------------|
+| userId | VARCHAR(10) | PRIMARY KEY |
+| username | VARCHAR(50) | NOT NULL, UNIQUE |
+| password | VARCHAR(100) | NOT NULL |
+| fullName | NVARCHAR(100) | NOT NULL |
+| role | VARCHAR(20) | NOT NULL |
+
+**tblImportInvoice:**
+
+| Column | Type | Constraint |
+|--------|------|------------|
+| invoiceId | VARCHAR(10) | PRIMARY KEY |
+| invoiceDate | DATE | NOT NULL |
+| totalAmount | DECIMAL(15,2) | NOT NULL |
+| providerId | VARCHAR(10) | FOREIGN KEY → tblProvider(providerId) |
+| staffId | VARCHAR(10) | FOREIGN KEY → tblUser(userId) |
+
+**tblImportInvoiceDetail:**
+
+| Column | Type | Constraint |
+|--------|------|------------|
+| detailId | VARCHAR(10) | PRIMARY KEY |
+| invoiceId | VARCHAR(10) | FOREIGN KEY → tblImportInvoice(invoiceId) |
+| costumeId | VARCHAR(10) | FOREIGN KEY → tblCostume(costumeId) |
+| quantity | INT | NOT NULL |
+| unitPrice | DECIMAL(15,2) | NOT NULL |
+| subtotal | DECIMAL(15,2) | NOT NULL |
 
 ### Visual Paradigm Guide
 

@@ -118,6 +118,88 @@ Tournament 1 --- * TournamentRegistration --- * Player  (N-N qua registration)
 +-----------------------------+
 ```
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+| Bước | Thao tác trên Visual Paradigm |
+|------|-------------------------------|
+| 1 | Mở Visual Paradigm → File → New → chọn **Class Diagram** |
+| 2 | Tạo các entity class boxes cho: Tournament, Round, Match, Player, User |
+| 3 | Tạo các view class boxes: HomeFrm, UpdateResultFrm |
+| 4 | Vẽ các đường kết nối theo bảng quan hệ, ghi multiplicity và role name |
+| 5 | Ghi role name `player1` và `player2` trên 2 đường từ Player đến Match |
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+| Ngăn | Nội dung | Ví dụ Match |
+|------|----------|-------------|
+| Ngăn 1 — Tên class | Stereotype `<<entity>>` hoặc `<<boundary>>` + tên class | `<<entity>> Match` |
+| Ngăn 2 — Thuộc tính | `-tenThuocTinh: KieuDuLieu` | `-id: int` `-table: String` `-player1Score: double` `-player2Score: double` `-player1EloChange: int` `-player2EloChange: int` |
+| Ngăn 3 — Phương thức | `+tenPhuongThuc(thamSo): KieuTraVe` | `+updateMatchResult(match: Match): boolean` |
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Tournament | `<<entity>>` | `-id: int`, `-code: String`, `-name: String`, `-year: int`, `-time: String`, `-location: String`, `-description: String` | — |
+| Round | `<<entity>>` | `-id: int`, `-tournamentId: int`, `-roundNumber: int` | `+getRounds(tournamentId: int): List<Round>` |
+| Match | `<<entity>>` | `-id: int`, `-roundId: int`, `-table: String`, `-player1Id: int`, `-player2Id: int`, `-player1Score: double`, `-player2Score: double`, `-player1EloChange: int`, `-player2EloChange: int` | `+getMatchesByRound(roundId: int): List<Match>`, `+updateMatchResult(match: Match): boolean` |
+| Player | `<<entity>>` | `-id: int`, `-code: String`, `-name: String`, `-yob: int`, `-nationality: String`, `-elo: int`, `-notes: String` | `+updateElo(playerId: int, newElo: int): boolean` |
+| User | `<<entity>>` | `-id: int`, `-username: String`, `-password: String`, `-role: String` | — |
+
+#### 4. Bảng chi tiết view classes
+
+| View class | Stereotype | UI elements (prefix convention) |
+|------------|-----------|--------------------------------|
+| HomeFrm | `<<boundary>>` | `subUpdateResult` (Button — chọn chức năng cập nhật kết quả) |
+| UpdateResultFrm | `<<boundary>>` | `inRound` (ComboBox — chọn vòng đấu), `outsubListMatch` (Table — danh sách trận đấu, click chọn), `outPlayer1Name` (Label — tên đấu thủ 1), `outPlayer2Name` (Label — tên đấu thủ 2), `inPlayer1Score` (TextField — nhập điểm đấu thủ 1), `inPlayer2Score` (TextField — nhập điểm đấu thủ 2), `inPlayer1EloChange` (TextField — nhập Elo change đấu thủ 1), `inPlayer2EloChange` (TextField — nhập Elo change đấu thủ 2), `subUpdate` (Button — cập nhật kết quả) |
+
+#### 5. Cách vẽ quan hệ
+
+| Kiểu quan hệ | Ký hiệu trên Visual Paradigm | Khi nào dùng |
+|---------------|------------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng ▷ | Quan hệ tham chiếu: Tournament → Round, Round → Match |
+| **Composition** | Đường liền nét, đầu kim cương filled ◆ | Round chứa Match (Match không tồn tại nếu không có Round) |
+| **Dependency** | Đường dashed, mũi tên tam giác rỗng ▷ | View gọi DAO |
+
+#### 6. Cách ghi multiplicity
+
+| Multiplicity | Cách ghi trên VP | Ý nghĩa |
+|-------------|------------------|---------|
+| 1..1 | `1` | Đúng 1 đối tượng |
+| 1..* | `N` | Nhiều đối tượng |
+
+Lưu ý đặc biệt cho Match: Match có 2 đường Association đến Player với role name khác nhau (`player1`, `player2`), mỗi đường có multiplicity `N` ở đầu Match và `1` ở đầu Player.
+
+#### 7. Bảng quan hệ chi tiết
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|-------------|------------|
+| Tournament | Round | Composition | 1 --- N | Một giải đấu có nhiều vòng đấu |
+| Round | Match | Composition | 1 --- N | Một vòng đấu có nhiều trận đấu |
+| Player | Match (vai player1) | Association | 1 --- N | Một đấu thủ là player1 ở nhiều trận |
+| Player | Match (vai player2) | Association | 1 --- N | Một đấu thủ là player2 ở nhiều trận |
+| Tournament | TournamentRegistration | Composition | 1 --- N | Giải đấu có nhiều đăng ký |
+| TournamentRegistration | Player | Association | N --- 1 | Đăng ký liên kết đến đấu thủ |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ Player (1) --- (N) Match với 2 role name**
+
+1. Tạo class `Player` với attribute: `-id: int`, `-name: String`, `-elo: int`.
+2. Tạo class `Match` với attribute: `-id: int`, `-table: String`, `-player1Score: double`, `-player2Score: double`.
+3. Kéo tool **Association** → click `Player` → kéo sang `Match`. Đặt multiplicity: `1` (Player), `N` (Match). Thêm role name: `player1`.
+4. Kéo thêm 1 đường **Association** nữa từ `Player` đến `Match`. Đặt multiplicity: `1` (Player), `N` (Match). Thêm role name: `player2`.
+
+**Ví dụ 2: Vẽ Round (1) --- (N) Match (Composition)**
+
+1. Tạo class `Round` với attribute: `-id: int`, `-roundNumber: int`.
+2. Kéo tool **Composition** → click `Round` → kéo sang `Match`.
+3. Đặt multiplicity: `1` ở đầu Round, `N` ở đầu Match.
+
+---
+
 ### Classes diagram (analysis)
 
 **Phân tích từ kịch bản (Câu 1):**
@@ -206,6 +288,15 @@ Bước 12-16: Hệ thống kiểm tra, cập nhật DB, thông báo, reload dan
 | MatchDAO | `updateMatchResult(match): boolean` | Cập nhật điểm và Elo change cho 1 trận |
 | PlayerDAO | `getPlayerById(playerId): Player` | Lấy thông tin đấu thủ (để hiển thị tên) |
 | PlayerDAO | `updateElo(playerId, newElo): boolean` | Cập nhật Elo mới cho đấu thủ |
+
+### Entity classes (Design phase)
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Tournament | Entity | id: int (PK), code: String, name: String, year: int, time: String, location: String, description: String |
+| Round | Entity | id: int (PK), tournament: Tournament (object), roundNumber: int |
+| Match | Entity | id: int (PK), round: Round (object), table: String, player1: Player (object), player2: Player (object), player1Score: double, player2Score: double, player1EloChange: int, player2EloChange: int |
+| Player | Entity | id: int (PK), code: String, name: String, yob: int, nationality: String, elo: int, notes: String |
 
 ### Entity types liên quan
 

@@ -122,6 +122,89 @@ He thong quan ly kho Store Management - Module Thong ke hang hoa bao gom cac thu
                              +--------------------------+
 ```
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+| Bước | Thao tác trên Visual Paradigm |
+|------|-------------------------------|
+| 1 | Mở Visual Paradigm → File → New → chọn **Class Diagram** |
+| 2 | Tạo các entity class boxes cho: User, SubAgent, Item, ExportInvoice, ExportInvoiceDetail |
+| 3 | Tạo các DTO class boxes cho: ItemStatistics, ExportDetailInfo |
+| 4 | Tạo các view class boxes: HomeFrm, ItemStatFrm |
+| 5 | Vẽ các đường kết nối theo bảng quan hệ, ghi multiplicity và role name |
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+| Ngăn | Nội dung | Ví dụ ExportInvoiceDetail |
+|------|----------|--------------------------|
+| Ngăn 1 — Tên class | Stereotype `<<entity>>`, `<<dto>>`, hoặc `<<boundary>>` + tên class | `<<entity>> ExportInvoiceDetail` |
+| Ngăn 2 — Thuộc tính | `-tenThuocTinh: KieuDuLieu` | `-detailId: String` `-quantity: int` `-unitPrice: float` `-amount: float` |
+| Ngăn 3 — Phương thức | `+tenPhuongThuc(thamSo): KieuTraVe` | — |
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| User | `<<entity>>` | `-userId: String`, `-username: String`, `-password: String`, `-fullName: String`, `-role: String` | — |
+| SubAgent | `<<entity>>` | `-agentId: String`, `-agentName: String`, `-address: String`, `-phone: String` | — |
+| Item | `<<entity>>` | `-itemId: String`, `-itemName: String`, `-description: String` | `+getItemStats(from: Date, to: Date): List<ItemStatistics>` |
+| ExportInvoice | `<<entity>>` | `-invoiceId: String`, `-exportDate: Date`, `-totalAmount: float`, `-agentId: String`, `-userId: String` | — |
+| ExportInvoiceDetail | `<<entity>>` | `-detailId: String`, `-invoiceId: String`, `-itemId: String`, `-quantity: int`, `-unitPrice: float`, `-amount: float` | `+getItemDetail(itemId: String, from: Date, to: Date): List<ExportDetailInfo>` |
+| ItemStatistics | `<<dto>>` | `-itemId: String`, `-itemName: String`, `-totalQty: int`, `-totalRevenue: float` | — |
+| ExportDetailInfo | `<<dto>>` | `-invoiceId: String`, `-exportDate: Date`, `-agentId: String`, `-agentName: String`, `-quantity: int`, `-unitPrice: float`, `-amount: float` | — |
+
+#### 4. Bảng chi tiết view classes
+
+| View class | Stereotype | UI elements (prefix convention) |
+|------------|-----------|--------------------------------|
+| HomeFrm | `<<boundary>>` | `subItemStat` (Button — chọn chức năng thống kê hàng hóa) |
+| ItemStatFrm | `<<boundary>>` | `inStartDate` (DatePicker — chọn ngày bắt đầu), `inEndDate` (DatePicker — chọn ngày kết thúc), `subStat` (Button — thực hiện thống kê), `outsubListItemStat` (Table — bảng tổng hợp hàng hóa theo doanh thu, click chọn), `outTotalRevenue` (Label — tổng doanh thu kỳ), `outSelectedTitle` (Label — tiêu đề chi tiết), `outListItemDetail` (Table — chi tiết phiếu xuất), `outItemTotalQty` (Label — tổng SL bán của hàng hóa), `outItemTotalRevenue` (Label — tổng doanh thu của hàng hóa), `subExport` (Button — xuất báo cáo) |
+
+#### 5. Cách vẽ quan hệ
+
+| Kiểu quan hệ | Ký hiệu trên Visual Paradigm | Khi nào dùng |
+|---------------|------------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng ▷ | Quan hệ tham chiếu thông thường |
+| **Composition** | Đường liền nét, đầu kim cương filled ◆ | Child không tồn tại nếu không có parent |
+| **Dependency** | Đường dashed, mũi tên tam giác rỗng ▷ | View gọi DAO, DAO tạo DTO |
+
+#### 6. Cách ghi multiplicity
+
+| Multiplicity | Cách ghi trên VP | Ý nghĩa |
+|-------------|------------------|---------|
+| 1..1 | `1` | Đúng 1 đối tượng |
+| 1..* | `N` | Nhiều đối tượng |
+
+#### 7. Bảng quan hệ chi tiết
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|-------------|------------|
+| User | ExportInvoice | Association | 1 --- N | Một nhân viên tạo nhiều phiếu xuất |
+| SubAgent | ExportInvoice | Association | 1 --- N | Một đại lý có nhiều phiếu xuất |
+| ExportInvoice | ExportInvoiceDetail | Composition | 1 --- N | Chi tiết không tồn tại nếu không có phiếu xuất cha |
+| Item | ExportInvoiceDetail | Association | 1 --- N | Một hàng hóa xuất hiện trong nhiều chi tiết |
+| ItemStatDAO | ItemStatistics | Dependency | — | DAO tạo đối tượng DTO khi truy vấn thống kê |
+| ItemStatDAO | ExportDetailInfo | Dependency | — | DAO tạo đối tượng DTO khi truy vấn chi tiết |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ quan hệ ExportInvoice (1) --- (N) ExportInvoiceDetail (Composition)**
+
+1. Tạo class `ExportInvoice` với stereotype `<<entity>>`, thêm attribute: `-invoiceId: String`, `-exportDate: Date`, `-totalAmount: float`.
+2. Tạo class `ExportInvoiceDetail` với stereotype `<<entity>>`, thêm attribute: `-detailId: String`, `-quantity: int`, `-amount: float`.
+3. Kéo tool **Composition** → click `ExportInvoice` → kéo sang `ExportInvoiceDetail`.
+4. Đặt multiplicity: `1` ở đầu ExportInvoice, `N` ở đầu ExportInvoiceDetail.
+
+**Ví dụ 2: Vẽ Dependency từ ItemStatDAO đến ItemStatistics**
+
+1. Tạo class `ItemStatDAO` với stereotype `<<control>>`.
+2. Tạo class `ItemStatistics` với stereotype `<<dto>>`.
+3. Kéo tool **Dependency** (đường dashed) → click `ItemStatDAO` → kéo sang `ItemStatistics`.
+4. Ghi chú method trên đường dependency: `getItemStats()`.
+
+---
+
 ### Classes diagram (analysis)
 
 Phan tich module nay (bo qua buoc dang nhap):
@@ -199,6 +282,16 @@ Methods: getItemStats(), getItemDetail()
 | ItemStatDAO | tblExportInvoice, tblExportInvoiceDetail, tblItem | getItemStats(Date fromDate, Date toDate): List<ItemStatistics>, getItemDetail(String itemId, Date fromDate, Date toDate): List<ExportDetailInfo> |
 | SubAgentDAO | tblSubAgent | getById(String agentId): SubAgent |
 | ExportInvoiceDAO | tblExportInvoice | getByDateRange(Date fromDate, Date toDate): List<ExportInvoice> |
+
+### Entity classes (Design phase)
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Item | Entity | id: int (PK), itemId: String, itemName: String, description: String |
+| ExportInvoice | Entity | id: int (PK), invoiceId: String, exportDate: Date, totalAmount: float, agent: SubAgent (object), user: User (object) |
+| ExportInvoiceDetail | Entity | id: int (PK), exportInvoice: ExportInvoice (object), item: Item (object), quantity: int, unitPrice: float, amount: float |
+| SubAgent | Entity | id: int (PK), agentId: String, agentName: String, address: String, phone: String |
+| User | Entity | id: int (PK), userId: String, username: String, password: String, fullName: String, role: String |
 
 ### Entity Types
 

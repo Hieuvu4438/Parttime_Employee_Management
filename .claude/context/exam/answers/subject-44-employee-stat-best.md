@@ -160,6 +160,105 @@ Nhấn vào dòng nhân viên -> hệ thống lấy chi tiết chấm công -> c
 View classes: HomeFrm, BestEmployeeStatFrm
 Methods: getBestEmployeeStat(), getAttendanceDetail()
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+| Bước | Thao tác |
+|------|----------|
+| 1 | Mở Visual Paradigm → File → New → chọn **Class Diagram** |
+| 2 | Tạo các entity class box (hình chữ nhật 3 ngăn): Restaurant, Employee, Shift, Schedule, Attendance, Wage, User |
+| 3 | Tạo các view class box từ giao diện: HomeFrm, BestEmployeeStatFrm |
+| 4 | Vẽ các đường quan hệ (association) giữa các class |
+| 5 | Ghi multiplicity và role name cho mỗi quan hệ |
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+Mỗi class trong Visual Paradigm là hình chữ nhật chia 3 ngăn:
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>` hoặc `<<boundary>>` rồi đến tên class. Ví dụ: `<<entity>> Wage`, `<<boundary>> BestEmployeeStatFrm`
+- **Ngăn 2 (thuộc tính):** Ghi từng thuộc tính theo format `-tenThuocTinh: KieuDuLieu`. Dùng `-` cho private. Ví dụ: `-totalActualHours: float`, `-totalLateHours: float`
+- **Ngăn 3 (phương thức):** Ghi từng phương thức theo format `+tenPhuongThuc(thamSo): KieuTraVe`. Dùng `+` cho public. Ví dụ: `+getBestEmployeeStat(startDate: Date, endDate: Date): List<BestEmployeeStat>`
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Restaurant | `<<entity>>` | `-id: int`, `-restaurantName: String`, `-address: String`, `-description: String` | — |
+| Employee | `<<entity>>` | `-id: int`, `-code: String`, `-fullName: String`, `-phoneNumber: String`, `-email: String`, `-dob: Date`, `-contractDate: Date`, `-restaurantID: int` | `+searchEmployee(keyword: String): List<Employee>`, `+getBestEmployeeStat(startDate: Date, endDate: Date): List<BestEmployeeStat>` |
+| Shift | `<<entity>>` | `-id: int`, `-date: Date`, `-shiftNumber: int`, `-description: String`, `-startDate: Date`, `-endDate: Date` | — |
+| Schedule | `<<entity>>` | `-id: int`, `-employeeID: int`, `-shiftID: int`, `-weekStartDate: Date` | — |
+| Attendance | `<<entity>>` | `-id: int`, `-employeeID: int`, `-shiftID: int`, `-checkinTime: DateTime`, `-checkoutTime: DateTime` | `+getShiftHours(): float`, `+getLateHours(): float`, `+getFine(): float`, `+getAttendanceDetail(employeeId: int, startDate: Date, endDate: Date): List<AttendanceDetail>` |
+| Wage | `<<entity>>` | `-id: int`, `-employeeID: int`, `-weekStart: Date`, `-weekEnd: Date`, `-totalActualHours: float`, `-totalReceived: float`, `-totalLateHours: float`, `-totalFines: float` | — |
+| User | `<<entity>>` | `-id: int`, `-username: String`, `-password: String`, `-role: String` | — |
+
+#### 4. Bảng chi tiết view classes
+
+**HomeFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kiểu | Mô tả |
+|------------|--------|------|-------|
+| `subStatistics` | sub | JButton | Nút chọn Statistics |
+
+**BestEmployeeStatFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kiểu | Mô tả |
+|------------|--------|------|-------|
+| `inStartDate` | in | JTextField | Ô nhập ngày bắt đầu |
+| `inEndDate` | in | JTextField | Ô nhập ngày kết thúc |
+| `subView` | sub | JButton | Nút View |
+| `outsubListEmployee` | outsub | JTable | Bảng thống kê NV xuất sắc (click được) |
+| `outListAttendanceDetail` | out | JTable | Bảng chi tiết giờ làm việc từng ca |
+
+#### 5. Cách vẽ quan hệ
+
+| Kiểu quan hệ | Ký hiệu Visual Paradigm | Khi nào dùng |
+|---------------|------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng (▷) | Quan hệ tham chiếu thông thường giữa 2 class |
+| **Aggregation** | Đường liền nét, đầu kim cương rỗng (◇) ở đầu "chứa" | "Contain" nhưng child có thể tồn tại độc lập |
+| **Composition** | Đường liền nét, đầu kim cương filled (◆) ở đầu "chứa" | "Contain" nhưng child KHÔNG tồn tại nếu không có parent |
+| **Dependency** | Đường dashed (nét đứt), mũi tên tam giác rỗng (▷) | "Sử dụng" tạm thời (view class gọi DAO class) |
+
+#### 6. Cách ghi multiplicity
+
+- **1..1** → ghi `1` ở một đầu của đường kết nối
+- **0..\*** hoặc **1..\*** → ghi `n` hoặc `*` ở đầu kia
+- Ghi multiplicity ở **cả 2 đầu** của đường kết nối
+
+Ví dụ: Employee(1) ←——→ (n) Attendance nghĩa là 1 nhân viên có nhiều bản ghi chấm công.
+
+#### 7. Bảng quan hệ chi tiết (Visual Paradigm)
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Role name | Giải thích |
+|----|-----|---------------|-------------|-----------|------------|
+| Restaurant | Employee | Aggregation | 1 — n | employs | Một nhà hàng có nhiều nhân viên |
+| Employee | Schedule | Aggregation | 1 — n | scheduledAs | Nhân viên có nhiều lịch xếp ca |
+| Shift | Schedule | Association | 1 — n | scheduledFor | Một ca có nhiều NV được xếp |
+| Employee | Attendance | Aggregation | 1 — n | attends | Nhân viên có nhiều bản ghi chấm công |
+| Shift | Attendance | Association | 1 — n | recordedFor | Một ca có nhiều bản ghi chấm công |
+| Employee | Wage | Aggregation | 1 — n | hasWage | Nhân viên có nhiều bảng lương tuần |
+| User | Schedule | Association | 1 — n | createdBy | Một staff tạo nhiều lịch xếp |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ quan hệ Employee → Attendance (Aggregation 1-n)**
+
+1. Chọn công cụ **Aggregation** (đường liền nét đầu kim cương rỗng ◇) từ toolbox.
+2. Click vào `Employee` (phía "chứa"), kéo sang `Attendance` (phía "bị chứa").
+3. Click chuột phải vào đường kết nối → **Open Specification**.
+4. Tại mục **From** (Employee): multiplicity = `1`, role name = `attends`.
+5. Tại mục **To** (Attendance): multiplicity = `*`.
+6. Nhấn OK. Đầu kim cương rỗng (◇) nằm phía `Employee`.
+
+**Ví dụ 2: Vẽ quan hệ Employee → Wage (Aggregation 1-n)**
+
+1. Chọn công cụ **Aggregation** (đường liền nét đầu kim cương rỗng ◇) từ toolbox.
+2. Click vào `Employee` (phía "chứa"), kéo sang `Wage` (phía "bị chứa").
+3. Click chuột phải → **Open Specification**.
+4. Tại mục **From** (Employee): multiplicity = `1`, role name = `hasWage`.
+5. Tại mục **To** (Wage): multiplicity = `*`.
+6. Nhấn OK. Đầu kim cương rỗng (◇) nằm phía `Employee`.
+
 ---
 
 ## Câu 3: Thiết kế tĩnh
@@ -189,13 +288,13 @@ Methods: getBestEmployeeStat(), getAttendanceDetail()
 
 | Entity | Kiểu | Attributes |
 |--------|------|------------|
-| Restaurant | Model | id: int, restaurantName: String, address: String, description: String |
-| Employee | Model | id: int, code: String, fullName: String, phoneNumber: String, email: String, dob: Date, contractDate: Date, restaurantId: int |
-| Shift | Model | id: int, date: Date, shiftNumber: int, description: String, startDate: Date, endDate: Date |
-| Schedule | Model | id: int, employeeId: int, shiftId: int, weekStartDate: Date |
-| Attendance | Model | id: int, employeeId: int, shiftId: int, checkinTime: DateTime, checkoutTime: DateTime |
-| Wage | Model | id: int, employeeId: int, weekStart: Date, weekEnd: Date, totalActualHours: float, totalReceived: float, totalLateHours: float, totalFines: float |
-| User | Model | id: int, username: String, password: String, role: String |
+| Restaurant | Model | id: int (PK), restaurantName: String, address: String, description: String |
+| Employee | Model | id: int (PK), code: String, fullName: String, phoneNumber: String, email: String, dob: Date, contractDate: Date, restaurant: Restaurant |
+| Shift | Model | id: int (PK), date: Date, shiftNumber: int, description: String, startDate: Date, endDate: Date |
+| Schedule | Model | id: int (PK), weekStartDate: Date, employee: Employee, shift: Shift, user: User |
+| Attendance | Model | id: int (PK), checkinTime: DateTime, checkoutTime: DateTime, employee: Employee, shift: Shift |
+| Wage | Model | id: int (PK), weekStart: Date, weekEnd: Date, totalActualHours: float, totalReceived: float, totalLateHours: float, totalFines: float, employee: Employee |
+| User | Model | id: int (PK), username: String, password: String, role: String |
 
 ### DAO classes
 

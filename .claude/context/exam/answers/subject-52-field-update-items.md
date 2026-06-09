@@ -188,6 +188,86 @@ Hệ thống quản lý thuê sân bóng đá mini. Sân bóng có nhiều sân 
 | ImportInvoice → ImportInvoiceDetail | 1-n | Một phiếu nhập có nhiều chi tiết sản phẩm |
 | Product → ImportInvoiceDetail | 1-n | Một sản phẩm xuất hiện trong nhiều phiếu nhập |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**Các bước vẽ tổng quan:**
+
+1. Mở Visual Paradigm → New → Class Diagram (trong danh mục Diagrams).
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity: Court, Customer, Booking, BookingSession, Product, SessionProduct, User, Supplier, ImportInvoice, ImportInvoiceDetail.
+3. Tạo view class boxes từ các interface: HomeFrm, UpdateSessionItemsFrm.
+4. Vẽ relationships giữa các class theo bảng quan hệ bên dưới.
+5. Thêm multiplicities và role names cho mỗi đường kết nối.
+
+**Cấu trúc 1 class box (3 ngăn):**
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> BookingSession`.
+- **Ngăn 2 (thuộc tính):** Mỗi thuộc tính ghi dạng `-attributeName: Type`. Ví dụ: `-checkinTime: String`, `-rentAmount: double`.
+- **Ngăn 3 (phương thức):** Mỗi phương thức ghi dạng `+methodName(params): ReturnType`. Ví dụ: `+searchCustomer(keyword: String): List<Customer>`.
+
+**Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Court | `<<entity>>` | -id: int, -code: String, -courtName: String, -courtType: String, -pricePerSession: double, -status: String | getter/setter |
+| Customer | `<<entity>>` | -id: int, -code: String, -customerName: String, -phoneNumber: String, -address: String | +searchCustomer(keyword: String): List<Customer> |
+| Booking | `<<entity>>` | -id: int, -bookingDate: Date, -startDate: Date, -endDate: Date, -timeSlot: String, -totalSessions: int, -totalAmount: double, -deposit: double, -status: String | +getActiveBookings(customerId: int): List<Booking> |
+| BookingSession | `<<entity>>` | -id: int, -sessionDate: Date, -startTime: String, -endTime: String, -checkinTime: String, -checkoutTime: String, -rentAmount: double, -status: String | +updateSession(sessionId: int, checkinTime: String, checkoutTime: String, rentAmount: double): boolean |
+| Product | `<<entity>>` | -id: int, -code: String, -productName: String, -unit: String, -price: double, -stockQuantity: int | +searchProduct(keyword: String): List<Product> |
+| SessionProduct | `<<entity>>` | -id: int, -unitPrice: double, -quantity: int, -subtotal: double | +addSessionProduct(sp: SessionProduct): boolean |
+| User | `<<entity>>` | -id: int, -username: String, -password: String, -fullName: String, -role: String | +checkLogin(username: String, password: String): boolean |
+| Supplier | `<<entity>>` | -id: int, -code: String, -supplierName: String, -address: String, -email: String, -phone: String, -description: String | getter/setter |
+| ImportInvoice | `<<entity>>` | -id: int, -importDate: Date, -totalAmount: double | getter/setter |
+| ImportInvoiceDetail | `<<entity>>` | -id: int, -unitPrice: double, -quantity: int, -amount: double | getter/setter |
+
+**Bảng chi tiết view classes:**
+
+| View class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| HomeFrm | `<<boundary>>` | subUpdateItems: JButton |
+| UpdateSessionItemsFrm | `<<boundary>>` | inCustomerName: JTextField, subSearchCustomer: JButton, outsubCustomerList: JTable (clickable), outBookingList: JTable, btnCheckout: JButton, outSessionInfo: JLabel, inCheckinTime: JTextField, inCheckoutTime: JTextField, inRentAmount: JTextField, inProductName: JTextField, subSearchProduct: JButton, outsubProductList: JTable (clickable), inUnitPrice: JTextField, inQuantity: JTextField, subOK: JButton, outItemList: JTable, outTotal: JLabel, subConfirm: JButton |
+
+**Cách vẽ quan hệ:**
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Customer → Booking.
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Booking ◆→ BookingSession.
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: UpdateSessionItemsFrm → CustomerDAO.
+
+**Cách ghi multiplicity:**
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: Court "1" --- "n" Booking.
+
+**Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|--------------|------------|
+| Court | Booking | Association | 1 — n | Một sân được nhiều khách đặt |
+| Customer | Booking | Association | 1 — n | Một khách hàng có nhiều booking |
+| Booking | BookingSession | Composition | 1 — n | Một booking có nhiều phiên thuê, phiên không tồn tại nếu không có booking |
+| BookingSession | SessionProduct | Composition | 1 — n | Một phiên có nhiều sản phẩm đã sử dụng |
+| Product | SessionProduct | Association | 1 — n | Một sản phẩm xuất hiện trong nhiều phiên |
+| Supplier | ImportInvoice | Association | 1 — n | Một nhà cung cấp có nhiều phiếu nhập |
+| ImportInvoice | ImportInvoiceDetail | Composition | 1 — n | Một phiếu nhập có nhiều chi tiết |
+| Product | ImportInvoiceDetail | Association | 1 — n | Một sản phẩm xuất hiện trong nhiều phiếu nhập |
+| UpdateSessionItemsFrm | CustomerDAO | Dependency | — | Frm sử dụng CustomerDAO để tìm khách hàng |
+| UpdateSessionItemsFrm | BookingDAO | Dependency | — | Frm sử dụng BookingDAO để lấy booking |
+| UpdateSessionItemsFrm | BookingSessionDAO | Dependency | — | Frm sử dụng BookingSessionDAO để cập nhật phiên |
+| UpdateSessionItemsFrm | ProductDAO | Dependency | — | Frm sử dụng ProductDAO để tìm sản phẩm |
+| UpdateSessionItemsFrm | SessionProductDAO | Dependency | — | Frm sử dụng SessionProductDAO để thêm sản phẩm phiên |
+
+**Ví dụ cụ thể trên Visual Paradigm:**
+
+1. **Vẽ quan hệ Booking → BookingSession (Composition 1-n):**
+   - Kéo class Booking lên canvas, kéo class BookingSession bên dưới.
+   - Chọn tool "Association" → click vào Booking, kéo đến BookingSession.
+   - Đặt multiplicity "1" phía Booking, "n" phía BookingSession.
+   - Click chuột phải → "Association End" → phía Booking đặt "filled diamond" (◆).
+
+2. **Vẽ dependency UpdateSessionItemsFrm → ProductDAO:**
+   - Chọn tool "Dependency" (đường dashed) → click vào UpdateSessionItemsFrm, kéo đến ProductDAO.
+   - Mũi tên tam giác rỗng (▷) tự động hiển thị phía ProductDAO.
+
 ### Classes diagram (analysis)
 
 Phân tích module này (bỏ qua bước đăng nhập):
@@ -330,6 +410,21 @@ Methods: searchCustomer(), getActiveBookings(), searchProduct(), addSessionProdu
 | ProductDAO | `searchByName(String name): ArrayList<Product>` | Tìm kiếm sản phẩm theo tên |
 | SessionProductDAO | `addSessionProduct(SessionProduct sp): boolean` | Thêm sản phẩm đã sử dụng vào phiên thuê |
 | SessionProductDAO | `getProductsBySession(int sessionId): ArrayList<SessionProduct>` | Lấy danh sách sản phẩm đã sử dụng trong phiên |
+
+### Entity classes
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Court | Entity | id: int (PK), code: String, courtName: String, courtType: String, pricePerSession: double, status: String |
+| Customer | Entity | id: int (PK), code: String, customerName: String, phoneNumber: String, address: String |
+| Booking | Entity | id: int (PK), bookingDate: Date, startDate: Date, endDate: Date, timeSlot: String, totalSessions: int, totalAmount: double, deposit: double, status: String, court: Court, customer: Customer |
+| BookingSession | Entity | id: int (PK), sessionDate: Date, startTime: String, endTime: String, checkinTime: String, checkoutTime: String, rentAmount: double, status: String, booking: Booking |
+| Product | Entity | id: int (PK), code: String, productName: String, unit: String, price: double, stockQuantity: int |
+| SessionProduct | Entity | id: int (PK), unitPrice: double, quantity: int, subtotal: double, bookingSession: BookingSession, product: Product |
+| User | Entity | id: int (PK), username: String, password: String, fullName: String, role: String |
+| Supplier | Entity | id: int (PK), code: String, supplierName: String, address: String, email: String, phone: String, description: String |
+| ImportInvoice | Entity | id: int (PK), importDate: Date, totalAmount: double, supplier: Supplier |
+| ImportInvoiceDetail | Entity | id: int (PK), unitPrice: double, quantity: int, amount: double, importInvoice: ImportInvoice, product: Product |
 
 ### Entity types sử dụng
 

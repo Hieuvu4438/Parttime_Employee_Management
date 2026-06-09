@@ -219,6 +219,107 @@ Nhan vao dong NV -> he thong lay chi tiet -> can phuong thuc:
 View classes: HomeFrm, WageFrm
 Methods: calculateWages(), getWageDetail()
 
+### Huong dan ve Class Diagram tren Visual Paradigm
+
+#### 1. Cac buoc ve tong quan
+
+| Buoc | Thao tac |
+|------|----------|
+| 1 | Mo Visual Paradigm → File → New → chon **Class Diagram** |
+| 2 | Tao cac entity class box (hinh chu nhat 3 ngan): Restaurant, Employee, Shift, Schedule, Attendance, Wage, WageDetail, User |
+| 3 | Tao cac view class box tu giao dien: HomeFrm, WageFrm |
+| 4 | Ve cac duong quan he (association) giua cac class |
+| 5 | Ghi multiplicity va role name cho moi quan he |
+
+#### 2. Cau truc 1 class box (3 ngan)
+
+Moi class trong Visual Paradigm la hinh chu nhat chia 3 ngan:
+
+- **Ngan 1 (ten class):** Ghi stereotype `<<entity>>` hoac `<<boundary>>` roi den ten class. Vi du: `<<entity>> Wage`, `<<boundary>> WageFrm`
+- **Ngan 2 (thuoc tinh):** Ghi tung thuoc tinh theo format `-tenThuocTinh: KieuDuLieu`. Dung `-` cho private. Vi du: `-totalShiftHours: float`, `-totalReceived: float`
+- **Ngan 3 (phuong thuc):** Ghi tung phuong thuc theo format `+tenPhuongThuc(thamSo): KieuTraVe`. Dung `+` cho public. Vi du: `+calculateWages(startDate: Date, endDate: Date): List<Wage>`
+
+#### 3. Bang chi tiet tung entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Restaurant | `<<entity>>` | `-id: int`, `-restaurantName: String`, `-address: String`, `-description: String` | — |
+| Employee | `<<entity>>` | `-id: int`, `-code: String`, `-fullName: String`, `-phoneNumber: String`, `-email: String`, `-dob: Date`, `-contractDate: Date`, `-restaurantID: int` | — |
+| Shift | `<<entity>>` | `-id: int`, `-date: Date`, `-shiftNumber: int`, `-description: String`, `-startDate: Date`, `-endDate: Date` | — |
+| Schedule | `<<entity>>` | `-id: int`, `-weekStartDate: Date`, `-assignedTime: DateTime`, `-employeeID: int`, `-shiftID: int`, `-userID: int` | — |
+| Attendance | `<<entity>>` | `-id: int`, `-checkinTime: DateTime`, `-checkoutTime: DateTime`, `-employeeID: int`, `-shiftID: int`, `-scheduleID: int`, `-userID: int` | — |
+| Wage | `<<entity>>` | `-id: int`, `-weekStartDate: Date`, `-weekEndDate: Date`, `-totalShiftHours: float`, `-totalShiftMoney: float`, `-totalOvertimeHours: float`, `-totalOvertimeMoney: float`, `-totalLateHours: float`, `-totalFines: float`, `-totalReceived: float`, `-employeeID: int`, `-userID: int` | `+calculateWages(startDate: Date, endDate: Date): List<Wage>` |
+| WageDetail | `<<entity>>` | `-id: int`, `-day: String`, `-date: Date`, `-shiftNumber: int`, `-checkinTime: DateTime`, `-checkoutTime: DateTime`, `-shiftHours: float`, `-shiftMoney: float`, `-overtimeHours: float`, `-overtimeMoney: float`, `-lateHours: float`, `-fines: float`, `-totalShift: float`, `-wageID: int`, `-shiftID: int`, `-attendanceID: int` | `+getWageDetail(employeeId: int, startDate: Date, endDate: Date): List<WageDetail>` |
+| User | `<<entity>>` | `-id: int`, `-username: String`, `-password: String`, `-role: String` | — |
+
+#### 4. Bang chi tiet view classes
+
+**HomeFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kieu | Mo ta |
+|------------|--------|------|-------|
+| `subWages` | sub | JButton | Nut chon Wages |
+
+**WageFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kieu | Mo ta |
+|------------|--------|------|-------|
+| `inStartDate` | in | JTextField | O nhap ngay bat dau tuan |
+| `inEndDate` | in | JTextField | O nhap ngay ket thuc tuan |
+| `subView` | sub | JButton | Nut View/Search |
+| `outsubListWage` | outsub | JTable | Bang luong tong hop (click duoc) |
+| `outListWageDetail` | out | JTable | Bang chi tiet luong |
+
+#### 5. Cach ve quan he
+
+| Kieu quan he | Ky hieu Visual Paradigm | Khi nao dung |
+|---------------|------------------------|---------------|
+| **Association** | Duong lien net, mui ten tam giac rong (▷) | Quan he tham chieu thong thuong giua 2 class |
+| **Aggregation** | Duong lien net, dau kim cuong rong (◇) o dau "chua" | "Contain" nhung child co the ton tai doc lap |
+| **Composition** | Duong lien net, dau kim cuong filled (◆) o dau "chua" | "Contain" nhung child KHONG ton tai neu khong co parent |
+| **Dependency** | Duong dashed (net dut), mui ten tam giac rong (▷) | "Su dung" tam thoi (view class goi DAO class) |
+
+#### 6. Cach ghi multiplicity
+
+- **1..1** → ghi `1` o mot dau cua duong ket noi
+- **0..\*** hoac **1..\*** → ghi `n` hoac `*` o dau kia
+- Ghi multiplicity o **ca 2 dau** cua duong ket noi
+
+Vi du: Wage(1) ←——→ (n) WageDetail nghia la 1 ban ghi luong co nhieu chi tiet theo ca.
+
+#### 7. Bang quan he chi tiet (Visual Paradigm)
+
+| Tu | Den | Kieu quan he | Multiplicity | Role name | Giai thich |
+|----|-----|---------------|-------------|-----------|------------|
+| Restaurant | Employee | Aggregation | 1 — n | employs | Mot nha hang co nhieu NV |
+| Employee | Wage | Aggregation | 1 — n | hasWage | NV co nhieu ban ghi luong |
+| Wage | WageDetail | Composition | 1 — n | contains | WageDetail khong ton tai neu khong co Wage |
+| Employee | Schedule | Aggregation | 1 — n | scheduledAs | NV co nhieu lich |
+| Shift | Schedule | Association | 1 — n | scheduledFor | Mot ca co nhieu NV duoc xep |
+| Employee | Attendance | Aggregation | 1 — n | attends | NV co nhieu cham cong |
+| Shift | Attendance | Association | 1 — n | recordedFor | Mot ca co nhieu cham cong |
+| User | Wage | Association | 1 — n | createdBy | Mot staff tao nhieu luong |
+
+#### 8. Vi du cu the tren Visual Paradigm
+
+**Vi du 1: Ve quan he Wage → WageDetail (Composition 1-n)**
+
+1. Chon cong cu **Composition** (duong lien net dau kim cuong filled ◆) tu toolbox.
+2. Click vao `Wage` (phia "chua"), keo sang `WageDetail` (phia "bi chua").
+3. Click chuot phai vao duong ket noi → **Open Specification**.
+4. Tai muc **From** (Wage): multiplicity = `1`.
+5. Tai muc **To** (WageDetail): multiplicity = `*`, role name = `contains`.
+6. Nhan OK. Dau kim cuong filled (◆) nam phia `Wage`.
+
+**Vi du 2: Ve quan he Employee → Wage (Aggregation 1-n)**
+
+1. Chon cong cu **Aggregation** (duong lien net dau kim cuong rong ◇) tu toolbox.
+2. Click vao `Employee` (phia "chua"), keo sang `Wage` (phia "bi chua").
+3. Click chuot phai → **Open Specification**.
+4. Tai muc **From** (Employee): multiplicity = `1`, role name = `hasWage`.
+5. Tai muc **To** (Wage): multiplicity = `*`.
+6. Nhan OK. Dau kim cuong rong (◇) nam phia `Employee`.
+
 ---
 
 ## Cau 3: Thiet ke tinh — Giao dien va class diagram chi tiet

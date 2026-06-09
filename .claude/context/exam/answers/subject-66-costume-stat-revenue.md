@@ -133,6 +133,71 @@ Hệ thống quản lý cho thuê trang phục. Cửa hàng có nhiều loại t
 | RentalSlip | Payment | 1 : 0..1 | Một phiếu thuê có tối đa 1 phiếu thanh toán |
 | User | RentalSlip | 1 : N | Một nhân viên tạo nhiều phiếu thuê |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**1. Các bước vẽ tổng quan:**
+- Bước 1: Mở Visual Paradigm → File → New → chọn **Class Diagram**
+- Bước 2: Tạo các entity class box (hình chữ nhật 3 ngăn) cho: Costume, RentalSlip, RentalSlipDetail, Customer, Payment, User
+- Bước 3: Tạo các view class box từ giao diện: CostumeStatRevenueFrm
+- Bước 4: Vẽ các đường quan hệ (association, composition) giữa các class
+- Bước 5: Ghi multiplicity (1, n) và role name ở hai đầu đường kết nối
+
+**2. Cấu trúc 1 class box (3 ngăn):**
+- Ngăn 1 (tên class): ghi stereotype `<<entity>>` hoặc `<<boundary>>` + tên class. Ví dụ: `<<entity>> Payment`
+- Ngăn 2 (thuộc tính): ghi theo định dạng `-attributeName: Type`. Ví dụ: `-paymentId: int`, `-totalAmount: double`
+- Ngăn 3 (phương thức): ghi theo định dạng `+methodName(params): ReturnType`. Ví dụ: `+getRevenueByMonth(): List<RevenueStatDTO>`
+
+**3. Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Costume | <<entity>> | -costumeId: int, -costumeName: String, -model: String, -genre: String, -rentalPricePerDay: double, -status: String | |
+| RentalSlip | <<entity>> | -rentalSlipId: int, -customer: Customer, -staff: User, -rentalDate: Date, -deposit: double, -totalAmount: double | +getSlipsByMonth(year: int, month: int): List<SlipDetailDTO> |
+| RentalSlipDetail | <<entity>> | -detailId: int, -rentalSlip: RentalSlip, -costume: Costume, -quantity: int, -rentalDate: Date, -returnDate: Date, -rentalDays: int, -rentalAmount: double, -status: String, -fine: double | |
+| Customer | <<entity>> | -customerId: int, -customerName: String, -phone: String, -email: String, -address: String | |
+| Payment | <<entity>> | -paymentId: int, -rentalSlip: RentalSlip, -paymentDate: Date, -totalAmount: double, -deposit: double, -amountPaid: double, -note: String | +getRevenueByMonth(): List<RevenueStatDTO>, +getRevenueByQuarter(): List<RevenueStatDTO>, +getRevenueByYear(): List<RevenueStatDTO> |
+| User | <<entity>> | -userId: int, -username: String, -password: String, -fullName: String, -role: String | |
+
+**4. Bảng chi tiết view classes:**
+
+| View Class | UI Elements |
+|------------|-------------|
+| CostumeStatRevenueFrm | inStatType: JComboBox (combobox chọn Tháng/Quý/Năm), subView: JButton (nút xem thống kê), outStatTable: JTable (bảng doanh thu theo kỳ: periodName, totalRevenue), outDetailTable: JTable (bảng chi tiết hóa đơn: rentalSlipId, customerName, borrowedDate, totalCostumes, totalAmount) |
+
+**5. Cách vẽ quan hệ:**
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Customer → RentalSlip
+- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: RentalSlip ◆→ RentalSlipDetail
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: CostumeStatRevenueFrm ---> PaymentDAO
+
+**6. Cách ghi multiplicity:**
+- 1..1 → ghi "1" ở một đầu
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: Customer (1) --- (n) RentalSlip
+
+**7. Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|---------------|-------------|------------|
+| Customer | RentalSlip | Association | 1 : n | Một khách hàng có nhiều phiếu thuê |
+| RentalSlip | RentalSlipDetail | Composition | 1 : n | Phiếu thuê chứa nhiều chi tiết trang phục |
+| Costume | RentalSlipDetail | Association | 1 : n | Một trang phục xuất hiện trong nhiều chi tiết phiếu thuê |
+| RentalSlip | Payment | Association | 1 : 0..1 | Một phiếu thuê có tối đa 1 phiếu thanh toán |
+| User | RentalSlip | Association | 1 : n | Một nhân viên tạo nhiều phiếu thuê |
+
+**8. Ví dụ cụ thể trên Visual Paradigm:**
+
+Ví dụ 1 — Vẽ quan hệ Composition RentalSlip ◆→ RentalSlipDetail:
+- Kéo class RentalSlip vào canvas, kéo class RentalSlipDetail vào bên phải
+- Chọn công cụ **Composition**, click vào RentalSlip rồi kéo sang RentalSlipDetail
+- Kim cương filled nằm ở phía RentalSlip (parent)
+- Đặt Multiplicity: RentalSlip "1", RentalSlipDetail "n"
+
+Ví dụ 2 — Vẽ quan hệ Association RentalSlip → Payment (1:0..1):
+- Kéo class RentalSlip và Payment vào canvas
+- Chọn công cụ **Association**, click vào RentalSlip kéo sang Payment
+- Đặt Multiplicity: RentalSlip "1", Payment "0..1"
+
 ### Classes diagram (analysis)
 
 Phân tích module này (bỏ qua bước đăng nhập):
@@ -191,19 +256,87 @@ Methods: getRevenueByMonth(), getRevenueByQuarter(), getRevenueByYear(), getSlip
 | getSlipsByQuarter(int year, int quarter) | List\<SlipDetailDTO\> | Lấy chi tiết hóa đơn trong 1 quý |
 | getSlipsByYear(int year) | List\<SlipDetailDTO\> | Lấy chi tiết hóa đơn trong 1 năm |
 
-### Database Schema
+### Entity classes (Design phase)
 
-**tblPayment:** paymentId (PK), rentalSlipId (FK→tblRentalSlip), paymentDate, totalAmount, deposit, amountPaid, note
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Costume | Model | id: int, costumeName: String, model: String, genre: String, rentalPricePerDay: double, status: String |
+| Customer | Model | id: int, customerName: String, phone: String, email: String, address: String |
+| RentalSlip | Model | id: int, customer: Customer, user: User, rentalDate: Date, deposit: double, totalAmount: double |
+| RentalSlipDetail | Model | id: int, rentalSlip: RentalSlip, costume: Costume, quantity: int, rentalDate: Date, returnDate: Date, rentalDays: int, rentalAmount: double, status: String, fine: double |
+| Payment | Model | id: int, rentalSlip: RentalSlip, paymentDate: Date, totalAmount: double, deposit: double, amountPaid: double, note: String |
+| User | Model | id: int, username: String, password: String, fullName: String, role: String |
 
-**tblRentalSlip:** rentalSlipId (PK), customerId (FK→tblCustomer), userId (FK→tblUser), rentalDate, deposit, totalAmount
+### Database Design
 
-**tblRentalSlipDetail:** detailId (PK), rentalSlipId (FK→tblRentalSlip), costumeId (FK→tblCostume), quantity, rentalDate, returnDate, rentalDays, rentalAmount, status, fine
+**tblPayment:**
 
-**tblCustomer:** customerId (PK), customerName, phone, email, address
+| Column | Type | Constraint |
+|--------|------|------------|
+| paymentId | VARCHAR(10) | PRIMARY KEY |
+| rentalSlipId | VARCHAR(10) | FOREIGN KEY → tblRentalSlip(rentalSlipId) |
+| paymentDate | DATE | NOT NULL |
+| totalAmount | DECIMAL(15,2) | NOT NULL |
+| deposit | DECIMAL(15,2) | |
+| amountPaid | DECIMAL(15,2) | NOT NULL |
+| note | NVARCHAR(255) | |
 
-**tblCostume:** costumeId (PK), costumeName, model, genre, rentalPricePerDay, status
+**tblRentalSlip:**
 
-**tblUser:** userId (PK), username, password, fullName, role
+| Column | Type | Constraint |
+|--------|------|------------|
+| rentalSlipId | VARCHAR(10) | PRIMARY KEY |
+| customerId | VARCHAR(10) | FOREIGN KEY → tblCustomer(customerId) |
+| userId | VARCHAR(10) | FOREIGN KEY → tblUser(userId) |
+| rentalDate | DATE | NOT NULL |
+| deposit | DECIMAL(15,2) | NOT NULL |
+| totalAmount | DECIMAL(15,2) | NOT NULL |
+
+**tblRentalSlipDetail:**
+
+| Column | Type | Constraint |
+|--------|------|------------|
+| detailId | VARCHAR(10) | PRIMARY KEY |
+| rentalSlipId | VARCHAR(10) | FOREIGN KEY → tblRentalSlip(rentalSlipId) |
+| costumeId | VARCHAR(10) | FOREIGN KEY → tblCostume(costumeId) |
+| quantity | INT | NOT NULL |
+| rentalDate | DATE | NOT NULL |
+| returnDate | DATE | |
+| rentalDays | INT | NOT NULL |
+| rentalAmount | DECIMAL(15,2) | NOT NULL |
+| status | VARCHAR(20) | NOT NULL |
+| fine | DECIMAL(15,2) | DEFAULT 0 |
+
+**tblCustomer:**
+
+| Column | Type | Constraint |
+|--------|------|------------|
+| customerId | VARCHAR(10) | PRIMARY KEY |
+| customerName | NVARCHAR(100) | NOT NULL |
+| phone | VARCHAR(15) | |
+| email | VARCHAR(100) | |
+| address | NVARCHAR(200) | |
+
+**tblCostume:**
+
+| Column | Type | Constraint |
+|--------|------|------------|
+| costumeId | VARCHAR(10) | PRIMARY KEY |
+| costumeName | NVARCHAR(100) | NOT NULL |
+| model | NVARCHAR(50) | |
+| genre | NVARCHAR(50) | |
+| rentalPricePerDay | DECIMAL(15,2) | NOT NULL |
+| status | VARCHAR(20) | |
+
+**tblUser:**
+
+| Column | Type | Constraint |
+|--------|------|------------|
+| userId | VARCHAR(10) | PRIMARY KEY |
+| username | VARCHAR(50) | NOT NULL, UNIQUE |
+| password | VARCHAR(100) | NOT NULL |
+| fullName | NVARCHAR(100) | NOT NULL |
+| role | VARCHAR(20) | NOT NULL |
 
 ### Visual Paradigm — Hướng dẫn vẽ
 

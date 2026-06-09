@@ -169,6 +169,79 @@ User 1 --- n Invoice
 | Invoice → Ticket | 1-n (Composition) | Hoa don chua nhieu ve |
 | User → Invoice | 1-n (Association) | Mot nhan vien tao nhieu hoa don |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**Các bước vẽ tổng quan:**
+
+1. Mở Visual Paradigm → New → Class Diagram (trong danh mục Diagrams).
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity: Cinema, ScreenRoom, Movie, Showtime, Ticket, Invoice, User.
+3. Tạo view class boxes từ các interface: HomeFrm, RevenueStatFrm.
+4. Vẽ relationships giữa các class theo bảng quan hệ bên dưới.
+5. Thêm multiplicities và role names cho mỗi đường kết nối.
+
+**Cấu trúc 1 class box (3 ngăn):**
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> Invoice`.
+- **Ngăn 2 (thuộc tính):** Mỗi thuộc tính ghi dạng `-attributeName: Type`. Ví dụ: `-invoiceDate: Date`, `-totalAmount: float`.
+- **Ngăn 3 (phương thức):** Mỗi phương thức ghi dạng `+methodName(params): ReturnType`. Ví dụ: `+getMovieRevenue(startDate: Date, endDate: Date): List<MovieRevenue>`.
+
+**Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Cinema | `<<entity>>` | -id: int, -code: String, -name: String, -address: String, -intro: String | +getCinemaRevenue(startDate: Date, endDate: Date): List<CinemaRevenue> |
+| ScreenRoom | `<<entity>>` | -id: int, -code: String, -numSeats: int, -characteristics: String | getter/setter |
+| Movie | `<<entity>>` | -id: int, -code: String, -title: String, -type: String, -year: int, -description: String | +getMovieRevenue(startDate: Date, endDate: Date): List<MovieRevenue> |
+| Showtime | `<<entity>>` | -id: int, -time: String, -date: Date, -ticketPrice: float | +getShowtimeRevenue(movieId: int, startDate: Date, endDate: Date): List<ShowtimeRevenue> |
+| Ticket | `<<entity>>` | -id: int, -price: float | getter/setter |
+| Invoice | `<<entity>>` | -id: int, -invoiceDate: Date, -customerName: String, -totalAmount: float | +getInvoicesByShowtime(showtimeId: int): List<Invoice> |
+| User | `<<entity>>` | -id: int, -username: String, -password: String, -role: String | +checkLogin(username: String, password: String): boolean |
+
+**Bảng chi tiết view classes:**
+
+| View class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| HomeFrm | `<<boundary>>` | subRevenueStatistics: JButton |
+| RevenueStatFrm | `<<boundary>>` | inStatType: JComboBox, inStartDate: JTextField, inEndDate: JTextField, subView: JButton, outsubMovieTable: JTable (clickable), outsubShowtimeTable: JTable (clickable), outInvoiceTable: JTable |
+
+**Cách vẽ quan hệ:**
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Movie → Showtime.
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Cinema ◆→ ScreenRoom, Invoice ◆→ Ticket.
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: RevenueStatFrm → MovieDAO.
+
+**Cách ghi multiplicity:**
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: Cinema "1" --- "n" ScreenRoom.
+
+**Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|--------------|------------|
+| Cinema | ScreenRoom | Composition | 1 — n | Một rạp có nhiều phòng, phòng không tồn tại nếu không có rạp |
+| Movie | Showtime | Association | 1 — n | Một phim có nhiều suất chiếu |
+| ScreenRoom | Showtime | Association | 1 — n | Một phòng có nhiều suất chiếu |
+| Showtime | Ticket | Association | 1 — n | Một suất chiếu bán nhiều vé |
+| Invoice | Ticket | Composition | 1 — n | Hóa đơn chứa nhiều vé, vé không tồn tại nếu không có hóa đơn |
+| User | Invoice | Association | 1 — n | Một nhân viên tạo nhiều hóa đơn |
+| RevenueStatFrm | MovieDAO | Dependency | — | Frm sử dụng MovieDAO để thống kê theo phim |
+| RevenueStatFrm | ShowtimeDAO | Dependency | — | Frm sử dụng ShowtimeDAO để lấy chi tiết suất chiếu |
+| RevenueStatFrm | InvoiceDAO | Dependency | — | Frm sử dụng InvoiceDAO để lấy danh sách hóa đơn |
+
+**Ví dụ cụ thể trên Visual Paradigm:**
+
+1. **Vẽ quan hệ Invoice → Ticket (Composition 1-n):**
+   - Kéo class Invoice lên canvas, kéo class Ticket bên dưới.
+   - Chọn tool "Association" → click vào Invoice, kéo đến Ticket.
+   - Đặt multiplicity "1" phía Invoice, "n" phía Ticket.
+   - Click chuột phải → "Association End" → phía Invoice đặt "filled diamond" (◆).
+
+2. **Vẽ dependency RevenueStatFrm → MovieDAO:**
+   - Chọn tool "Dependency" (đường dashed) → click vào RevenueStatFrm, kéo đến MovieDAO.
+   - Mũi tên tam giác rỗng (▷) tự động hiển thị phía MovieDAO.
+
 ### Classes diagram (analysis)
 
 Phan tich module nay (bo qua buoc dang nhap):

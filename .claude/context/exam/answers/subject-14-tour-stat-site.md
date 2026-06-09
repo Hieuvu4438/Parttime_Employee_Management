@@ -164,6 +164,99 @@ User 1 --- n Invoice
 | TourDeparture → InvoiceDetail | 1-n (Association) | Mot ngay khoi hanh xuat hien trong nhieu chi tiet |
 | User → Invoice | 1-n (Association) | Mot nhan vien tao nhieu hoa don |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+1. Mở Visual Paradigm → New → Class Diagram.
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity class.
+3. Tạo view class boxes từ các interface (form) của module.
+4. Vẽ mối quan hệ (relationship) giữa các class.
+5. Ghi multiplicity và role name cho mỗi mối quan hệ.
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+Mỗi class trong Visual Paradigm được vẽ dưới dạng hình chữ nhật chia 3 ngăn:
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> Site`, `<<boundary>> SiteRevenueStatFrm`, `<<control>> SiteDAO`.
+- **Ngăn 2 (thuộc tính):** Liệt kê các thuộc tính theo format `-attributeName: Type`. Ví dụ: `-id: int`, `-name: String`, `-departureDate: Date`.
+- **Ngăn 3 (phương thức):** Liệt kê các phương thức theo format `+methodName(params): ReturnType`. Ví dụ: `+getSiteRevenueStat(startDate: Date, endDate: Date): List<SiteStat>`.
+
+Trong Visual Paradigm, click đúp vào class box để chỉnh sửa tên, tab Attributes để thêm thuộc tính, tab Operations để thêm phương thức.
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Tour | <<entity>> | -id: int, -code: String, -name: String, -departure: String, -destination: String, -description: String | (không có) |
+| TourDeparture | <<entity>> | -id: int, -departureDate: Date, -price: float, -maxGuests: int | (không có) |
+| Site | <<entity>> | -id: int, -name: String, -description: String | +getSiteRevenueStat(startDate: Date, endDate: Date): List<SiteStat> |
+| TourSite | <<entity>> | -tourId: int, -siteId: int | (không có) |
+| Customer | <<entity>> | -id: int, -code: String, -name: String, -idNumber: String, -idType: String, -phone: String, -email: String, -address: String | (không có) |
+| Invoice | <<entity>> | -id: int, -invoiceDate: Date, -totalAmount: float, -numGuests: int, -status: String | +getInvoicesBySite(siteId: int, startDate: Date, endDate: Date): List<InvoiceStat> |
+| InvoiceDetail | <<entity>> | -id: int, -guestCount: int, -unitPrice: float, -amount: float | (không có) |
+| User | <<entity>> | -id: int, -username: String, -password: String, -role: String | (không có) |
+
+#### 4. Bảng chi tiết view classes
+
+| View Class | Stereotype | UI Elements | Mô tả |
+|-----------|-----------|-------------|-------|
+| HomeFrm | <<boundary>> | -subStatistics: JButton | Giao diện chính, chứa nút chọn Statistics |
+| SiteRevenueStatFrm | <<boundary>> | -inStartDate: JFormattedTextField, -inEndDate: JFormattedTextField, -subView: JButton, -outsubListSiteStat: JTable, -outListInvoice: JTable, -subBack: JButton | Giao diện thống kê doanh thu theo điểm tham quan |
+
+Quy tắc đặt tên UI elements:
+- Tiền tố `in` → input (ô nhập liệu): inStartDate, inEndDate
+- Tiền tố `out` → output (vùng hiển thị): outListInvoice
+- Tiền tố `outsub` → clickable output (bảng click được): outsubListSiteStat
+- Tiền tố `sub` → submit (nút bấm): subView, subBack
+
+#### 5. Cách vẽ quan hệ
+
+Trong Visual Paradigm, sử dụng palette Relationships ở bên phải để chọn kiểu quan hệ:
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Customer → Invoice (khách hàng tham chiếu đến hóa đơn).
+- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập. Ví dụ: Tour → TourSite và Site → TourSite (quan hệ n-n qua bảng trung gian, cả hai bên đều là Aggregation).
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Tour → TourDeparture (ngày khởi hành không tồn tại nếu không có tour).
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: SiteRevenueStatFrm → SiteDAO (form sử dụng DAO để truy vấn).
+
+#### 6. Cách ghi multiplicity
+
+Trong Visual Paradigm, click vào đường kết nối → tab Properties → chỉnh Source Multiplicity và Target Multiplicity:
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi multiplicity ở cả 2 đầu của đường kết nối.
+
+Ví dụ: Tour (1) → (n) TourDeparture nghĩa là một tour có nhiều ngày khởi hành. Tour (n) ↔ (n) Site (qua TourSite) nghĩa là quan hệ nhiều-nhiều.
+
+#### 7. Bảng quan hệ chi tiết
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|---|---|---|---|---|
+| Tour | TourDeparture | Composition | 1 - n | Một tour chứa nhiều ngày khởi hành; ngày khởi hành không tồn tại nếu không có tour |
+| Tour | TourSite | Aggregation | 1 - n | Một tour tham gia vào nhiều bản ghi TourSite |
+| Site | TourSite | Aggregation | 1 - n | Một điểm tham quan tham gia vào nhiều bản ghi TourSite |
+| Customer | Invoice | Association | 1 - n | Một khách hàng có nhiều hóa đơn mua vé |
+| Invoice | InvoiceDetail | Composition | 1 - n | Một hóa đơn chứa nhiều chi tiết; chi tiết không tồn tại nếu không có hóa đơn |
+| TourDeparture | InvoiceDetail | Association | 1 - n | Một ngày khởi hành xuất hiện trong nhiều chi tiết hóa đơn |
+| User | Invoice | Association | 1 - n | Một nhân viên tạo nhiều hóa đơn |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ quan hệ n-n giữa Tour và Site qua TourSite**
+1. Tạo class `<<entity>> Tour`, `<<entity>> Site`, và `<<entity>> TourSite`.
+2. Chọn công cụ **Aggregation** từ palette Relationships (đầu kim cương rỗng ◇).
+3. Click vào class Tour → kéo đến class TourSite. Set Multiplicity: Tour (1), TourSite (n).
+4. Chọn lại công cụ **Aggregation**. Click vào class Site → kéo đến class TourSite. Set Multiplicity: Site (1), TourSite (n).
+5. Kết quả: Tour (1) ◇----(*) TourSite (*)----(1) Site.
+
+**Ví dụ 2: Vẽ quan hệ Tour → TourDeparture (1-n, Composition)**
+1. Tạo class `<<entity>> Tour` và `<<entity>> TourDeparture`.
+2. Chọn công cụ **Composition** từ palette Relationships (đầu kim cương filled ◆).
+3. Click vào class Tour → kéo đến class TourDeparture.
+4. Click vào đường kết nối → Properties → set Source Multiplicity = 1, Target Multiplicity = *.
+5. Kết quả: Tour (1) ◆----(*) TourDeparture.
+
 ### Classes diagram (analysis)
 
 Analysis this module (exclude login step):

@@ -145,6 +145,85 @@ Hệ thống quản lý chuỗi rạp chiếu phim. Mỗi rạp có nhiều phò
 | Ticket → Invoice | n-1 | Nhiều vé thuộc một hóa đơn |
 | FoodItem → Ticket | n-n | Đồ ăn có thể bán kèm vé hoặc riêng |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**Các bước vẽ tổng quan:**
+
+1. Mở Visual Paradigm → New → Class Diagram (trong danh mục Diagrams).
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity: Cinema, ScreenRoom, Movie, Showtime, Seat, Ticket, Invoice, FoodItem, User.
+3. Tạo view class boxes từ các interface: HomeFrm, SellTicketFrm.
+4. Vẽ relationships giữa các class theo bảng quan hệ bên dưới.
+5. Thêm multiplicities và role names cho mỗi đường kết nối.
+
+**Cấu trúc 1 class box (3 ngăn):**
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> Cinema`.
+- **Ngăn 2 (thuộc tính):** Mỗi thuộc tính ghi dạng `-attributeName: Type`. Ví dụ: `-code: String`, `-numSeats: int`.
+- **Ngăn 3 (phương thức):** Mỗi phương thức ghi dạng `+methodName(params): ReturnType`. Ví dụ: `+getAllMovies(): List<Movie>`.
+
+**Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Cinema | `<<entity>>` | -id: int, -code: String, -name: String, -address: String, -intro: String | getter/setter |
+| ScreenRoom | `<<entity>>` | -id: int, -code: String, -numSeats: int, -characteristics: String | getter/setter |
+| Movie | `<<entity>>` | -id: int, -code: String, -title: String, -type: String, -year: int, -description: String | +getAllMovies(): List<Movie> |
+| Showtime | `<<entity>>` | -id: int, -time: String, -date: Date, -ticketPrice: float | +getShowtimesByMovie(movieId: int): List<Showtime> |
+| Seat | `<<entity>>` | -id: int, -seatNumber: String | +getAvailableSeats(showtimeId: int): List<Seat> |
+| Ticket | `<<entity>>` | -id: int, -price: float | +getSeatPrice(showtimeId: int, seatId: int): float, +addTicket(ticket: Ticket): boolean |
+| Invoice | `<<entity>>` | -id: int, -invoiceDate: Date, -totalAmount: float | getter/setter |
+| FoodItem | `<<entity>>` | -id: int, -code: String, -name: String, -price: float, -size: String | getter/setter |
+| User | `<<entity>>` | -id: int, -username: String, -password: String, -role: String | +checkLogin(username: String, password: String): boolean |
+
+**Bảng chi tiết view classes:**
+
+| View class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| HomeFrm | `<<boundary>>` | subSellTicket: JButton |
+| SellTicketFrm | `<<boundary>>` | inMovie: JComboBox, inShowtime: JComboBox, outsubSeatMap: JPanel (clickable), outInvoice: JTable, outTotalAmount: JLabel, subPrint: JButton |
+
+**Cách vẽ quan hệ:**
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Movie → Showtime.
+- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập.
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Cinema ◆→ ScreenRoom.
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: SellTicketFrm → MovieDAO.
+
+**Cách ghi multiplicity:**
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: Cinema "1" --- "n" ScreenRoom.
+
+**Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|--------------|------------|
+| Cinema | ScreenRoom | Composition | 1 — n | Một rạp có nhiều phòng chiếu, phòng không tồn tại nếu không có rạp |
+| ScreenRoom | Seat | Composition | 1 — n | Một phòng có nhiều ghế, ghế không tồn tại nếu không có phòng |
+| Movie | Showtime | Association | 1 — n | Một phim có nhiều suất chiếu |
+| ScreenRoom | Showtime | Association | 1 — n | Một phòng có nhiều suất chiếu |
+| Showtime | Ticket | Association | 1 — n | Một suất chiếu có nhiều vé bán |
+| Seat | Ticket | Association | 1 — n | Một ghế có thể bán nhiều vé (ở các suất chiếu khác nhau) |
+| Ticket | Invoice | Association | n — 1 | Nhiều vé thuộc một hóa đơn |
+| SellTicketFrm | MovieDAO | Dependency | — | Frm sử dụng MovieDAO để lấy danh sách phim |
+| SellTicketFrm | ShowtimeDAO | Dependency | — | Frm sử dụng ShowtimeDAO để lấy suất chiếu |
+| SellTicketFrm | SeatDAO | Dependency | — | Frm sử dụng SeatDAO để lấy ghế trống |
+| SellTicketFrm | TicketDAO | Dependency | — | Frm sử dụng TicketDAO để lưu vé |
+
+**Ví dụ cụ thể trên Visual Paradigm:**
+
+1. **Vẽ quan hệ Cinema → ScreenRoom (Composition 1-n):**
+   - Kéo class Cinema lên canvas, kéo class ScreenRoom bên dưới.
+   - Chọn tool "Association" → click vào Cinema, kéo đến ScreenRoom.
+   - Click chuột phải vào đường kết nối → chọn "Multiplicity" → đặt "1" phía Cinema, "n" phía ScreenRoom.
+   - Click chuột phải → chọn "Association End" → phía Cinema đặt "filled diamond" (◆) để biểu thị Composition.
+
+2. **Vẽ quan hệ Showtime → Ticket (Association 1-n):**
+   - Chọn tool "Association" → click vào Showtime, kéo đến Ticket.
+   - Đặt multiplicity "1" phía Showtime, "n" phía Ticket.
+   - Không cần diamond vì đây là Association thông thường.
+
 ### Classes diagram (analysis)
 
 Phân tích module này (bỏ qua bước đăng nhập):
@@ -223,15 +302,15 @@ Methods: getAllMovies(), getShowtimesByMovie(), getAvailableSeats(), getSeatPric
 
 | Entity | Kiểu | Attributes |
 |--------|------|------------|
-| Cinema | Model | id: int, code: String, name: String, address: String, intro: String |
-| ScreenRoom | Model | id: int, cinemaId: int, code: String, numSeats: int, characteristics: String |
-| Movie | Model | id: int, code: String, title: String, type: String, year: int, description: String |
-| Showtime | Model | id: int, movieId: int, screenRoomId: int, time: String, date: Date, ticketPrice: float |
-| Seat | Model | id: int, screenRoomId: int, seatNumber: String |
-| Ticket | Model | id: int, showtimeId: int, seatId: int, price: float |
-| Invoice | Model | id: int, invoiceDate: Date, totalAmount: float |
-| FoodItem | Model | id: int, code: String, name: String, price: float, size: String |
-| User | Model | id: int, username: String, password: String, role: String |
+| Cinema | Model | id: int (PK), code: String, name: String, address: String, intro: String |
+| ScreenRoom | Model | id: int (PK), code: String, numSeats: int, characteristics: String, cinema: Cinema |
+| Movie | Model | id: int (PK), code: String, title: String, type: String, year: int, description: String |
+| Showtime | Model | id: int (PK), time: String, date: Date, ticketPrice: float, movie: Movie, screenRoom: ScreenRoom |
+| Seat | Model | id: int (PK), seatNumber: String, screenRoom: ScreenRoom |
+| Ticket | Model | id: int (PK), price: float, showtime: Showtime, seat: Seat |
+| Invoice | Model | id: int (PK), invoiceDate: Date, totalAmount: float |
+| FoodItem | Model | id: int (PK), code: String, name: String, price: float, size: String |
+| User | Model | id: int (PK), username: String, password: String, role: String |
 
 ### DAO classes
 

@@ -116,6 +116,75 @@ Nhà cung cấp (Supplier) cung cấp hàng hóa cho sân bóng đá mini. Khi n
 | Product → ImportInvoiceDetail | 1-n | Một sản phẩm xuất hiện trong nhiều chi tiết nhập |
 | User → ImportInvoice | 1-n | Một nhân viên lập nhiều hóa đơn nhập |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**Các bước vẽ tổng quan:**
+
+1. Mở Visual Paradigm → New → Class Diagram (trong danh mục Diagrams).
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity: Supplier, Product, ImportInvoice, ImportInvoiceDetail, User.
+3. Tạo view class boxes từ các interface: HomeFrm, ImportGoodsFrm.
+4. Vẽ relationships giữa các class theo bảng quan hệ bên dưới.
+5. Thêm multiplicities và role names cho mỗi đường kết nối.
+
+**Cấu trúc 1 class box (3 ngăn):**
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> ImportInvoice`.
+- **Ngăn 2 (thuộc tính):** Mỗi thuộc tính ghi dạng `-attributeName: Type`. Ví dụ: `-importDate: DateTime`, `-totalAmount: double`.
+- **Ngăn 3 (phương thức):** Mỗi phương thức ghi dạng `+methodName(params): ReturnType`. Ví dụ: `+createImportInvoice(invoice: ImportInvoice): int`.
+
+**Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Supplier | `<<entity>>` | -id: int, -code: String, -name: String, -address: String, -email: String, -phone: String, -description: String | +searchSupplier(keyword: String): List<Supplier> |
+| Product | `<<entity>>` | -id: int, -code: String, -name: String, -price: double, -description: String | +searchProduct(keyword: String): List<Product> |
+| ImportInvoice | `<<entity>>` | -id: int, -importDate: DateTime, -totalAmount: double | +createImportInvoice(invoice: ImportInvoice): int |
+| ImportInvoiceDetail | `<<entity>>` | -id: int, -quantity: int, -unitPrice: double, -amount: double | +addInvoiceDetails(details: List<ImportInvoiceDetail>): boolean |
+| User | `<<entity>>` | -id: int, -username: String, -password: String, -role: String | +checkLogin(username: String, password: String): boolean |
+
+**Bảng chi tiết view classes:**
+
+| View class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| HomeFrm | `<<boundary>>` | subImportGoods: JButton |
+| ImportGoodsFrm | `<<boundary>>` | inSupplierName: JTextField, subSearchSupplier: JButton, outsubSupplierTable: JTable (clickable), subAddSupplier: JButton, inProductName: JTextField, subSearchProduct: JButton, outsubProductTable: JTable (clickable), inQuantity: JTextField, inUnitPrice: JTextField, subAdd: JButton, outInvoiceTable: JTable, outTotal: JLabel, subSubmit: JButton |
+
+**Cách vẽ quan hệ:**
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Product → ImportInvoiceDetail.
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: ImportInvoice ◆→ ImportInvoiceDetail.
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: ImportGoodsFrm → SupplierDAO.
+
+**Cách ghi multiplicity:**
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: Supplier "1" --- "n" ImportInvoice.
+
+**Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|--------------|------------|
+| Supplier | ImportInvoice | Association | 1 — n | Một nhà cung cấp có nhiều hóa đơn nhập |
+| ImportInvoice | ImportInvoiceDetail | Composition | 1 — n | Hóa đơn nhập có nhiều chi tiết, chi tiết không tồn tại nếu không có hóa đơn |
+| Product | ImportInvoiceDetail | Association | 1 — n | Một sản phẩm xuất hiện trong nhiều chi tiết nhập |
+| User | ImportInvoice | Association | 1 — n | Một nhân viên lập nhiều hóa đơn nhập |
+| ImportGoodsFrm | SupplierDAO | Dependency | — | Frm sử dụng SupplierDAO để tìm nhà cung cấp |
+| ImportGoodsFrm | ProductDAO | Dependency | — | Frm sử dụng ProductDAO để tìm hàng hóa |
+| ImportGoodsFrm | ImportInvoiceDAO | Dependency | — | Frm sử dụng ImportInvoiceDAO để tạo hóa đơn |
+
+**Ví dụ cụ thể trên Visual Paradigm:**
+
+1. **Vẽ quan hệ ImportInvoice → ImportInvoiceDetail (Composition 1-n):**
+   - Kéo class ImportInvoice lên canvas, kéo class ImportInvoiceDetail bên dưới.
+   - Chọn tool "Association" → click vào ImportInvoice, kéo đến ImportInvoiceDetail.
+   - Đặt multiplicity "1" phía ImportInvoice, "n" phía ImportInvoiceDetail.
+   - Click chuột phải → "Association End" → phía ImportInvoice đặt "filled diamond" (◆).
+
+2. **Vẽ dependency ImportGoodsFrm → SupplierDAO:**
+   - Chọn tool "Dependency" (đường dashed) → click vào ImportGoodsFrm, kéo đến SupplierDAO.
+   - Mũi tên tam giác rỗng (▷) tự động hiển thị phía SupplierDAO.
+
 ### Classes diagram (analysis)
 
 Phân tích module này (bỏ qua bước đăng nhập):
@@ -207,6 +276,16 @@ Methods: searchSupplier(), searchProduct(), addInvoiceItem(), createImportInvoic
 | ProductDAO | `searchProductByName(keyword): List<Product>` | List<Product> | Tìm hàng hóa theo tên |
 | ImportInvoiceDAO | `createImportInvoice(invoice): int` | int | Tạo hóa đơn nhập, trả về invoiceId |
 | ImportInvoiceDetailDAO | `addInvoiceDetails(details): boolean` | boolean | Thêm chi tiết hóa đơn (batch) |
+
+### Entity classes
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Supplier | Entity | id: int (PK), code: String, name: String, address: String, email: String, phone: String, description: String |
+| Product | Entity | id: int (PK), code: String, name: String, price: double, description: String |
+| ImportInvoice | Entity | id: int (PK), importDate: DateTime, totalAmount: double, supplier: Supplier, user: User |
+| ImportInvoiceDetail | Entity | id: int (PK), quantity: int, unitPrice: double, amount: double, importInvoice: ImportInvoice, product: Product |
+| User | Entity | id: int (PK), username: String, password: String, role: String |
 
 ### Entity types
 

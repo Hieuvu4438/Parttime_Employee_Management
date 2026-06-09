@@ -210,6 +210,109 @@ He thong ghi nhan checkout -> can phuong thuc:
 View classes: HomeFrm, CheckinFrm, CheckoutFrm
 Methods: getEmployeeByCode(), getTodaySchedule(), getTodayAttendance(), checkin(), checkout()
 
+### Huong dan ve Class Diagram tren Visual Paradigm
+
+#### 1. Cac buoc ve tong quan
+
+| Buoc | Thao tac |
+|------|----------|
+| 1 | Mo Visual Paradigm → File → New → chon **Class Diagram** |
+| 2 | Tao cac entity class box (hinh chu nhat 3 ngan): Restaurant, Employee, Shift, Schedule, Attendance, User |
+| 3 | Tao cac view class box tu giao dien: HomeFrm, CheckinFrm, CheckoutFrm |
+| 4 | Ve cac duong quan he (association) giua cac class |
+| 5 | Ghi multiplicity va role name cho moi quan he |
+
+#### 2. Cau truc 1 class box (3 ngan)
+
+Moi class trong Visual Paradigm la hinh chu nhat chia 3 ngan:
+
+- **Ngan 1 (ten class):** Ghi stereotype `<<entity>>` hoac `<<boundary>>` roi den ten class. Vi du: `<<entity>> Attendance`, `<<boundary>> CheckinFrm`
+- **Ngan 2 (thuoc tinh):** Ghi tung thuoc tinh theo format `-tenThuocTinh: KieuDuLieu`. Dung `-` cho private. Vi du: `-checkinTime: DateTime`, `-checkoutTime: DateTime`
+- **Ngan 3 (phuong thuc):** Ghi tung phuong thuc theo format `+tenPhuongThuc(thamSo): KieuTraVe`. Dung `+` cho public. Vi du: `+checkin(employeeId: int, shiftId: int, time: DateTime): boolean`
+
+#### 3. Bang chi tiet tung entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Restaurant | `<<entity>>` | `-id: int`, `-restaurantName: String`, `-address: String`, `-description: String` | — |
+| Employee | `<<entity>>` | `-id: int`, `-code: String`, `-fullName: String`, `-phoneNumber: String`, `-email: String`, `-dob: Date`, `-contractDate: Date`, `-restaurantID: int` | `+getEmployeeByCode(code: String): Employee` |
+| Shift | `<<entity>>` | `-id: int`, `-date: Date`, `-shiftNumber: int`, `-description: String`, `-startDate: Date`, `-endDate: Date` | — |
+| Schedule | `<<entity>>` | `-id: int`, `-weekStartDate: Date`, `-assignedTime: DateTime`, `-employeeID: int`, `-shiftID: int`, `-userID: int` | `+getTodaySchedule(employeeId: int): List<Schedule>` |
+| Attendance | `<<entity>>` | `-id: int`, `-checkinTime: DateTime`, `-checkoutTime: DateTime`, `-employeeID: int`, `-shiftID: int`, `-scheduleID: int`, `-userID: int` | `+checkin(employeeId: int, shiftId: int, time: DateTime): boolean`, `+checkout(employeeId: int, shiftId: int, time: DateTime): boolean`, `+getTodayAttendance(employeeId: int, shiftId: int): Attendance` |
+| User | `<<entity>>` | `-id: int`, `-username: String`, `-password: String`, `-role: String` | — |
+
+#### 4. Bang chi tiet view classes
+
+**HomeFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kieu | Mo ta |
+|------------|--------|------|-------|
+| `subCheckin` | sub | JButton | Nut chon Checkin |
+| `subCheckout` | sub | JButton | Nut chon Checkout |
+
+**CheckinFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kieu | Mo ta |
+|------------|--------|------|-------|
+| `inEmployeeCode` | in | JTextField | O nhap ma nhan vien |
+| `subSubmit` | sub | JButton | Nut Submit |
+
+**CheckoutFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kieu | Mo ta |
+|------------|--------|------|-------|
+| `inEmployeeCode` | in | JTextField | O nhap ma nhan vien |
+| `subSubmit` | sub | JButton | Nut Submit |
+
+#### 5. Cach ve quan he
+
+| Kieu quan he | Ky hieu Visual Paradigm | Khi nao dung |
+|---------------|------------------------|---------------|
+| **Association** | Duong lien net, mui ten tam giac rong (▷) | Quan he tham chieu thong thuong giua 2 class |
+| **Aggregation** | Duong lien net, dau kim cuong rong (◇) o dau "chua" | "Contain" nhung child co the ton tai doc lap |
+| **Composition** | Duong lien net, dau kim cuong filled (◆) o dau "chua" | "Contain" nhung child KHONG ton tai neu khong co parent |
+| **Dependency** | Duong dashed (net dut), mui ten tam giac rong (▷) | "Su dung" tam thoi (view class goi DAO class) |
+
+#### 6. Cach ghi multiplicity
+
+- **1..1** → ghi `1` o mot dau cua duong ket noi
+- **0..\*** hoac **1..\*** → ghi `n` hoac `*` o dau kia
+- Ghi multiplicity o **ca 2 dau** cua duong ket noi
+
+Vi du: Employee(1) ←——→ (n) Attendance nghia la 1 nhan vien co nhieu ban ghi cham cong.
+
+#### 7. Bang quan he chi tiet (Visual Paradigm)
+
+| Tu | Den | Kieu quan he | Multiplicity | Role name | Giai thich |
+|----|-----|---------------|-------------|-----------|------------|
+| Restaurant | Employee | Aggregation | 1 — n | employs | Mot nha hang co nhieu NV |
+| Employee | Schedule | Aggregation | 1 — n | scheduledAs | NV co nhieu lich |
+| Shift | Schedule | Association | 1 — n | scheduledFor | Mot ca co nhieu NV duoc xep |
+| Employee | Attendance | Aggregation | 1 — n | attends | NV co nhieu ban ghi cham cong |
+| Shift | Attendance | Association | 1 — n | recordedFor | Mot ca co nhieu ban ghi cham cong |
+| Schedule | Attendance | Composition | 1 — 0..1 | records | Attendance khong ton tai neu khong co Schedule |
+| User | Attendance | Association | 1 — n | createdBy | Mot staff tao nhieu cham cong |
+
+#### 8. Vi du cu the tren Visual Paradigm
+
+**Vi du 1: Ve quan he Schedule → Attendance (Composition 1-0..1)**
+
+1. Chon cong cu **Composition** (duong lien net dau kim cuong filled ◆) tu toolbox.
+2. Click vao `Schedule` (phia "chua"), keo sang `Attendance` (phia "bi chua").
+3. Click chuot phai vao duong ket noi → **Open Specification**.
+4. Tai muc **From** (Schedule): multiplicity = `1`.
+5. Tai muc **To** (Attendance): multiplicity = `0..1`, role name = `records`.
+6. Nhan OK. Dau kim cuong filled (◆) nam phia `Schedule`.
+
+**Vi du 2: Ve quan he Employee → Attendance (Aggregation 1-n)**
+
+1. Chon cong cu **Aggregation** (duong lien net dau kim cuong rong ◇) tu toolbox.
+2. Click vao `Employee` (phia "chua"), keo sang `Attendance` (phia "bi chua").
+3. Click chuot phai → **Open Specification**.
+4. Tai muc **From** (Employee): multiplicity = `1`, role name = `attends`.
+5. Tai muc **To** (Attendance): multiplicity = `*`.
+6. Nhan OK. Dau kim cuong rong (◇) nam phia `Employee`.
+
 ---
 
 ## Cau 3: Thiet ke tinh — Giao dien va class diagram chi tiet

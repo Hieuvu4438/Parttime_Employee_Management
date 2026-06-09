@@ -116,6 +116,96 @@ Nhà hàng quản lý việc đặt bàn cho khách. Nhà hàng có nhiều bàn
 | Customer → Booking | 1-n | Một khách hàng đặt bàn nhiều lần |
 | User → Booking | 1-n | Một nhân viên xử lý nhiều đặt bàn |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+1. Mở Visual Paradigm → New → Class Diagram.
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity class.
+3. Tạo view class boxes từ các interface (form) của module.
+4. Vẽ mối quan hệ (relationship) giữa các class.
+5. Ghi multiplicity và role name cho mỗi mối quan hệ.
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+Mỗi class trong Visual Paradigm được vẽ dưới dạng hình chữ nhật chia 3 ngăn:
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> Booking`, `<<boundary>> BookTableFrm`, `<<control>> BookingDAO`.
+- **Ngăn 2 (thuộc tính):** Liệt kê các thuộc tính theo format `-attributeName: Type`. Ví dụ: `-id: int`, `-code: String`, `-bookingDate: Date`.
+- **Ngăn 3 (phương thức):** Liệt kê các phương thức theo format `+methodName(params): ReturnType`. Ví dụ: `+addBooking(booking: Booking): boolean`.
+
+Trong Visual Paradigm, click đúp vào class box để chỉnh sửa tên, tab Attributes để thêm thuộc tính, tab Operations để thêm phương thức.
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Restaurant | <<entity>> | -id: int, -name: String, -address: String, -description: String | (không có) |
+| Table | <<entity>> | -id: int, -code: String, -name: String, -maxGuests: int, -description: String | +getAvailableTables(date: Date, time: String, numGuests: int): List<Table> |
+| Customer | <<entity>> | -id: int, -code: String, -name: String, -phone: String, -email: String, -address: String | +searchCustomerByName(name: String): List<Customer> |
+| Booking | <<entity>> | -id: int, -bookingDate: Date, -bookingTime: String, -numGuests: int, -status: String | +addBooking(booking: Booking): boolean |
+| User | <<entity>> | -id: int, -username: String, -password: String, -role: String | (không có) |
+
+#### 4. Bảng chi tiết view classes
+
+| View Class | Stereotype | UI Elements | Mô tả |
+|-----------|-----------|-------------|-------|
+| HomeFrm | <<boundary>> | -subBookTable: JButton | Giao diện chính, chứa nút chọn Book a table |
+| BookTableFrm | <<boundary>> | -inDate: JTextField, -inTime: JTextField, -inNumGuests: JTextField, -subSearchTable: JButton, -outsubListTable: JTable, -inCustomerName: JTextField, -subSearchCustomer: JButton, -outsubListCustomer: JTable, -subAddCustomer: JButton, -outBookingInfo: JLabel, -subConfirm: JButton | Giao diện đặt bàn |
+
+Quy tắc đặt tên UI elements:
+- Tiền tố `in` → input (ô nhập liệu): inDate, inTime, inNumGuests, inCustomerName
+- Tiền tố `out` → output (vùng hiển thị): outBookingInfo
+- Tiền tố `outsub` → clickable output (bảng click được): outsubListTable, outsubListCustomer
+- Tiền tố `sub` → submit (nút bấm): subSearchTable, subSearchCustomer, subAddCustomer, subConfirm
+
+#### 5. Cách vẽ quan hệ
+
+Trong Visual Paradigm, sử dụng palette Relationships ở bên phải để chọn kiểu quan hệ:
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Customer → Booking (khách hàng tham chiếu đến đặt bàn).
+- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập.
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent.
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: BookTableFrm → TableDAO (form sử dụng DAO để tìm bàn trống).
+
+#### 6. Cách ghi multiplicity
+
+Trong Visual Paradigm, click vào đường kết nối → tab Properties → chỉnh Source Multiplicity và Target Multiplicity:
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi multiplicity ở cả 2 đầu của đường kết nối.
+
+Ví dụ: Table (1) → (n) Booking nghĩa là một bàn có nhiều lần đặt.
+
+#### 7. Bảng quan hệ chi tiết
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|---|---|---|---|---|
+| Restaurant | Table | Association | 1 - n | Một nhà hàng có nhiều bàn ăn |
+| Table | Booking | Association | 1 - n | Một bàn có nhiều lần đặt bàn (khác ngày/giờ) |
+| Customer | Booking | Association | 1 - n | Một khách hàng đặt bàn nhiều lần |
+| User | Booking | Association | 1 - n | Một nhân viên xử lý nhiều đặt bàn |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ quan hệ Table → Booking (1-n, Association)**
+1. Tạo class `<<entity>> Table` với các thuộc tính: -id: int, -code: String, -name: String, -maxGuests: int, -description: String.
+2. Tạo class `<<entity>> Booking` với các thuộc tính: -id: int, -bookingDate: Date, -bookingTime: String, -numGuests: int, -status: String.
+3. Chọn công cụ **Association** từ palette Relationships (mũi tên tam giác rỗng ▷).
+4. Click vào class Table → kéo đến class Booking.
+5. Click vào đường kết nối → Properties → set Source Multiplicity = 1, Target Multiplicity = *.
+6. Đặt tên association: "has bookings" (tùy chọn).
+7. Kết quả: Table (1) ▷----(*) Booking.
+
+**Ví dụ 2: Vẽ quan hệ Customer → Booking (1-n, Association)**
+1. Tạo class `<<entity>> Customer` và `<<entity>> Booking`.
+2. Chọn công cụ **Association** từ palette Relationships.
+3. Click vào class Customer → kéo đến class Booking.
+4. Click vào đường kết nối → Properties → set Source Multiplicity = 1, Target Multiplicity = *.
+5. Đặt tên association: "makes" (tùy chọn).
+6. Kết quả: Customer (1) ▷----(*) Booking.
+
 ### Classes diagram (analysis)
 
 Phân tích module này (bỏ qua bước đăng nhập):

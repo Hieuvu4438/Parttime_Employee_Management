@@ -108,6 +108,78 @@ User 1 --- n PartnerPayment      (association)
 | tblPartnerPaymentDetail | detailId | partnerPaymentId → tblPartnerPayment, contractId → tblContract | amount |
 | tblUser | userId | — | username, password, fullName, role |
 
+### Huong dan ve Class Diagram tren Visual Paradigm
+
+**1. Cac buoc ve tong quan:**
+- Buoc 1: Mo Visual Paradigm → File → New → chon **Class Diagram**
+- Buoc 2: Tao cac entity class box (hinh chu nhat 3 ngan) cho: Customer, Partner, Product, Contract, ContractItem, PaymentSchedule, Payment, PartnerPayment, User
+- Buoc 3: Tao cac view class box tu giao diem: HomeFrm, PayPartnerFrm
+- Buoc 4: Ve cac duong quan he (association, composition) giua cac class
+- Buoc 5: Ghi multiplicity (1, n) va role name o hai dau duong ket noi
+
+**2. Cau truc 1 class box (3 ngan):**
+- Ngan 1 (ten class): ghi stereotype `<<entity>>` hoac `<<boundary>>` + ten class. Vi du: `<<entity>> PartnerPayment`
+- Ngan 2 (thuoc tinh): ghi theo dinh dang `-attributeName: Type`. Vi du: `-partnerPaymentId: int`, `-totalAmount: double`
+- Ngan 3 (phuong thuc): ghi theo dinh dang `+methodName(params): ReturnType`. Vi du: `+create(payment: PartnerPayment): int`
+
+**3. Bang chi tung entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Customer | <<entity>> | -customerId: int, -customerName: String, -phoneNumber: String, -address: String, -idCard: String | |
+| Partner | <<entity>> | -partnerId: int, -partnerName: String, -address: String, -phoneNumber: String, -branch: String | +searchByName(keyword: String): List<Partner> |
+| Product | <<entity>> | -productId: int, -productName: String, -unitPrice: double, -description: String | |
+| Contract | <<entity>> | -contractId: int, -customer: Customer, -partner: Partner, -signingDate: Date, -totalLoanAmount: double, -status: String | +getUnpaidContractsByPartner(partnerId: int): List<Contract> |
+| ContractItem | <<entity>> | -contractItemId: int, -contract: Contract, -product: Product, -quantity: int, -unitPrice: double, -amount: double | |
+| PaymentSchedule | <<entity>> | -scheduleId: int, -contract: Contract, -periodNumber: int, -dueDate: Date, -amount: double, -status: String | |
+| Payment | <<entity>> | -paymentId: int, -paymentSchedule: PaymentSchedule, -paymentDate: Date, -amountPaid: double, -method: String | |
+| PartnerPayment | <<entity>> | -partnerPaymentId: int, -partner: Partner, -staff: User, -paymentDate: Date, -totalAmount: double, -status: String | +create(payment: PartnerPayment): int |
+| User | <<entity>> | -userId: int, -username: String, -password: String, -fullName: String, -role: String | |
+
+**4. Bang chi tiet view classes:**
+
+| View Class | UI Elements |
+|------------|-------------|
+| HomeFrm | subPayPartner: JButton (nut chon Payment to partners) |
+| PayPartnerFrm | inPartnerName: JTextField (o nhap ten doi tac), subSearch: JButton (nut Search), outPartnerList: JTable (danh sach doi tac click duoc), outContractList: JTable (bang hop dong chua thanh toan + checkbox), subNext: JButton (nut Next), outPaymentInvoice: JPanel (hoa don thanh toan doi tac), subSave: JButton (nut Save) |
+
+**5. Cach ve quan he:**
+- **Association** (duong lien net, mui ten tam giac rong ▷): dung cho quan he tham chieu thong thuong. Vi du: Partner → Contract
+- **Aggregation** (duong lien net, dau kim cuong rong ◇): dung cho "contain" nhung child co the ton tai doc lap
+- **Composition** (duong lien net, dau kim cuong filled ◆): dung cho "contain" nhung child KHONG ton tai neu khong co parent. Vi du: Contract ◆→ ContractItem
+- **Dependency** (duong dashed, mui ten tam giac rong ▷): dung cho "su dung" tam thoi. Vi du: PayPartnerFrm ---> ContractDAO
+
+**6. Cach ghi multiplicity:**
+- 1..1 → ghi "1" o mot dau
+- 0..* hoac 1..* → ghi "n" hoac "*" o dau kia
+- Ghi o ca 2 dau cua duong ket noi. Vi du: Partner (1) --- (n) Contract
+
+**7. Bang quan he chi tiet:**
+
+| Tu | Den | Kieu quan he | Multiplicity | Giai thich |
+|----|-----|---------------|-------------|------------|
+| Customer | Contract | Association | 1 : n | Mot khach hang co nhieu hop dong |
+| Partner | Contract | Association | 1 : n | Mot doi tac co nhieu hop dong |
+| Contract | ContractItem | Composition | 1 : n | Hop dong chua nhieu chi tiet san pham |
+| Product | ContractItem | Association | 1 : n | Mot san pham xuat hien nhieu chi tiet |
+| Contract | PaymentSchedule | Composition | 1 : n | Hop dong co nhieu ky thanh toan |
+| PaymentSchedule | Payment | Composition | 1 : n | Ky thanh toan co nhieu ban ghi thanh toan |
+| Partner | PartnerPayment | Association | 1 : n | Mot doi tac co nhieu phieu thanh toan |
+| User | PartnerPayment | Association | 1 : n | Mot nhan vien tao nhieu phieu thanh toan |
+
+**8. Vi du cu the tren Visual Paradigm:**
+
+Vi du 1 — Ve quan he Composition Contract ◆→ ContractItem:
+- Keo class Contract vao canvas, keo class ContractItem vao ben phai
+- Chon cong cu **Composition**, click vao Contract roi keo sang ContractItem
+- Kim cuong filled nam o phia Contract (parent)
+- Dat Multiplicity: Contract "1", ContractItem "n"
+
+Vi du 2 — Ve quan he Association Partner → Contract (1:n):
+- Keo class Partner va Contract vao canvas
+- Chon cong cu **Association**, click vao Partner keo sang Contract
+- Dat Multiplicity: Partner "1", Contract "n"
+
 ---
 
 ## Cau 3: Thiet ke tinh

@@ -120,6 +120,89 @@ v                  |         |
 +------------------+
 ```
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+| Bước | Thao tác trên Visual Paradigm |
+|------|-------------------------------|
+| 1 | Mở Visual Paradigm → File → New → chọn **Class Diagram** |
+| 2 | Tạo các entity class boxes cho: Race, Team, Driver, RaceRegistration, RaceResult, User |
+| 3 | Tạo các view class boxes: HomeFrm, RegisterRacingFrm |
+| 4 | Vẽ các đường kết nối theo bảng quan hệ, ghi multiplicity và role name |
+| 5 | Đảm bảo RaceRegistration là class trung gian giữa Race, Team và Driver |
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+| Ngăn | Nội dung | Ví dụ Race |
+|------|----------|------------|
+| Ngăn 1 — Tên class | Stereotype `<<entity>>` hoặc `<<boundary>>` + tên class | `<<entity>> Race` |
+| Ngăn 2 — Thuộc tính | `-tenThuocTinh: KieuDuLieu` | `-id: int` `-code: String` `-name: String` `-laps: int` `-location: String` `-time: DateTime` |
+| Ngăn 3 — Phương thức | `+tenPhuongThuc(thamSo): KieuTraVe` | `+getAllRaces(): List<Race>` |
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Race | `<<entity>>` | `-id: int`, `-code: String`, `-name: String`, `-laps: int`, `-location: String`, `-time: DateTime`, `-description: String` | `+getAllRaces(): List<Race>` |
+| Team | `<<entity>>` | `-id: int`, `-code: String`, `-name: String`, `-brand: String`, `-description: String` | `+getAllTeams(): List<Team>` |
+| Driver | `<<entity>>` | `-id: int`, `-code: String`, `-name: String`, `-dob: Date`, `-nationality: String`, `-bio: String`, `-teamId: int` | `+getDriversByTeam(teamId: int): List<Driver>` |
+| RaceRegistration | `<<entity>>` | `-id: int`, `-raceId: int`, `-teamId: int`, `-driverId: int` | `+addRegistration(reg: RaceRegistration): boolean` |
+| RaceResult | `<<entity>>` | `-id: int`, `-raceId: int`, `-driverId: int`, `-finishTime: String`, `-lapsCompleted: int`, `-position: int`, `-score: float` | — |
+| User | `<<entity>>` | `-id: int`, `-username: String`, `-password: String`, `-role: String` | — |
+
+#### 4. Bảng chi tiết view classes
+
+| View class | Stereotype | UI elements (prefix convention) |
+|------------|-----------|--------------------------------|
+| HomeFrm | `<<boundary>>` | `subRegisterRacing` (Button — chọn chức năng đăng ký) |
+| RegisterRacingFrm | `<<boundary>>` | `inRace` (ComboBox — chọn chặng đua), `inTeam` (ComboBox — chọn đội đua), `outsubListDriver` (Table có CheckBox — danh sách tay đua, tick chọn), `subSave` (Button — lưu đăng ký) |
+
+#### 5. Cách vẽ quan hệ
+
+| Kiểu quan hệ | Ký hiệu trên Visual Paradigm | Khi nào dùng |
+|---------------|------------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng ▷ | Quan hệ tham chiếu: Team → Driver, Race → RaceRegistration |
+| **Composition** | Đường liền nét, đầu kim cương filled ◆ | Team chứa Driver (Driver không tồn tại nếu không có Team) |
+| **Dependency** | Đường dashed, mũi tên tam giác rỗng ▷ | View gọi DAO |
+
+#### 6. Cách ghi multiplicity
+
+| Multiplicity | Cách ghi trên VP | Ý nghĩa |
+|-------------|------------------|---------|
+| 1..1 | `1` | Đúng 1 đối tượng |
+| 1..* | `N` | Nhiều đối tượng |
+| N-N | Tách thành 2 quan hệ 1-N qua class trung gian | Race ↔ Team ↔ Driver qua RaceRegistration |
+
+#### 7. Bảng quan hệ chi tiết
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|-------------|------------|
+| Team | Driver | Composition | 1 --- N | Một đội có nhiều tay đua |
+| Race | RaceRegistration | Association | 1 --- N | Một chặng có nhiều đăng ký |
+| Team | RaceRegistration | Association | 1 --- N | Một đội có nhiều đăng ký |
+| Driver | RaceRegistration | Association | 1 --- N | Một tay đua có nhiều đăng ký |
+| Race | RaceResult | Association | 1 --- N | Một chặng có nhiều kết quả |
+| Driver | RaceResult | Association | 1 --- N | Một tay đua có nhiều kết quả |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ Team (1) --- (N) Driver (Composition)**
+
+1. Tạo class `Team` với attribute: `-id: int`, `-code: String`, `-name: String`.
+2. Tạo class `Driver` với attribute: `-id: int`, `-name: String`, `-nationality: String`.
+3. Kéo tool **Composition** → click `Team` → kéo sang `Driver`.
+4. Đặt multiplicity: `1` (Team), `N` (Driver).
+
+**Ví dụ 2: Vẽ RaceRegistration liên kết 3 class**
+
+1. Tạo class `RaceRegistration` với attribute: `-id: int`.
+2. Kéo tool **Association** → click `Race` → kéo sang `RaceRegistration`. Multiplicity: `1` / `N`.
+3. Kéo tool **Association** → click `Team` → kéo sang `RaceRegistration`. Multiplicity: `1` / `N`.
+4. Kéo tool **Association** → click `Driver` → kéo sang `RaceRegistration`. Multiplicity: `1` / `N`.
+
+---
+
 ### Classes diagram (analysis)
 
 **Phân tích từ kịch bản (Câu 1):**
@@ -206,6 +289,17 @@ Bước 11-12: Hệ thống kiểm tra (<=2 tay đua), lưu RaceRegistration, th
 | DriverDAO | `getDriversByTeam(teamId): List<Driver>` | Lấy tay đua theo đội, sắp xếp theo tên |
 | RaceRegistrationDAO | `getRegistrations(raceId, teamId): List<RaceRegistration>` | Kiểm tra đăng ký đã tồn tại |
 | RaceRegistrationDAO | `addRegistration(reg): boolean` | Lưu đăng ký mới |
+
+### Entity classes (Design phase)
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Race | Entity | id: int (PK), code: String, name: String, laps: int, location: String, time: String, description: String |
+| Team | Entity | id: int (PK), code: String, name: String, brand: String, description: String |
+| Driver | Entity | id: int (PK), code: String, name: String, dob: Date, nationality: String, bio: String, team: Team (object) |
+| RaceRegistration | Entity | id: int (PK), race: Race (object), team: Team (object), driver: Driver (object) |
+| RaceResult | Entity | id: int (PK), race: Race (object), driver: Driver (object), finishTime: String, lapsCompleted: int, position: int, score: float |
+| User | Entity | id: int (PK), username: String, password: String, role: String |
 
 ### Entity types
 

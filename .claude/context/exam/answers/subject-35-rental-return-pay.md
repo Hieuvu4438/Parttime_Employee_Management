@@ -175,6 +175,107 @@ Bước 11: Staff nhấn Confirm. UI: `subConfirm` (JButton — xác nhận than
                               +------------------+
 ```
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+| Bước | Thao tác |
+|------|----------|
+| 1 | Mở Visual Paradigm → File → New → chọn **Class Diagram** |
+| 2 | Tạo các entity class box (hình chữ nhật 3 ngăn): BookTitle, Customer, RentalSlip, RentalSlipDetail, Payment, User |
+| 3 | Tạo các view class box từ giao diện: HomeFrm, ReturnBookFrm |
+| 4 | Vẽ các đường quan hệ (association) giữa các class |
+| 5 | Ghi multiplicity và role name cho mỗi quan hệ |
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+Mỗi class trong Visual Paradigm là hình chữ nhật chia 3 ngăn:
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>` hoặc `<<boundary>>` rồi đến tên class. Ví dụ: `<<entity>> Payment`, `<<boundary>> ReturnBookFrm`
+- **Ngăn 2 (thuộc tính):** Ghi từng thuộc tính theo format `-tenThuocTinh: KieuDuLieu`. Dùng `-` cho private. Ví dụ: `-paymentId: int`, `-totalAmount: double`
+- **Ngăn 3 (phương thức):** Ghi từng phương thức theo format `+tenPhuongThuc(thamSo): KieuTraVe`. Dùng `+` cho public. Ví dụ: `+getUnreturnedDetails(customerId: int): List<RentalSlipDetail>`
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| BookTitle | `<<entity>>` | `-bookTitleId: int`, `-code: String`, `-name: String`, `-author: String`, `-publisher: String`, `-pubYear: int`, `-rentalPrice: double`, `-quantity: int` | — |
+| Customer | `<<entity>>` | `-customerId: int`, `-code: String`, `-name: String`, `-idCard: String`, `-phone: String`, `-address: String` | `+searchCustomerByName(name: String): List<Customer>` |
+| RentalSlip | `<<entity>>` | `-rentalSlipId: int`, `-customerId: int`, `-userId: int`, `-rentalDate: Date`, `-totalBooks: int` | — |
+| RentalSlipDetail | `<<entity>>` | `-rentalSlipDetailId: int`, `-rentalSlipId: int`, `-bookTitleId: int`, `-rentalPrice: double`, `-returnDate: Date`, `-status: String`, `-fine: double` | `+getUnreturnedDetails(customerId: int): List<RentalSlipDetail>`, `+updateReturn(detailId: int, returnDate: Date, status: String, fine: double): boolean` |
+| Payment | `<<entity>>` | `-paymentId: int`, `-rentalSlipId: int`, `-userId: int`, `-paymentDate: Date`, `-totalAmount: double` | `+insertPayment(p: Payment): boolean` |
+| User | `<<entity>>` | `-userId: int`, `-username: String`, `-password: String`, `-role: String` | — |
+
+#### 4. Bảng chi tiết view classes
+
+**HomeFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kiểu | Mô tả |
+|------------|--------|------|-------|
+| `subReturnPay` | sub | JButton | Nút mở chức năng Return and pay |
+
+**ReturnBookFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kiểu | Mô tả |
+|------------|--------|------|-------|
+| `inCustomerName` | in | JTextField | Ô nhập tên khách hàng |
+| `subSearchCustomer` | sub | JButton | Nút Search tìm khách hàng |
+| `outsubListCustomer` | outsub | JTable | Bảng danh sách KH (click chọn được) |
+| `outListBorrowedBooks` | out | JTable | Bảng sách đang mượn (có checkbox) |
+| `inStatus` | in | JTextField | Ô nhập trạng thái sách |
+| `inFine` | in | JTextField | Ô nhập tiền phạt |
+| `subPayment` | sub | JButton | Nút Payment — hiển thị hóa đơn |
+| `outInvoice` | out | JTextArea | Khu vực hiển thị hóa đơn thanh toán |
+| `subConfirm` | sub | JButton | Nút Confirm — xác nhận thanh toán |
+
+#### 5. Cách vẽ quan hệ
+
+| Kiểu quan hệ | Ký hiệu Visual Paradigm | Khi nào dùng |
+|---------------|------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng (▷) | Quan hệ tham chiếu thông thường giữa 2 class |
+| **Aggregation** | Đường liền nét, đầu kim cương rỗng (◇) ở đầu "chứa" | "Contain" nhưng child có thể tồn tại độc lập |
+| **Composition** | Đường liền nét, đầu kim cương filled (◆) ở đầu "chứa" | "Contain" nhưng child KHÔNG tồn tại nếu không có parent |
+| **Dependency** | Đường dashed (nét đứt), mũi tên tam giác rỗng (▷) | "Sử dụng" tạm thời (view class gọi DAO class) |
+
+#### 6. Cách ghi multiplicity
+
+- **1..1** → ghi `1` ở một đầu của đường kết nối
+- **0..\*** hoặc **1..\*** → ghi `n` hoặc `*` ở đầu kia
+- Ghi multiplicity ở **cả 2 đầu** của đường kết nối
+
+Ví dụ: RentalSlip(1) ←——→ (n) Payment nghĩa là 1 phiếu mượn có nhiều lần thanh toán.
+
+#### 7. Bảng quan hệ chi tiết (Visual Paradigm)
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Role name | Giải thích |
+|----|-----|---------------|-------------|-----------|------------|
+| Customer | RentalSlip | Association | 1 — n | borrows | Một khách hàng có nhiều phiếu mượn |
+| RentalSlip | RentalSlipDetail | Composition | 1 — n | contains | Chi tiết không tồn tại nếu không có phiếu mượn |
+| BookTitle | RentalSlipDetail | Association | 1 — n | references | Một đầu sách xuất hiện trong nhiều chi tiết |
+| RentalSlip | Payment | Composition | 1 — n | paidBy | Một phiếu mượn có nhiều lần thanh toán |
+| User | RentalSlip | Association | 1 — n | processes | Một nhân viên xử lý nhiều phiếu mượn |
+| User | Payment | Association | 1 — n | creates | Một nhân viên lập nhiều phiếu thanh toán |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ quan hệ RentalSlip → Payment (Composition 1-n)**
+
+1. Chọn công cụ **Composition** (đường liền nét đầu kim cương filled ◆) từ toolbox.
+2. Click vào `RentalSlip` (phía "chứa"), kéo sang `Payment` (phía "bị chứa").
+3. Click chuột phải vào đường kết nối → **Open Specification**.
+4. Tại mục **From** (RentalSlip): multiplicity = `1`.
+5. Tại mục **To** (Payment): multiplicity = `*`, role name = `paidBy`.
+6. Nhấn OK. Đầu kim cương filled (◆) nằm phía `RentalSlip`.
+
+**Ví dụ 2: Vẽ quan hệ BookTitle → RentalSlipDetail (Association 1-n)**
+
+1. Chọn công cụ **Association** (đường liền nét mũi tên rỗng) từ toolbox.
+2. Click vào `BookTitle`, kéo sang `RentalSlipDetail`.
+3. Click chuột phải → **Open Specification**.
+4. Tại mục **From** (BookTitle): multiplicity = `1`, role name = `references`.
+5. Tại mục **To** (RentalSlipDetail): multiplicity = `*`.
+6. Nhấn OK.
+
 ---
 
 ## Câu 3: Thiết kế tĩnh
@@ -212,6 +313,17 @@ Bước 11: Staff nhấn Confirm. UI: `subConfirm` (JButton — xác nhận than
 | RentalSlipDetailDAO | `updateReturn(detailId, returnDate, status, fine)` | `boolean` | Cập nhật thông tin trả sách |
 | PaymentDAO | `insertPayment(payment)` | `boolean` | Lưu phiếu thanh toán mới |
 | BookTitleDAO | `getBookTitleById(bookTitleId)` | `BookTitle` | Lấy thông tin đầu sách theo mã |
+
+### Entity classes (Design phase)
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| BookTitle | Entity | id: int (PK), code: String, name: String, author: String, publisher: String, pubYear: int, rentalPrice: double, quantity: int |
+| Customer | Entity | id: int (PK), code: String, name: String, idCard: String, phone: String, address: String |
+| RentalSlip | Entity | id: int (PK), customer: Customer (object), user: User (object), rentalDate: Date, totalBooks: int |
+| RentalSlipDetail | Entity | id: int (PK), rentalSlip: RentalSlip (object), bookTitle: BookTitle (object), rentalPrice: double, returnDate: Date, status: String, fine: double |
+| Payment | Entity | id: int (PK), rentalSlip: RentalSlip (object), user: User (object), paymentDate: Date, totalAmount: double |
+| User | Entity | id: int (PK), username: String, password: String, role: String |
 
 ### Entity Types (Design)
 

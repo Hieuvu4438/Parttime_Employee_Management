@@ -168,6 +168,99 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep giao vi
 | User → Student | 1-1 | Mot tai khoan User ung voi mot Student |
 | User → Class (teacherId) | 1-n | Mot giao vien day nhieu lop. VD: GV001 day CL001, CL002 |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**1. Các bước vẽ tổng quan:**
+
+| Bước | Thao tác | Mô tả |
+|------|----------|-------|
+| 1 | Mở Visual Paradigm → New → Class Diagram | Tạo diagram mới, đặt tên "Student_EnterGrades" |
+| 2 | Tạo entity class boxes | Kéo "Class" từ toolbar vào canvas, tạo 6 class: Student, Subject, Class, Registration, Grade, User |
+| 3 | Tạo view class boxes | Kéo "Boundary" vào canvas, tạo: LoginFrm, HomeFrm, EnterGradeFrm |
+| 4 | Vẽ relationships | Kéo đường kết nối giữa các class theo bảng quan hệ |
+| 5 | Thêm multiplicities | Click vào đường kết nối → Properties → đặt Source/Target Multiplicity |
+
+**2. Cấu trúc 1 class box (3 ngăn):**
+
+Mỗi class trong Visual Paradigm là hình chữ nhật chia 3 ngăn:
+
+| Ngăn | Nội dung | Ví dụ (class Grade) |
+|------|----------|----------------------|
+| Ngăn 1 — Tên class | Stereotype + tên class | `<<entity>> Grade` |
+| Ngăn 2 — Thuộc tính | `-attributeName: Type` | `-gradeId: int`, `-regId: int`, `-component1: float`, `-component2: float`, `-component3: float`, `-examScore: float`, `-finalScore: float` |
+| Ngăn 3 — Phương thức | `+methodName(params): ReturnType` | `+calculateFinalScore(): float`, `+saveGrades(): boolean` |
+
+Stereotype sử dụng: `<<entity>>` cho entity class, `<<boundary>>` cho view class (Frm), `<<control>>` cho DAO class.
+
+**3. Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Thuộc tính (Ngăn 2) | Phương thức (Ngăn 3) |
+|-------|-----------|----------------------|----------------------|
+| Student | `<<entity>>` | `-studentId: int`, `-studentCode: String`, `-studentName: String`, `-email: String`, `-dob: Date`, `-major: String`, `-userId: int` | `+getStudentsByClass(classId: int): List<Student>` |
+| Subject | `<<entity>>` | `-subjectId: int`, `-subjectCode: String`, `-subjectName: String`, `-credits: int` | `+getSubjectsByTeacher(teacherId: int): List<Subject>` |
+| Class | `<<entity>>` | `-classId: int`, `-subjectId: int`, `-teacherId: int`, `-section: String`, `-maxStudents: int` | `+getClassesBySubjectTeacher(subjectId: int, teacherId: int): List<Class>` |
+| Registration | `<<entity>>` | `-regId: int`, `-studentId: int`, `-classId: int`, `-semester: String`, `-regDate: Date`, `-status: String` | `+getRegistrationsByClass(classId: int): List<Registration>` |
+| Grade | `<<entity>>` | `-gradeId: int`, `-regId: int`, `-component1: float`, `-component2: float`, `-component3: float`, `-examScore: float`, `-finalScore: float` | `+calculateFinalScore(): float`, `+saveGrades(): boolean` |
+| User | `<<entity>>` | `-userId: int`, `-username: String`, `-password: String`, `-role: String` | `+validateLogin(username: String, password: String): boolean` |
+
+**4. Bảng chi tiết view classes (nếu có):**
+
+| View Class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| LoginFrm | `<<boundary>>` | `-inUsername: JTextField`, `-inPassword: JPasswordField`, `-subLogin: JButton` |
+| HomeFrm | `<<boundary>>` | `-menuGrade: JMenuItem`, `-menuStudent: JMenuItem`, `-menuSubject: JMenuItem`, `-menuSchedule: JMenuItem`, `-subLogout: JButton` |
+| EnterGradeFrm | `<<boundary>>` | `-inSubject: JComboBox`, `-inClass: JComboBox`, `-tblGrade: JTable`, `-subConfirm: JButton`, `-subCancel: JButton`, `-subRefresh: JButton` |
+
+Quy ước đặt tên UI elements: `in` = nhập liệu, `out` = hiển thị, `sub` = nút bấm, `outsub` = bảng click được.
+
+**5. Cách vẽ quan hệ:**
+
+| Kiểu quan hệ | Ký hiệu Visual Paradigm | Khi nào dùng |
+|---------------|--------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng (▷) | Quan hệ tham chiếu thông thường (Student → Registration) |
+| **Aggregation** | Đường liền nét, đầu kim cương rỗng (◇) | "Contain" nhưng child có thể tồn tại độc lập |
+| **Composition** | Đường liền nét, đầu kim cương filled (◆) | "Contain" nhưng child KHÔNG tồn tại nếu không có parent |
+| **Dependency** | Đường dashed, mũi tên tam giác rỗng (▷) | "Sử dụng" tạm thời (EnterGradeFrm → GradeDAO) |
+
+**6. Cách ghi multiplicity:**
+
+| Multiplicity | Cách ghi trong VP | Ví dụ |
+|--------------|-------------------|-------|
+| 1..1 | Ghi "1" ở một đầu | Registration có đúng 1 Grade |
+| 0..* hoặc 1..* | Ghi "*" hoặc "1..*" ở đầu kia | Student có nhiều Registration |
+| 0..1 | Ghi "0..1" | (hiếm dùng) |
+
+Ghi multiplicity ở cả 2 đầu của đường kết nối. Click vào đường → Properties → Source Multiplicity / Target Multiplicity.
+
+**7. Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|---------------|--------------|------------|
+| Subject | Class | Association | 1 → * | Mỗi môn học có nhiều lớp |
+| Class | Registration | Association | 1 → * | Mỗi lớp có nhiều sinh viên đăng ký |
+| Student | Registration | Association | 1 → * | Mỗi sinh viên đăng ký nhiều lớp |
+| Registration | Grade | Association | 1 → 1 | Mỗi đăng ký có một bảng điểm |
+| User | Student | Association | 1 → 1 | Mỗi tài khoản User ứng với một Student |
+| User | Class | Association | 1 → * | Mỗi giáo viên dạy nhiều lớp (qua teacherId) |
+
+**8. Ví dụ cụ thể trên Visual Paradigm:**
+
+*Ví dụ 1: Vẽ quan hệ Registration → Grade (1-1, Association)*
+
+1. Click chuột phải vào class Registration → chọn **Association** → kéo đến class Grade.
+2. Click vào đường kết nối → chọn **Properties**.
+3. Set Source Multiplicity = `1`, Target Multiplicity = `1`.
+4. Giữ mặc định mũi tên tam giác rỗng (▷) — đây là Association.
+5. Đặt tên association: `has_grade`.
+
+*Ví dụ 2: Vẽ quan hệ User → Class (1-n, Association qua teacherId)*
+
+1. Click chuột phải vào class User → chọn **Association** → kéo đến class Class.
+2. Click vào đường kết nối → chọn **Properties**.
+3. Set Source Multiplicity = `1`, Target Multiplicity = `*`.
+4. Giữ mặc định mũi tên tam giác rỗng (▷) — đây là Association.
+5. Đặt tên association: `teaches`. Ghi chú: `teacherId` trong Class tham chiếu đến User.
+
 ### Classes diagram (analysis)
 
 Phân tích module này:
@@ -292,6 +385,8 @@ public class Student {
     private Date dob;              // 2004-03-15
     private String major;          // "Computer Science"
     private int userId;            // FK -> tblUser
+    private User user;              // object attribute
+    private List<Registration> registrations; // object attribute
     // getters, setters
 }
 
@@ -302,6 +397,8 @@ public class Subject {
     private String subjectName;    // "Lap trinh Java"
     private int credits;           // 3
     private int prerequisiteId;    // FK -> tblSubject
+    private Subject prerequisite;  // object attribute
+    private List<Class> classes;   // object attribute
     // getters, setters
 }
 
@@ -314,6 +411,8 @@ public class Class {
     private int timeSlotId;        // FK -> tblTimeSlot
     private int maxStudents;       // 40
     private String section;        // "Section 1"
+    private Subject subject;       // object attribute
+    private List<Registration> registrations; // object attribute
     // getters, setters
 }
 
@@ -325,6 +424,9 @@ public class Registration {
     private String semester;       // "2026-1"
     private Date regDate;          // 2026-06-01
     private String status;         // "registered", "dropped", "completed"
+    private Student student;       // object attribute
+    private Class classObj;        // object attribute
+    private Grade grade;           // object attribute
     // getters, setters
 }
 
@@ -337,6 +439,7 @@ public class Grade {
     private double component3;     // 9.0
     private double examScore;      // 8.0
     private double finalScore;     // tinh toan: 0.1*comp1 + 0.1*comp2 + 0.2*comp3 + 0.6*exam
+    private Registration registration; // object attribute
     // getters, setters
     public double calculateFinalScore(double x, double y, double z, double w) {
         return x * component1 + y * component2 + z * component3 + w * examScore;

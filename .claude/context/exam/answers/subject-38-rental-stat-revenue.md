@@ -165,6 +165,103 @@ Bước 12: Staff nhấn Back. UI: `subBack` (Button — quay về bảng thốn
 | RentalSlip → Payment | 1-n | Một phiếu mượn có nhiều lần thanh toán |
 | User → RentalSlip | 1-n | Một nhân viên tạo nhiều phiếu mượn |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+| Bước | Thao tác |
+|------|----------|
+| 1 | Mở Visual Paradigm → File → New → chọn **Class Diagram** |
+| 2 | Tạo các entity class box (hình chữ nhật 3 ngăn): BookTitle, Customer, RentalSlip, RentalSlipDetail, Payment, User |
+| 3 | Tạo các view class box từ giao diện: HomeFrm, RevenueStatFrm |
+| 4 | Vẽ các đường quan hệ (association) giữa các class |
+| 5 | Ghi multiplicity và role name cho mỗi quan hệ |
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+Mỗi class trong Visual Paradigm là hình chữ nhật chia 3 ngăn:
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>` hoặc `<<boundary>>` rồi đến tên class. Ví dụ: `<<entity>> Payment`, `<<boundary>> RevenueStatFrm`
+- **Ngăn 2 (thuộc tính):** Ghi từng thuộc tính theo format `-tenThuocTinh: KieuDuLieu`. Dùng `-` cho private. Ví dụ: `-paymentId: int`, `-amount: float`
+- **Ngăn 3 (phương thức):** Ghi từng phương thức theo format `+tenPhuongThuc(thamSo): KieuTraVe`. Dùng `+` cho public. Ví dụ: `+getRevenueByMonth(): List<Object[]>`
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| BookTitle | `<<entity>>` | `-id: int`, `-code: String`, `-title: String`, `-author: String`, `-publisher: String`, `-publishYear: int`, `-price: float` | — |
+| Customer | `<<entity>>` | `-id: int`, `-code: String`, `-name: String`, `-idCardNumber: String`, `-phone: String`, `-address: String` | `+getCustomerById(customerId: int): Customer` |
+| RentalSlip | `<<entity>>` | `-id: int`, `-code: String`, `-rentalDate: Date`, `-totalAmount: float`, `-customerId: int`, `-userId: int` | `+getRevenueByMonth(): List<Object[]>`, `+getRevenueByQuarter(): List<Object[]>`, `+getRevenueByYear(): List<Object[]>`, `+getRentalSlipsByMonth(month: int, year: int): List<RentalSlip>` |
+| RentalSlipDetail | `<<entity>>` | `-id: int`, `-rentalSlipId: int`, `-bookTitleId: int`, `-quantity: int`, `-unitPrice: float`, `-amount: float` | `+getDetailsByRentalSlip(rentalSlipId: int): List<RentalSlipDetail>` |
+| Payment | `<<entity>>` | `-id: int`, `-rentalSlipId: int`, `-paymentDate: Date`, `-amount: float`, `-paymentMethod: String` | — |
+| User | `<<entity>>` | `-id: int`, `-username: String`, `-password: String`, `-fullName: String`, `-role: String` | — |
+
+#### 4. Bảng chi tiết view classes
+
+**HomeFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kiểu | Mô tả |
+|------------|--------|------|-------|
+| `mnuStatistic` | sub | JMenu | Menu thống kê |
+| `mnuRevenueStatistic` | sub | JMenuItem | Menu-item thống kê doanh thu |
+
+**RevenueStatFrm (`<<boundary>>`):**
+
+| UI Element | Prefix | Kiểu | Mô tả |
+|------------|--------|------|-------|
+| `cboStatType` | in | ComboBox | Chọn kiểu thống kê: Tháng, Quý, Năm |
+| `subView` | sub | Button | Nút View — xem thống kê |
+| `outsubListRevenueStat` | outsub | DataGridView | Bảng doanh thu (click chọn dòng) |
+| `outListInvoiceDetail` | out | DataGridView | Bảng chi tiết hóa đơn |
+| `subBack` | sub | Button | Nút Back — quay về bảng thống kê |
+
+#### 5. Cách vẽ quan hệ
+
+| Kiểu quan hệ | Ký hiệu Visual Paradigm | Khi nào dùng |
+|---------------|------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng (▷) | Quan hệ tham chiếu thông thường giữa 2 class |
+| **Aggregation** | Đường liền nét, đầu kim cương rỗng (◇) ở đầu "chứa" | "Contain" nhưng child có thể tồn tại độc lập |
+| **Composition** | Đường liền nét, đầu kim cương filled (◆) ở đầu "chứa" | "Contain" nhưng child KHÔNG tồn tại nếu không có parent |
+| **Dependency** | Đường dashed (nét đứt), mũi tên tam giác rỗng (▷) | "Sử dụng" tạm thời (view class gọi DAO class) |
+
+#### 6. Cách ghi multiplicity
+
+- **1..1** → ghi `1` ở một đầu của đường kết nối
+- **0..\*** hoặc **1..\*** → ghi `n` hoặc `*` ở đầu kia
+- Ghi multiplicity ở **cả 2 đầu** của đường kết nối
+
+Ví dụ: RentalSlip(1) ←——→ (n) Payment nghĩa là 1 phiếu mượn có nhiều lần thanh toán.
+
+#### 7. Bảng quan hệ chi tiết (Visual Paradigm)
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Role name | Giải thích |
+|----|-----|---------------|-------------|-----------|------------|
+| Customer | RentalSlip | Association | 1 — n | borrows | Một khách hàng có nhiều phiếu mượn |
+| RentalSlip | RentalSlipDetail | Composition | 1 — n | contains | Chi tiết không tồn tại nếu không có phiếu mượn |
+| BookTitle | RentalSlipDetail | Association | 1 — n | references | Một cuốn sách xuất hiện trong nhiều chi tiết |
+| RentalSlip | Payment | Composition | 1 — n | paidBy | Một phiếu mượn có nhiều lần thanh toán |
+| User | RentalSlip | Association | 1 — n | creates | Một nhân viên tạo nhiều phiếu mượn |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ quan hệ RentalSlip → Payment (Composition 1-n)**
+
+1. Chọn công cụ **Composition** (đường liền nét đầu kim cương filled ◆) từ toolbox.
+2. Click vào `RentalSlip` (phía "chứa"), kéo sang `Payment` (phía "bị chứa").
+3. Click chuột phải vào đường kết nối → **Open Specification**.
+4. Tại mục **From** (RentalSlip): multiplicity = `1`.
+5. Tại mục **To** (Payment): multiplicity = `*`, role name = `paidBy`.
+6. Nhấn OK. Đầu kim cương filled (◆) nằm phía `RentalSlip`.
+
+**Ví dụ 2: Vẽ quan hệ Customer → RentalSlip (Association 1-n)**
+
+1. Chọn công cụ **Association** (đường liền nét mũi tên rỗng) từ toolbox.
+2. Click vào `Customer`, kéo sang `RentalSlip`.
+3. Click chuột phải → **Open Specification**.
+4. Tại mục **From** (Customer): multiplicity = `1`, role name = `borrows`.
+5. Tại mục **To** (RentalSlip): multiplicity = `*`.
+6. Nhấn OK.
+
 ---
 
 ## Câu 3: Thiết kế tĩnh
@@ -209,6 +306,17 @@ Bước 12: Staff nhấn Back. UI: `subBack` (Button — quay về bảng thốn
 | CustomerDAO | `getCustomerById(customerId): Customer` | Lấy thông tin KH theo mã |
 | RentalSlipDetailDAO | `getDetailsByRentalSlip(rentalSlipId): List<RentalSlipDetail>` | Lấy chi tiết phiếu mượn |
 | PaymentDAO | `getPaymentsByRentalSlip(rentalSlipId): List<Payment>` | Lấy thanh toán theo phiếu mượn |
+
+### Entity classes (Design phase)
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| RentalSlip | Entity | id: int (PK), code: String, rentalDate: Date, totalAmount: float, customer: Customer (object), user: User (object) |
+| RentalSlipDetail | Entity | id: int (PK), rentalSlip: RentalSlip (object), bookTitle: BookTitle (object), quantity: int, unitPrice: float, amount: float |
+| Payment | Entity | id: int (PK), rentalSlip: RentalSlip (object), paymentDate: Date, amount: float, paymentMethod: String |
+| Customer | Entity | id: int (PK), code: String, name: String, idCardNumber: String, phone: String, address: String |
+| BookTitle | Entity | id: int (PK), code: String, title: String, author: String, publisher: String, publishYear: int, price: float |
+| User | Entity | id: int (PK), username: String, password: String, fullName: String, role: String |
 
 ### Entity types sử dụng
 

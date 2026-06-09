@@ -187,6 +187,104 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep sinh vi
 | TimeSlot → Class | 1-n | Mot khung gio co nhieu lop |
 | User → Student | 1-1 | Mot tai khoan User ung voi mot Student |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**1. Các bước vẽ tổng quan:**
+
+| Bước | Thao tác | Mô tả |
+|------|----------|-------|
+| 1 | Mở Visual Paradigm → New → Class Diagram | Tạo diagram mới, đặt tên "Student_RegisterClass" |
+| 2 | Tạo entity class boxes | Kéo "Class" từ toolbar vào canvas, tạo 8 class: Student, Subject, Class, Registration, Grade, User, Classroom, TimeSlot |
+| 3 | Tạo view class boxes | Kéo "Boundary" vào canvas, tạo: LoginFrm, HomeFrm, RegisterClassFrm, RegistrationFormFrm |
+| 4 | Vẽ relationships | Kéo đường kết nối giữa các class theo bảng quan hệ |
+| 5 | Thêm multiplicities | Click vào đường kết nối → Properties → đặt Source/Target Multiplicity |
+
+**2. Cấu trúc 1 class box (3 ngăn):**
+
+Mỗi class trong Visual Paradigm là hình chữ nhật chia 3 ngăn:
+
+| Ngăn | Nội dung | Ví dụ (class Registration) |
+|------|----------|----------------------------|
+| Ngăn 1 — Tên class | Stereotype + tên class | `<<entity>> Registration` |
+| Ngăn 2 — Thuộc tính | `-attributeName: Type` | `-regId: int`, `-studentId: int`, `-classId: int`, `-semester: String`, `-regDate: Date`, `-status: String` |
+| Ngăn 3 — Phương thức | `+methodName(params): ReturnType` | `+addRegistration(reg: Registration): boolean`, `+checkPrerequisite(studentId: int, subjectId: int): boolean` |
+
+Stereotype sử dụng: `<<entity>>` cho entity class, `<<boundary>>` cho view class (Frm), `<<control>>` cho DAO class.
+
+**3. Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Thuộc tính (Ngăn 2) | Phương thức (Ngăn 3) |
+|-------|-----------|----------------------|----------------------|
+| Student | `<<entity>>` | `-studentId: int`, `-studentCode: String`, `-studentName: String`, `-email: String`, `-dob: Date`, `-major: String`, `-userId: int` | `+getStudentById(id: int): Student` |
+| Subject | `<<entity>>` | `-subjectId: int`, `-subjectCode: String`, `-subjectName: String`, `-credits: int`, `-prerequisiteId: int` | `+getAllSubjects(): List<Subject>`, `+getPrerequisite(subjectId: int): Subject` |
+| Class | `<<entity>>` | `-classId: int`, `-subjectId: int`, `-classroomId: int`, `-timeSlotId: int`, `-maxStudents: int`, `-section: String`, `-teacherId: int` | `+getAvailableClasses(subjectId: int): List<Class>`, `+getCurrentEnrollment(classId: int): int` |
+| Registration | `<<entity>>` | `-regId: int`, `-studentId: int`, `-classId: int`, `-semester: String`, `-regDate: Date`, `-status: String` | `+addRegistration(reg: Registration): boolean`, `+checkPrerequisite(studentId: int, subjectId: int): boolean` |
+| Grade | `<<entity>>` | `-gradeId: int`, `-regId: int`, `-component1: float`, `-component2: float`, `-component3: float`, `-examScore: float`, `-finalScore: float` | `+calculateFinalScore(): float` |
+| User | `<<entity>>` | `-userId: int`, `-username: String`, `-password: String`, `-role: String` | `+validateLogin(username: String, password: String): boolean` |
+| Classroom | `<<entity>>` | `-classroomId: int`, `-classroomName: String`, `-building: String`, `-capacity: int` | `+getAllClassrooms(): List<Classroom>` |
+| TimeSlot | `<<entity>>` | `-timeSlotId: int`, `-slotName: String`, `-startTime: Time`, `-endTime: Time`, `-dayOfWeek: String` | `+getAllTimeSlots(): List<TimeSlot>` |
+
+**4. Bảng chi tiết view classes (nếu có):**
+
+| View Class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| LoginFrm | `<<boundary>>` | `-inUsername: JTextField`, `-inPassword: JPasswordField`, `-subLogin: JButton` |
+| HomeFrm | `<<boundary>>` | `-menuSchedule: JMenuItem`, `-menuStudent: JMenuItem`, `-menuSubject: JMenuItem`, `-menuGrade: JMenuItem`, `-subLogout: JButton` |
+| RegisterClassFrm | `<<boundary>>` | `-inSubject: JComboBox`, `-outClassTable: JTable`, `-outsubClassList: JTable`, `-subRegister: JButton`, `-subCancel: JButton`, `-subRefresh: JButton` |
+| RegistrationFormFrm | `<<boundary>>` | `-outStudentInfo: JLabel`, `-outClassInfo: JLabel`, `-outSchedule: JTable`, `-subConfirm: JButton`, `-subBack: JButton` |
+
+Quy ước đặt tên UI elements: `in` = nhập liệu, `out` = hiển thị, `sub` = nút bấm, `outsub` = bảng click được.
+
+**5. Cách vẽ quan hệ:**
+
+| Kiểu quan hệ | Ký hiệu Visual Paradigm | Khi nào dùng |
+|---------------|--------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng (▷) | Quan hệ tham chiếu thông thường (Student → Registration) |
+| **Aggregation** | Đường liền nét, đầu kim cương rỗng (◇) | "Contain" nhưng child có thể tồn tại độc lập |
+| **Composition** | Đường liền nét, đầu kim cương filled (◆) | "Contain" nhưng child KHÔNG tồn tại nếu không có parent |
+| **Dependency** | Đường dashed, mũi tên tam giác rỗng (▷) | "Sử dụng" tạm thời (RegisterClassFrm → RegistrationDAO) |
+
+**6. Cách ghi multiplicity:**
+
+| Multiplicity | Cách ghi trong VP | Ví dụ |
+|--------------|-------------------|-------|
+| 1..1 | Ghi "1" ở một đầu | User có đúng 1 Student |
+| 0..* hoặc 1..* | Ghi "*" hoặc "1..*" ở đầu kia | Student có nhiều Registration |
+| 0..1 | Ghi "0..1" | (hiếm dùng) |
+
+Ghi multiplicity ở cả 2 đầu của đường kết nối. Click vào đường → Properties → Source Multiplicity / Target Multiplicity.
+
+**7. Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|---------------|--------------|------------|
+| Subject | Class | Association | 1 → * | Mỗi môn học có nhiều lớp |
+| Class | Registration | Association | 1 → * | Mỗi lớp có nhiều sinh viên đăng ký |
+| Student | Registration | Association | 1 → * | Mỗi sinh viên đăng ký nhiều lớp |
+| Registration | Grade | Association | 1 → 1 | Mỗi đăng ký có một bảng điểm |
+| Subject | Subject | Association (self-ref) | * → * | Quan hệ môn tiên quyết |
+| Classroom | Class | Association | 1 → * | Mỗi phòng học được dùng cho nhiều lớp |
+| TimeSlot | Class | Association | 1 → * | Mỗi khung giờ có nhiều lớp |
+| User | Student | Association | 1 → 1 | Mỗi tài khoản User ứng với một Student |
+
+**8. Ví dụ cụ thể trên Visual Paradigm:**
+
+*Ví dụ 1: Vẽ quan hệ Student → Registration (1-n, Association)*
+
+1. Click chuột phải vào class Student → chọn **Association** → kéo đến class Registration.
+2. Click vào đường kết nối → chọn **Properties**.
+3. Set Source Multiplicity = `1`, Target Multiplicity = `*`.
+4. Giữ mặc định mũi tên tam giác rỗng (▷) — đây là Association.
+5. Đặt tên association: `registers`.
+
+*Ví dụ 2: Vẽ quan hệ Subject → Subject (n-n self-reference, Association)*
+
+1. Click chuột phải vào class Subject → chọn **Association** → kéo đến **chính class Subject** (tự tham chiếu).
+2. Click vào đường kết nối → chọn **Properties**.
+3. Set Source Multiplicity = `*`, Target Multiplicity = `*`.
+4. Giữ mặc định mũi tên tam giác rỗng (▷) — đây là Association.
+5. Đặt tên association: `requires`. Ghi chú: thể hiện quan hệ môn tiên quyết.
+
 ### Classes diagram (analysis)
 
 Phân tích module này:
@@ -344,6 +442,8 @@ public class Student {
     private String major;          // "Computer Science"
     private String course;         // "K65"
     private int userId;            // FK -> tblUser
+    private User user;              // object attribute
+    private List<Registration> registrations; // object attribute
     // getters, setters
 }
 
@@ -354,6 +454,8 @@ public class Subject {
     private String subjectName;    // "Lap trinh Java"
     private int credits;           // 3
     private int prerequisiteId;    // FK -> tblSubject, null if none
+    private Subject prerequisite;  // object attribute
+    private List<Class> classes;   // object attribute
     // getters, setters
 }
 
@@ -366,6 +468,10 @@ public class Class {
     private int maxStudents;       // 40
     private String section;        // "Section 1"
     private int teacherId;         // FK -> tblUser (teacher)
+    private Subject subject;       // object attribute
+    private Classroom classroom;   // object attribute
+    private TimeSlot timeSlot;     // object attribute
+    private List<Registration> registrations; // object attribute
     // getters, setters
 }
 
@@ -377,6 +483,9 @@ public class Registration {
     private String semester;       // "2026-2"
     private Date regDate;          // 2026-06-01
     private String status;         // "registered"
+    private Student student;       // object attribute
+    private Class classObj;        // object attribute
+    private Grade grade;           // object attribute
     // getters, setters
 }
 
@@ -389,6 +498,7 @@ public class Grade {
     private double component3;
     private double examScore;
     private double finalScore;
+    private Registration registration; // object attribute
     // getters, setters
 }
 
@@ -407,6 +517,7 @@ public class Classroom {
     private String classroomName;  // "A101"
     private String building;       // "A"
     private int capacity;          // 40
+    private List<Class> classes;   // object attribute
     // getters, setters
 }
 
@@ -417,6 +528,7 @@ public class TimeSlot {
     private String startTime;      // "07:00"
     private String endTime;        // "09:00"
     private String dayOfWeek;      // "Monday"
+    private List<Class> classes;   // object attribute
     // getters, setters
 }
 ```

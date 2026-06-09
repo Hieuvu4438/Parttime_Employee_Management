@@ -119,6 +119,96 @@ He thong thu vien cho phep nhan vien thong ke so luot muon sach trong mot khoang
 | Reader -> LoanDetail | Gian tiep (qua Loan) | Doc gia lien ket voi chi tiet muon thong qua phieu muon |
 | Book -> Loan | Gian tiep (qua LoanDetail) | Sach lien ket voi phieu muon thong qua chi tiet muon |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**1. Các bước vẽ tổng quan:**
+
+| Bước | Thao tác | Mô tả |
+|------|----------|-------|
+| 1 | Mở Visual Paradigm → New → Class Diagram | Tạo diagram mới, đặt tên "Library_StatBorrowed" |
+| 2 | Tạo entity class boxes | Kéo "Class" từ toolbar vào canvas, tạo 5 class: Book, Reader, Loan, LoanDetail, User |
+| 3 | Tạo view class boxes | Kéo "Boundary" vào canvas, tạo: LoginFrm, HomeFrm, StatBorrowedFrm |
+| 4 | Vẽ relationships | Kéo đường kết nối giữa các class theo bảng quan hệ |
+| 5 | Thêm multiplicities | Click vào đường kết nối → Properties → đặt Source/Target Multiplicity |
+
+**2. Cấu trúc 1 class box (3 ngăn):**
+
+Mỗi class trong Visual Paradigm là hình chữ nhật chia 3 ngăn:
+
+| Ngăn | Nội dung | Ví dụ (class LoanDetail) |
+|------|----------|--------------------------|
+| Ngăn 1 — Tên class | Stereotype + tên class | `<<entity>> LoanDetail` |
+| Ngăn 2 — Thuộc tính | `-attributeName: Type` | `-detailId: int`, `-loanId: int`, `-bookId: int`, `-borrowDate: Date`, `-returnDate: Date`, `-fine: double` |
+| Ngăn 3 — Phương thức | `+methodName(params): ReturnType` | `+countLoansByBook(start: Date, end: Date): List<Map>` |
+
+Stereotype sử dụng: `<<entity>>` cho entity class, `<<boundary>>` cho view class (Frm), `<<control>>` cho DAO class.
+
+**3. Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Thuộc tính (Ngăn 2) | Phương thức (Ngăn 3) |
+|-------|-----------|----------------------|----------------------|
+| Book | `<<entity>>` | `-bookId: int`, `-code: String`, `-name: String`, `-author: String`, `-barcode: String`, `-coverPrice: double` | `+getBookById(bookId: int): Book`, `+searchBook(key: String): List<Book>` |
+| Reader | `<<entity>>` | `-readerId: int`, `-code: String`, `-name: String`, `-dob: Date`, `-address: String`, `-barcode: String` | `+getReaderById(readerId: int): Reader` |
+| Loan | `<<entity>>` | `-loanId: int`, `-loanDate: Date`, `-readerId: int`, `-userId: int` | `+getLoanById(loanId: int): Loan` |
+| LoanDetail | `<<entity>>` | `-detailId: int`, `-loanId: int`, `-bookId: int`, `-borrowDate: Date`, `-returnDate: Date`, `-fine: double` | `+countLoansByBook(start: Date, end: Date): List<Map>`, `+getDetailsByBookId(bookId: int): List<LoanDetail>` |
+| User | `<<entity>>` | `-userId: int`, `-username: String`, `-password: String`, `-role: String` | `+checkLogin(username: String, password: String): boolean` |
+
+**4. Bảng chi tiết view classes (nếu có):**
+
+| View Class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| LoginFrm | `<<boundary>>` | `-inUsername: JTextField`, `-inPassword: JPasswordField`, `-subLogin: JButton` |
+| HomeFrm | `<<boundary>>` | `-subStatistics: JButton`, `-subBorrow: JButton`, `-subReturn: JButton` |
+| StatBorrowedFrm | `<<boundary>>` | `-inStartDate: JTextField`, `-inEndDate: JTextField`, `-subSearch: JButton`, `-outBookTable: JTable`, `-outDetailLabel: JLabel`, `-outDetailTable: JTable`, `-subExport: JButton`, `-subBack: JButton` |
+
+Quy ước đặt tên UI elements: `in` = nhập liệu, `out` = hiển thị, `sub` = nút bấm, `outsub` = bảng click được.
+
+**5. Cách vẽ quan hệ:**
+
+| Kiểu quan hệ | Ký hiệu Visual Paradigm | Khi nào dùng |
+|---------------|--------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng (▷) | Quan hệ tham chiếu thông thường (Reader → Loan) |
+| **Aggregation** | Đường liền nét, đầu kim cương rỗng (◇) | "Contain" nhưng child có thể tồn tại độc lập |
+| **Composition** | Đường liền nét, đầu kim cương filled (◆) | "Contain" nhưng child KHÔNG tồn tại nếu không có parent (Loan → LoanDetail) |
+| **Dependency** | Đường dashed, mũi tên tam giác rỗng (▷) | "Sử dụng" tạm thời (StatBorrowedFrm → LoanDetailDAO) |
+
+**6. Cách ghi multiplicity:**
+
+| Multiplicity | Cách ghi trong VP | Ví dụ |
+|--------------|-------------------|-------|
+| 1..1 | Ghi "1" ở một đầu | Loan có đúng 1 Reader |
+| 0..* hoặc 1..* | Ghi "*" hoặc "1..*" ở đầu kia | Reader có nhiều Loan |
+| 0..1 | Ghi "0..1" | LoanDetail có thể chưa có returnDate |
+
+Ghi multiplicity ở cả 2 đầu của đường kết nối. Click vào đường → Properties → Source Multiplicity / Target Multiplicity.
+
+**7. Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|---------------|--------------|------------|
+| Reader | Loan | Association | 1 → * | Mỗi bạn đọc có nhiều phiếu mượn |
+| Loan | LoanDetail | Composition | 1 → * | Mỗi phiếu mượn có nhiều chi tiết. LoanDetail bị xóa khi Loan bị xóa |
+| Book | LoanDetail | Association | * → 1 | Mỗi chi tiết mượn liên kết đến 1 sách |
+| User | Loan | Association | 1 → * | Mỗi nhân viên xử lý nhiều phiếu mượn |
+
+**8. Ví dụ cụ thể trên Visual Paradigm:**
+
+*Ví dụ 1: Vẽ quan hệ Loan → LoanDetail (1-n, Composition)*
+
+1. Click chuột phải vào class Loan → chọn **Association** → kéo đến class LoanDetail.
+2. Click vào đường kết nối → chọn **Properties**.
+3. Set Source Multiplicity = `1`, Target Multiplicity = `*`.
+4. Click vào đầu mũi tên ở phía LoanDetail → chọn **Composition** (filled diamond ◆).
+5. Đặt tên association: `contains`.
+
+*Ví dụ 2: Vẽ quan hệ Book → LoanDetail (1-n, Association)*
+
+1. Click chuột phải vào class Book → chọn **Association** → kéo đến class LoanDetail.
+2. Click vào đường kết nối → chọn **Properties**.
+3. Set Source Multiplicity = `1`, Target Multiplicity = `*`.
+4. Giữ mặc định mũi tên tam giác rỗng (▷) — đây là Association.
+5. Đặt tên association: `appears_in`.
+
 ### Classes diagram (analysis)
 
 Analysis this module:
@@ -274,6 +364,9 @@ Methods: checkLogin(), countLoansByBook(), getBookById(), findBorrowingDetailsBy
 - loanDate: Date
 - readerId: int (FK)
 - userId: int (FK)
+- reader: Reader (object attribute)
+- user: User (object attribute)
+- loanDetails: List<LoanDetail> (object attribute)
 ```
 
 **LoanDetail**
@@ -285,6 +378,8 @@ Methods: checkLogin(), countLoansByBook(), getBookById(), findBorrowingDetailsBy
 - dueDate: Date
 - returnDate: Date (nullable)
 - fine: double (default 0)
+- book: Book (object attribute)
+- loan: Loan (object attribute)
 ```
 
 ### Buoc 5: Database Design

@@ -114,6 +114,92 @@ v                  |       +------------------+
 +-----------------------------+
 ```
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+| Bước | Thao tác trên Visual Paradigm |
+|------|-------------------------------|
+| 1 | Mở Visual Paradigm → File → New → chọn **Class Diagram** |
+| 2 | Tạo các entity class boxes cho: Race, Team, Driver, RaceRegistration, RaceResult, User |
+| 3 | Tạo các DTO class boxes cho: TeamStanding, TeamRaceDetail |
+| 4 | Tạo các view class boxes: HomeFrm, TeamRankingFrm |
+| 5 | Vẽ các đường kết nối theo bảng quan hệ, ghi multiplicity và role name |
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+| Ngăn | Nội dung | Ví dụ Team |
+|------|----------|------------|
+| Ngăn 1 — Tên class | Stereotype `<<entity>>`, `<<dto>>`, hoặc `<<boundary>>` + tên class | `<<entity>> Team` |
+| Ngăn 2 — Thuộc tính | `-tenThuocTinh: KieuDuLieu` | `-id: int` `-code: String` `-name: String` `-brand: String` `-description: String` |
+| Ngăn 3 — Phương thức | `+tenPhuongThuc(thamSo): KieuTraVe` | `+getTeamStandings(raceId: int): List<TeamStanding>` |
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Race | `<<entity>>` | `-id: int`, `-code: String`, `-name: String`, `-laps: int`, `-location: String`, `-time: DateTime`, `-description: String` | `+getAllRaces(): List<Race>` |
+| Team | `<<entity>>` | `-id: int`, `-code: String`, `-name: String`, `-brand: String`, `-description: String` | `+getTeamStandings(raceId: int): List<TeamStanding>`, `+getTeamRaceDetails(teamId: int, maxRaceId: int): List<TeamRaceDetail>` |
+| Driver | `<<entity>>` | `-id: int`, `-code: String`, `-name: String`, `-dob: Date`, `-nationality: String`, `-bio: String`, `-teamId: int` | — |
+| RaceRegistration | `<<entity>>` | `-id: int`, `-raceId: int`, `-teamId: int`, `-driverId: int` | — |
+| RaceResult | `<<entity>>` | `-id: int`, `-raceId: int`, `-driverId: int`, `-finishTime: String`, `-lapsCompleted: int`, `-position: int`, `-score: float` | — |
+| User | `<<entity>>` | `-id: int`, `-username: String`, `-password: String`, `-role: String` | — |
+| TeamStanding | `<<dto>>` | `-team: Team`, `-teamName: String`, `-teamOwner: String`, `-totalScore: int`, `-totalTime: Time` | — |
+| TeamRaceDetail | `<<dto>>` | `-raceName: String`, `-totalScore: int`, `-totalTime: Time` | — |
+
+#### 4. Bảng chi tiết view classes
+
+| View class | Stereotype | UI elements (prefix convention) |
+|------------|-----------|--------------------------------|
+| HomeFrm | `<<boundary>>` | `subTeamRanking` (Button — chọn chức năng BXH đội đua) |
+| TeamRankingFrm | `<<boundary>>` | `inRace` (ComboBox — chọn chặng đua), `outsubListTeamStanding` (Table — bảng xếp hạng đội, click chọn), `outListRaceDetail` (Table — chi tiết kết quả từng chặng), `subBack` (Button — quay về BXH) |
+
+#### 5. Cách vẽ quan hệ
+
+| Kiểu quan hệ | Ký hiệu trên Visual Paradigm | Khi nào dùng |
+|---------------|------------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng ▷ | Quan hệ tham chiếu giữa các entity |
+| **Composition** | Đường liền nét, đầu kim cương filled ◆ | Team chứa Driver |
+| **Dependency** | Đường dashed, mũi tên tam giác rỗng ▷ | View gọi DAO |
+
+#### 6. Cách ghi multiplicity
+
+| Multiplicity | Cách ghi trên VP | Ý nghĩa |
+|-------------|------------------|---------|
+| 1..1 | `1` | Đúng 1 đối tượng |
+| 1..* | `N` | Nhiều đối tượng |
+
+#### 7. Bảng quan hệ chi tiết
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|-------------|------------|
+| Team | Driver | Composition | 1 --- N | Một đội có nhiều tay đua |
+| Race | RaceRegistration | Association | 1 --- N | Một chặng có nhiều đăng ký |
+| Team | RaceRegistration | Association | 1 --- N | Một đội có nhiều đăng ký |
+| Driver | RaceRegistration | Association | 1 --- N | Một tay đua có nhiều đăng ký |
+| Race | RaceResult | Association | 1 --- N | Một chặng có nhiều kết quả |
+| Driver | RaceResult | Association | 1 --- N | Một tay đua có nhiều kết quả |
+| TeamRankingFrm | TeamStanding | Association | 1 --- N | View hiển thị BXH đội |
+| TeamRankingFrm | TeamRaceDetail | Association | 1 --- N | View hiển thị chi tiết từng chặng |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ Team (1) --- (N) Driver (Composition)**
+
+1. Tạo class `Team` với attribute: `-id: int`, `-name: String`, `-brand: String`.
+2. Tạo class `Driver` với attribute: `-id: int`, `-name: String`, `-nationality: String`.
+3. Kéo tool **Composition** → click `Team` → kéo sang `Driver`.
+4. Đặt multiplicity: `1` (Team), `N` (Driver).
+
+**Ví dụ 2: Vẽ Dependency từ TeamRankingFrm đến TeamDAO**
+
+1. Tạo class `TeamRankingFrm` với stereotype `<<boundary>>`.
+2. Tạo class `TeamDAO` với stereotype `<<control>>`.
+3. Kéo tool **Dependency** → click `TeamRankingFrm` → kéo sang `TeamDAO`.
+4. Ghi chú: `getTeamStandings()`, `getTeamRaceDetails()`.
+
+---
+
 ### Classes diagram (analysis)
 
 **Phân tích từ kịch bản (Câu 1):**
@@ -196,6 +282,17 @@ Bước 11: Staff nhấn Back. UI: `subBack` (Button — quay về bảng xếp 
 | RaceDAO | `getAllRaces(): List<Race>` | Lấy danh sách chặng đua |
 | TeamDAO | `getTeamStandings(raceId): List<TeamStanding>` | Tính bảng xếp hạng đội đến chặng đã chọn |
 | TeamDAO | `getTeamRaceDetails(teamId, raceId): List<TeamRaceDetail>` | Lấy chi tiết kết quả từng chặng của 1 đội |
+
+### Entity classes (Design phase)
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Race | Entity | id: int (PK), code: String, name: String, laps: int, location: String, time: String, description: String |
+| Team | Entity | id: int (PK), code: String, name: String, brand: String, description: String |
+| Driver | Entity | id: int (PK), code: String, name: String, dob: Date, nationality: String, bio: String, team: Team (object) |
+| RaceRegistration | Entity | id: int (PK), race: Race (object), team: Team (object), driver: Driver (object) |
+| RaceResult | Entity | id: int (PK), race: Race (object), driver: Driver (object), finishTime: String, lapsCompleted: int, position: int, score: float |
+| User | Entity | id: int (PK), username: String, password: String, role: String |
 
 ### Entity types
 

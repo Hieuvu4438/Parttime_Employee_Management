@@ -139,6 +139,103 @@ Nhà hàng quản lý việc thanh toán cho khách. Khi khách yêu cầu thanh
 | Order → Invoice | 1-1 | Mỗi đơn hàng có 1 hóa đơn |
 | Coupon → Invoice | 1-n | Một coupon áp dụng cho nhiều hóa đơn |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+1. Mở Visual Paradigm → New → Class Diagram.
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity class.
+3. Tạo view class boxes từ các interface (form) của module.
+4. Vẽ mối quan hệ (relationship) giữa các class.
+5. Ghi multiplicity và role name cho mỗi mối quan hệ.
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+Mỗi class trong Visual Paradigm được vẽ dưới dạng hình chữ nhật chia 3 ngăn:
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> Invoice`, `<<boundary>> PaymentFrm`, `<<control>> InvoiceDAO`.
+- **Ngăn 2 (thuộc tính):** Liệt kê các thuộc tính theo format `-attributeName: Type`. Ví dụ: `-id: int`, `-totalAmount: float`, `-paidAmount: float`.
+- **Ngăn 3 (phương thức):** Liệt kê các phương thức theo format `+methodName(params): ReturnType`. Ví dụ: `+addInvoice(invoice: Invoice): boolean`.
+
+Trong Visual Paradigm, click đúp vào class box để chỉnh sửa tên, tab Attributes để thêm thuộc tính, tab Operations để thêm phương thức.
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Table | <<entity>> | -id: int, -code: String, -name: String, -maxGuests: int, -description: String | +getTablesWithActiveOrder(): List<Table> |
+| Customer | <<entity>> | -id: int, -code: String, -name: String, -phone: String, -email: String, -address: String | (không có) |
+| Dish | <<entity>> | -id: int, -code: String, -type: String, -name: String, -description: String, -price: float | (không có) |
+| Combo | <<entity>> | -id: int, -name: String, -totalPrice: float | (không có) |
+| Order | <<entity>> | -id: int, -orderDate: Date, -totalAmount: float, -status: String | +getActiveOrderByTable(tableId: int): Order, +updateOrderStatus(orderId: int, status: String): boolean |
+| OrderDetail | <<entity>> | -id: int, -quantity: int, -unitPrice: float, -amount: float | +getOrderDetails(orderId: int): List<OrderDetail> |
+| Coupon | <<entity>> | -id: int, -code: String, -discount: float | +getCouponByCode(code: String): Coupon |
+| Invoice | <<entity>> | -id: int, -totalAmount: float, -paidAmount: float, -invoiceDate: Date | +addInvoice(invoice: Invoice): boolean |
+| User | <<entity>> | -id: int, -username: String, -password: String, -role: String | (không có) |
+
+#### 4. Bảng chi tiết view classes
+
+| View Class | Stereotype | UI Elements | Mô tả |
+|-----------|-----------|-------------|-------|
+| HomeFrm | <<boundary>> | -subPayment: JButton | Giao diện chính, chứa nút chọn Payment |
+| PaymentFrm | <<boundary>> | -inTable: JComboBox, -outOrderInfo: JPanel, -outsubListOrderDetail: JTable, -outTotalAmount: JLabel, -subAddCoupon: JButton, -inCouponCode: JTextField, -subApplyCoupon: JButton, -outCouponInfo: JLabel, -subConfirm: JButton | Giao diện thanh toán |
+
+Quy tắc đặt tên UI elements:
+- Tiền tố `in` → input (ô nhập liệu): inTable, inCouponCode
+- Tiền tố `out` → output (vùng hiển thị): outOrderInfo, outTotalAmount, outCouponInfo
+- Tiền tố `outsub` → clickable output (bảng click được): outsubListOrderDetail
+- Tiền tố `sub` → submit (nút bấm): subAddCoupon, subApplyCoupon, subConfirm
+
+#### 5. Cách vẽ quan hệ
+
+Trong Visual Paradigm, sử dụng palette Relationships ở bên phải để chọn kiểu quan hệ:
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Coupon → Invoice (mã giảm giá tham chiếu đến hóa đơn).
+- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập.
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Order → OrderDetail (chi tiết đơn hàng không tồn tại nếu không có đơn hàng).
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: PaymentFrm → CouponDAO (form sử dụng DAO để tìm mã giảm giá).
+
+#### 6. Cách ghi multiplicity
+
+Trong Visual Paradigm, click vào đường kết nối → tab Properties → chỉnh Source Multiplicity và Target Multiplicity:
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi multiplicity ở cả 2 đầu của đường kết nối.
+
+Ví dụ: Order (1) → (1) Invoice nghĩa là mỗi đơn hàng có đúng 1 hóa đơn.
+
+#### 7. Bảng quan hệ chi tiết
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|---|---|---|---|---|
+| Table | Order | Association | 1 - n | Một bàn có nhiều đơn hàng |
+| Customer | Order | Association | 1 - n | Một khách hàng có nhiều đơn hàng |
+| User | Order | Association | 1 - n | Một nhân viên xử lý nhiều đơn hàng |
+| Order | OrderDetail | Composition | 1 - n | Một đơn hàng chứa nhiều chi tiết; chi tiết không tồn tại nếu không có đơn hàng |
+| Dish | OrderDetail | Association | 1 - n | Một món ăn xuất hiện trong nhiều chi tiết đơn |
+| Combo | OrderDetail | Association | 1 - n | Một combo xuất hiện trong nhiều chi tiết đơn |
+| Order | Invoice | Association | 1 - 1 | Mỗi đơn hàng tạo ra đúng 1 hóa đơn thanh toán |
+| Coupon | Invoice | Association | 1 - n | Một mã giảm giá áp dụng cho nhiều hóa đơn |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ quan hệ Order → Invoice (1-1, Association)**
+1. Tạo class `<<entity>> Order` và `<<entity>> Invoice` với các thuộc tính tương ứng.
+2. Chọn công cụ **Association** từ palette Relationships (mũi tên tam giác rỗng ▷).
+3. Click vào class Order → kéo đến class Invoice.
+4. Click vào đường kết nối → Properties → set Source Multiplicity = 1, Target Multiplicity = 1.
+5. Đặt tên association: "generates" (tùy chọn).
+6. Kết quả: Order (1) ▷----(1) Invoice.
+
+**Ví dụ 2: Vẽ quan hệ Coupon → Invoice (1-n, Association)**
+1. Tạo class `<<entity>> Coupon` với các thuộc tính: -id: int, -code: String, -discount: float.
+2. Chọn công cụ **Association** từ palette Relationships.
+3. Click vào class Coupon → kéo đến class Invoice.
+4. Click vào đường kết nối → Properties → set Source Multiplicity = 1, Target Multiplicity = *.
+5. Đặt tên association: "applied to" (tùy chọn).
+6. Kết quả: Coupon (1) ▷----(*) Invoice.
+
 ### Classes diagram (analysis)
 
 Phân tích module này (bỏ qua bước đăng nhập):

@@ -101,6 +101,75 @@ User 1 --- n Payment             (association)
 | tblPayment | paymentId | scheduleId → tblPaymentSchedule | paymentDate, amountPaid, method |
 | tblUser | userId | — | username, password, fullName, role |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**1. Các bước vẽ tổng quan:**
+- Bước 1: Mở Visual Paradigm → File → New → chọn **Class Diagram**
+- Bước 2: Tạo các entity class box (hình chữ nhật 3 ngăn) cho: Customer, Contract, ContractItem, Product, PaymentSchedule, Payment, User
+- Bước 3: Tạo các view class box từ giao diện: HomeFrm, StatDebtView, ContractListView, ContractDetailView
+- Bước 4: Vẽ các đường quan hệ (association, composition) giữa các class
+- Bước 5: Ghi multiplicity (1, n) và role name ở hai đầu đường kết nối
+
+**2. Cấu trúc 1 class box (3 ngăn):**
+- Ngăn 1 (tên class): ghi stereotype `<<entity>>` hoặc `<<boundary>>` + tên class. Ví dụ: `<<entity>> Customer`
+- Ngăn 2 (thuộc tính): ghi theo định dạng `-attributeName: Type`. Ví dụ: `-customerId: int`, `-customerName: String`
+- Ngăn 3 (phương thức): ghi theo định dạng `+methodName(params): ReturnType`. Ví dụ: `+getDebtStatistics(): List<Customer>`
+
+**3. Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Customer | <<entity>> | -customerId: int, -customerName: String, -phoneNumber: String, -address: String, -idCard: String | +getDebtStatistics(): List<Customer> |
+| Contract | <<entity>> | -contractId: int, -customerId: int, -partnerId: int, -signingDate: Date, -totalLoanAmount: double, -status: String | +getContractsByCustomer(customerId: int): List<Contract> |
+| ContractItem | <<entity>> | -contractItemId: int, -contractId: int, -productId: int, -quantity: int, -unitPrice: double, -amount: double | +getItemsByContract(contractId: int): List<ContractItem> |
+| Product | <<entity>> | -productId: int, -productName: String, -unitPrice: double, -description: String | |
+| PaymentSchedule | <<entity>> | -scheduleId: int, -contractId: int, -periodNumber: int, -dueDate: Date, -amount: double, -status: String | +getScheduleByContract(contractId: int): List<PaymentSchedule> |
+| Payment | <<entity>> | -paymentId: int, -scheduleId: int, -paymentDate: Date, -amountPaid: double, -method: String | +getPaymentsBySchedule(scheduleId: int): List<Payment> |
+| User | <<entity>> | -userId: int, -username: String, -password: String, -fullName: String, -role: String | |
+
+**4. Bảng chi tiết view classes:**
+
+| View Class | UI Elements |
+|------------|-------------|
+| HomeFrm | subStatDebt: JButton (nút chọn Customer statistics by debt) |
+| StatDebtView | outsubCustomerStatTable: JTable (bảng thống kê KH theo nợ, click được) |
+| ContractListView | outsubContractList: JTable (danh sách HĐ của KH, click được), subBack: JButton (nút Back) |
+| ContractDetailView | outCustomerInfo: JLabel (thông tin KH), outItemList: JTable (danh sách SP), outPaymentList: JTable (danh sách thanh toán theo kỳ), subBack: JButton (nút Back) |
+
+**5. Cách vẽ quan hệ:**
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Customer → Contract
+- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Contract ◆→ ContractItem
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: StatDebtView ---> CustomerDAO
+
+**6. Cách ghi multiplicity:**
+- 1..1 → ghi "1" ở một đầu
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: Customer (1) --- (n) Contract
+
+**7. Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|---------------|-------------|------------|
+| Customer | Contract | Association | 1 : n | Một khách hàng có nhiều hợp đồng |
+| Contract | ContractItem | Composition | 1 : n | Hợp đồng chứa nhiều chi tiết SP, chi tiết không tồn tại nếu không có HĐ |
+| Product | ContractItem | Association | 1 : n | Một sản phẩm xuất hiện trong nhiều chi tiết HĐ |
+| Contract | PaymentSchedule | Composition | 1 : n | Hợp đồng chứa nhiều kỳ thanh toán |
+| PaymentSchedule | Payment | Composition | 1 : n | Một kỳ có nhiều phiếu thanh toán |
+
+**8. Ví dụ cụ thể trên Visual Paradigm:**
+
+Ví dụ 1 — Vẽ quan hệ Composition Contract ◆→ PaymentSchedule:
+- Kéo class Contract vào canvas, kéo class PaymentSchedule vào bên phải
+- Chọn công cụ **Composition**, click vào Contract rồi kéo sang PaymentSchedule
+- Kim cương filled nằm ở phía Contract (parent)
+- Đặt Multiplicity: Contract "1", PaymentSchedule "n"
+
+Ví dụ 2 — Vẽ quan hệ Customer → Contract (1:n) Association:
+- Kéo class Customer và Contract vào canvas
+- Chọn công cụ **Association**, click vào Customer kéo sang Contract
+- Đặt Multiplicity: Customer "1", Contract "n"
+
 ### Classes diagram (analysis)
 
 Phân tích module này (bỏ qua bước đăng nhập):
@@ -222,6 +291,81 @@ Phương thức: getDebtStatistics(), getContractsByCustomer(), getItemsByContra
 | ContractItemDAO | `getItemsByContract(int contractId): List<ContractItem>` | Lay danh sach san pham trong 1 hop dong |
 | PaymentScheduleDAO | `getScheduleByContract(int contractId): List<PaymentSchedule>` | Lay lich trinh thanh toan theo ky cua 1 hop dong |
 | PaymentDAO | `getPaymentsBySchedule(int scheduleId): List<Payment>` | Lay danh sach thanh toan cua 1 ky |
+
+### Database Design
+
+**tblCustomer:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| customerId | INT | PK |
+| customerName | VARCHAR(100) | NOT NULL |
+| phoneNumber | VARCHAR(15) | |
+| address | VARCHAR(200) | |
+| idCard | VARCHAR(20) | UNIQUE |
+
+**tblPartner:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| partnerId | INT | PK |
+| partnerName | VARCHAR(100) | NOT NULL |
+| address | VARCHAR(200) | |
+| phoneNumber | VARCHAR(15) | |
+
+**tblProduct:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| productId | INT | PK |
+| productName | VARCHAR(100) | NOT NULL |
+| unitPrice | DECIMAL(12,2) | NOT NULL |
+| description | VARCHAR(500) | |
+
+**tblContract:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| contractId | INT | PK |
+| customerId | INT | FK → tblCustomer |
+| partnerId | INT | FK → tblPartner |
+| signingDate | DATE | NOT NULL |
+| totalLoanAmount | DECIMAL(15,2) | NOT NULL |
+| status | VARCHAR(20) | NOT NULL |
+
+**tblContractItem:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| contractItemId | INT | PK |
+| contractId | INT | FK → tblContract |
+| productId | INT | FK → tblProduct |
+| quantity | INT | NOT NULL |
+| unitPrice | DECIMAL(12,2) | NOT NULL |
+| amount | DECIMAL(15,2) | NOT NULL |
+
+**tblPaymentSchedule:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| scheduleId | INT | PK |
+| contractId | INT | FK → tblContract |
+| periodNumber | INT | NOT NULL |
+| dueDate | DATE | NOT NULL |
+| amount | DECIMAL(12,2) | NOT NULL |
+| status | VARCHAR(20) | NOT NULL |
+
+**tblPayment:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| paymentId | INT | PK |
+| scheduleId | INT | FK → tblPaymentSchedule |
+| paymentDate | DATE | NOT NULL |
+| amountPaid | DECIMAL(12,2) | NOT NULL |
+| method | VARCHAR(20) | |
+
+**tblUser:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| userId | INT | PK |
+| username | VARCHAR(50) | UNIQUE, NOT NULL |
+| password | VARCHAR(100) | NOT NULL |
+| fullName | VARCHAR(100) | NOT NULL |
+| role | VARCHAR(20) | NOT NULL |
 
 ### Huong dan Visual Paradigm
 

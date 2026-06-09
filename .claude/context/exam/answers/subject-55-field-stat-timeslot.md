@@ -139,6 +139,74 @@ Hệ thống quản lý cho thuê sân bóng đá mini. Mỗi sân bóng có mã
 +------------------+
 ```
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**Các bước vẽ tổng quan:**
+
+1. Mở Visual Paradigm → New → Class Diagram (trong danh mục Diagrams).
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity: Customer, Court, Booking, BookingSession, Payment, User.
+3. Tạo view class boxes từ các interface: HomeFrm, StatisticTimeSlotFrm.
+4. Vẽ relationships giữa các class theo bảng quan hệ bên dưới.
+5. Thêm multiplicities và role names cho mỗi đường kết nối.
+
+**Cấu trúc 1 class box (3 ngăn):**
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> BookingSession`.
+- **Ngăn 2 (thuộc tính):** Mỗi thuộc tính ghi dạng `-attributeName: Type`. Ví dụ: `-sessionDate: Date`, `-startTime: String`.
+- **Ngăn 3 (phương thức):** Mỗi phương thức ghi dạng `+methodName(params): ReturnType`. Ví dụ: `+getTimeSlotStatistics(startDate: Date, endDate: Date): List<Object[]>`.
+
+**Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Customer | `<<entity>>` | -id: int, -customerName: String, -phoneNumber: String, -email: String, -address: String | getter/setter |
+| Court | `<<entity>>` | -id: int, -courtName: String, -courtType: String, -pricePerHour: double, -status: String | getter/setter |
+| Booking | `<<entity>>` | -id: int, -bookingDate: Date, -totalAmount: double, -status: String | getter/setter |
+| BookingSession | `<<entity>>` | -id: int, -sessionDate: Date, -startTime: String, -endTime: String, -rentAmount: double, -status: String | +getTimeSlotStatistics(startDate: Date, endDate: Date): List<Object[]>, +getBookingDetailsByTimeSlot(timeSlot: String, startDate: Date, endDate: Date): List<Object[]> |
+| Payment | `<<entity>>` | -id: int, -paymentDate: Date, -amount: double, -method: String, -status: String | getter/setter |
+| User | `<<entity>>` | -id: int, -username: String, -password: String, -fullName: String, -role: String | +checkLogin(username: String, password: String): boolean |
+
+**Bảng chi tiết view classes:**
+
+| View class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| HomeFrm | `<<boundary>>` | subStatisticTimeSlot: JButton |
+| StatisticTimeSlotFrm | `<<boundary>>` | inStartDate: JDateChooser, inEndDate: JDateChooser, subSearch: JButton, outsubTimeSlotTable: JTable (clickable), outBookingDetailTable: JTable |
+
+**Cách vẽ quan hệ:**
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Customer → Booking.
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Booking ◆→ BookingSession.
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: StatisticTimeSlotFrm → BookingSessionDAO.
+
+**Cách ghi multiplicity:**
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: Customer "1" --- "n" Booking.
+
+**Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|--------------|------------|
+| Customer | Booking | Association | 1 — n | Một khách hàng có nhiều phiếu đặt sân |
+| Booking | BookingSession | Composition | 1 — n | Một phiếu đặt chứa nhiều phiên đặt sân, phiên không tồn tại nếu không có phiếu đặt |
+| Court | BookingSession | Association | 1 — n | Một sân được sử dụng trong nhiều phiên đặt |
+| Booking | Payment | Association | 1 — n | Một phiếu đặt có nhiều phiếu thanh toán |
+| StatisticTimeSlotFrm | BookingSessionDAO | Dependency | — | Frm sử dụng BookingSessionDAO để thống kê khung giờ |
+
+**Ví dụ cụ thể trên Visual Paradigm:**
+
+1. **Vẽ quan hệ Booking → BookingSession (Composition 1-n):**
+   - Kéo class Booking lên canvas, kéo class BookingSession bên dưới.
+   - Chọn tool "Association" → click vào Booking, kéo đến BookingSession.
+   - Đặt multiplicity "1" phía Booking, "n" phía BookingSession.
+   - Click chuột phải → "Association End" → phía Booking đặt "filled diamond" (◆).
+
+2. **Vẽ dependency StatisticTimeSlotFrm → BookingSessionDAO:**
+   - Chọn tool "Dependency" (đường dashed) → click vào StatisticTimeSlotFrm, kéo đến BookingSessionDAO.
+   - Mũi tên tam giác rỗng (▷) tự động hiển thị phía BookingSessionDAO.
+
 ### Classes diagram (analysis)
 
 Phân tích module này (bỏ qua bước đăng nhập):
@@ -201,6 +269,17 @@ Methods: getTimeSlotStatistics(), getBookingDetailsByTimeSlot()
 |-----|-------------|-------|
 | BookingSessionDAO | `getTimeSlotStatistics(Date startDate, Date endDate): List<Object[]>` | Thống kê khung giờ theo khoảng thời gian, trả về danh sách mỗi dòng gồm timeSlot, sessionDate, totalBookings, totalRevenue, sắp xếp giảm dần theo totalBookings rồi totalRevenue |
 | BookingSessionDAO | `getBookingDetailsByTimeSlot(String timeSlot, Date startDate, Date endDate): List<Object[]>` | Lấy chi tiết đặt sân theo khung giờ và khoảng thời gian, trả về danh sách mỗi dòng gồm bookingId, customerName, courtName, sessionDate, startTime, rentAmount |
+
+### Entity classes
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Customer | Entity | id: int (PK), customerName: String, phoneNumber: String, email: String, address: String |
+| Court | Entity | id: int (PK), courtName: String, courtType: String, pricePerHour: double, status: String |
+| Booking | Entity | id: int (PK), bookingDate: Date, totalAmount: double, status: String, customer: Customer |
+| BookingSession | Entity | id: int (PK), sessionDate: Date, startTime: String, endTime: String, rentAmount: double, status: String, booking: Booking, court: Court |
+| Payment | Entity | id: int (PK), paymentDate: Date, amount: double, method: String, status: String, booking: Booking |
+| User | Entity | id: int (PK), username: String, password: String, fullName: String, role: String |
 
 ### Entity types
 

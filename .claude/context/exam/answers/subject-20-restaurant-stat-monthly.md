@@ -148,6 +148,97 @@ Customer 1 --- n Invoice
 +------------------+
 ```
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+1. Mở Visual Paradigm → New → Class Diagram.
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity class.
+3. Tạo view class boxes từ các interface (form) của module.
+4. Vẽ mối quan hệ (relationship) giữa các class.
+5. Ghi multiplicity và role name cho mỗi mối quan hệ.
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+Mỗi class trong Visual Paradigm được vẽ dưới dạng hình chữ nhật chia 3 ngăn:
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> Invoice`, `<<boundary>> MonthlyRevenueFrm`, `<<control>> InvoiceDAO`.
+- **Ngăn 2 (thuộc tính):** Liệt kê các thuộc tính theo format `-attributeName: Type`. Ví dụ: `-id: int`, `-invoiceDate: Date`, `-totalAmount: float`.
+- **Ngăn 3 (phương thức):** Liệt kê các phương thức theo format `+methodName(params): ReturnType`. Ví dụ: `+getMonthlyRevenue(): List<Object[]>`.
+
+Trong Visual Paradigm, click đúp vào class box để chỉnh sửa tên, tab Attributes để thêm thuộc tính, tab Operations để thêm phương thức.
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Table | <<entity>> | -id: int, -code: String, -name: String, -maxGuests: int, -status: String | (không có) |
+| Customer | <<entity>> | -id: int, -code: String, -name: String, -phone: String, -email: String, -address: String | +getCustomerById(customerId: int): Customer |
+| Order | <<entity>> | -id: int, -orderDate: Date, -totalAmount: float, -status: String | +getOrdersByMonth(year: int, month: int): List<Order> |
+| OrderDetail | <<entity>> | -id: int, -quantity: int, -unitPrice: float, -amount: float | (không có) |
+| Invoice | <<entity>> | -id: int, -invoiceDate: Date, -totalOrders: int, -totalAmount: float, -paymentMethod: String | +getMonthlyRevenue(): List<Object[]>, +getInvoicesByMonth(year: int, month: int): List<Invoice> |
+| User | <<entity>> | -id: int, -username: String, -password: String, -fullName: String, -role: String | (không có) |
+
+#### 4. Bảng chi tiết view classes
+
+| View Class | Stereotype | UI Elements | Mô tả |
+|-----------|-----------|-------------|-------|
+| HomeFrm | <<boundary>> | -mnuStatistic: JMenu, -mnuMonthlyRevenue: JMenuItem | Giao diện chính, chứa menu Statistics |
+| MonthlyRevenueFrm | <<boundary>> | -dgvMonthlyStat: JTable, -dgvInvoiceDetail: JTable, -btnBack: JButton, -lblTotalRevenue: JLabel, -lblMonthTitle: JLabel | Giao diện thống kê doanh thu theo tháng |
+
+Quy tắc đặt tên UI elements:
+- Tiền tố `dgv` → DataGridView (bảng dữ liệu): dgvMonthlyStat, dgvInvoiceDetail
+- Tiền tố `btn` → Button (nút bấm): btnBack
+- Tiền tố `lbl` → Label (nhãn): lblTotalRevenue, lblMonthTitle
+- Tiền tố `mnu` → Menu: mnuStatistic, mnuMonthlyRevenue
+
+#### 5. Cách vẽ quan hệ
+
+Trong Visual Paradigm, sử dụng palette Relationships ở bên phải để chọn kiểu quan hệ:
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Customer → Order (khách hàng tham chiếu đến đơn hàng).
+- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập.
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Order → OrderDetail (chi tiết đơn hàng không tồn tại nếu không có đơn hàng).
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: MonthlyRevenueFrm → InvoiceDAO (form sử dụng DAO để truy vấn).
+
+#### 6. Cách ghi multiplicity
+
+Trong Visual Paradigm, click vào đường kết nối → tab Properties → chỉnh Source Multiplicity và Target Multiplicity:
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi multiplicity ở cả 2 đầu của đường kết nối.
+
+Ví dụ: Table (1) → (n) Order nghĩa là một bàn có nhiều đơn hàng.
+
+#### 7. Bảng quan hệ chi tiết
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|---|---|---|---|---|
+| Table | Order | Association | 1 - n | Một bàn có nhiều đơn hàng |
+| Customer | Order | Association | 1 - n | Một khách hàng có nhiều đơn hàng |
+| User | Order | Association | 1 - n | Một nhân viên tạo nhiều đơn hàng |
+| Order | OrderDetail | Composition | 1 - n | Một đơn hàng chứa nhiều chi tiết; chi tiết không tồn tại nếu không có đơn hàng |
+| Order | Invoice | Association | 1 - 1 | Mỗi đơn hàng tạo ra đúng 1 hóa đơn |
+| Customer | Invoice | Association | 1 - n | Một khách hàng có nhiều hóa đơn |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ quan hệ Order → OrderDetail (1-n, Composition)**
+1. Tạo class `<<entity>> Order` và `<<entity>> OrderDetail` với các thuộc tính tương ứng.
+2. Chọn công cụ **Composition** từ palette Relationships (đầu kim cương filled ◆).
+3. Click vào class Order → kéo đến class OrderDetail.
+4. Click vào đường kết nối → Properties → set Source Multiplicity = 1, Target Multiplicity = *.
+5. Kết quả: Order (1) ◆----(*) OrderDetail.
+
+**Ví dụ 2: Vẽ quan hệ Order → Invoice (1-1, Association)**
+1. Tạo class `<<entity>> Invoice` với các thuộc tính: -id: int, -orderId: int, -customerId: int, -invoiceDate: Date, -totalOrders: int, -totalAmount: float, -paymentMethod: String.
+2. Chọn công cụ **Association** từ palette Relationships (mũi tên tam giác rỗng ▷).
+3. Click vào class Order → kéo đến class Invoice.
+4. Click vào đường kết nối → Properties → set Source Multiplicity = 1, Target Multiplicity = 1.
+5. Đặt tên association: "generates" (tùy chọn).
+6. Kết quả: Order (1) ▷----(1) Invoice.
+
 ---
 
 ## Câu 3: Thiết kế tĩnh
@@ -182,6 +273,17 @@ Customer 1 --- n Invoice
 | CustomerDAO | `getCustomerById(customerId): Customer` | Lấy thông tin khách hàng theo mã |
 | OrderDAO | `getOrdersByMonth(int year, int month): List<Order>` | Lấy danh sách đơn hàng trong 1 tháng |
 
+### Entity classes (Design phase)
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Table | Model | id: int, code: String, name: String, maxGuests: int, status: String |
+| Customer | Model | id: int, code: String, name: String, phone: String, email: String, address: String |
+| Order | Model | id: int, tableId: int, customerId: int, userId: int, orderDate: Date, totalAmount: float, status: String |
+| OrderDetail | Model | id: int, orderId: int, dishId: int, comboId: int, quantity: int, unitPrice: float, amount: float |
+| Invoice | Model | id: int, orderId: int, customerId: int, invoiceDate: Date, totalOrders: int, totalAmount: float, paymentMethod: String |
+| User | Model | id: int, username: String, password: String, fullName: String, role: String |
+
 ### Entity types sử dụng
 
 | Entity | Vai trò trong module |
@@ -192,73 +294,91 @@ Customer 1 --- n Invoice
 | Table | Thông tin bàn, liên kết với đơn hàng |
 | User | Người tạo đơn hàng (nhân viên) |
 
-### Database Schema
+### Database Design
 
-```sql
-CREATE TABLE tblInvoice (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    orderId INT,
-    customerId INT,
-    invoiceDate DATETIME,
-    totalOrders INT,
-    totalAmount FLOAT,
-    paymentMethod VARCHAR(20),
-    FOREIGN KEY (orderId) REFERENCES tblOrder(id),
-    FOREIGN KEY (customerId) REFERENCES tblCustomer(id)
-);
+**tblTable:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| code | varchar(20) | NOT NULL |
+| name | varchar(50) | NOT NULL |
+| maxGuests | int | NOT NULL |
+| status | varchar(20) | |
 
-CREATE TABLE tblOrder (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    tableId INT,
-    customerId INT,
-    userId INT,
-    orderDate DATETIME,
-    totalAmount FLOAT,
-    status VARCHAR(20),
-    FOREIGN KEY (tableId) REFERENCES tblTable(id),
-    FOREIGN KEY (customerId) REFERENCES tblCustomer(id),
-    FOREIGN KEY (userId) REFERENCES tblUser(id)
-);
+**tblCustomer:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| code | varchar(20) | NOT NULL |
+| name | varchar(100) | NOT NULL |
+| phone | varchar(20) | |
+| email | varchar(100) | |
+| address | varchar(200) | |
 
-CREATE TABLE tblCustomer (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    code VARCHAR(20),
-    name VARCHAR(100),
-    phone VARCHAR(20),
-    email VARCHAR(100),
-    address VARCHAR(200)
-);
+**tblUser:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| username | varchar(50) | NOT NULL |
+| password | varchar(100) | NOT NULL |
+| fullName | varchar(100) | |
+| role | varchar(20) | NOT NULL |
 
-CREATE TABLE tblTable (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    code VARCHAR(20),
-    name VARCHAR(50),
-    maxGuests INT,
-    status VARCHAR(20)
-);
+**tblOrder:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| tableID | int | FOREIGN KEY → tblTable(ID) |
+| customerID | int | FOREIGN KEY → tblCustomer(ID), NULLABLE |
+| userID | int | FOREIGN KEY → tblUser(ID) |
+| orderDate | datetime | NOT NULL |
+| totalAmount | float | NOT NULL |
+| status | varchar(20) | NOT NULL |
 
-CREATE TABLE tblUser (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(50),
-    password VARCHAR(100),
-    fullName VARCHAR(100),
-    role VARCHAR(20)
-);
-```
+**tblOrderDetail:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| orderID | int | FOREIGN KEY → tblOrder(ID) |
+| dishID | int | FOREIGN KEY → tblDish(ID), NULLABLE |
+| comboID | int | FOREIGN KEY → tblCombo(ID), NULLABLE |
+| quantity | int | NOT NULL |
+| unitPrice | float | NOT NULL |
+| amount | float | NOT NULL |
 
-### Hướng dẫn vẽ trên Visual Paradigm
+**tblInvoice:**
+| Column | Type | Constraint |
+|--------|------|------------|
+| ID | int | PRIMARY KEY |
+| orderID | int | FOREIGN KEY → tblOrder(ID) |
+| customerID | int | FOREIGN KEY → tblCustomer(ID) |
+| invoiceDate | datetime | NOT NULL |
+| totalOrders | int | |
+| totalAmount | float | NOT NULL |
+| paymentMethod | varchar(20) | |
 
-1. Mở Visual Pradesh → New → Class Diagram.
-2. Tạo các class: Table, Customer, Order, OrderDetail, Invoice, User.
-3. Thêm attributes cho mỗi class theo bảng ở trên.
-4. Vẽ quan hệ:
-   - Table → Order (1-n, Association)
-   - Customer → Order (1-n, Association)
-   - User → Order (1-n, Association)
-   - Order → OrderDetail (1-n, Composition)
-   - Order → Invoice (1-1, Association)
-   - Customer → Invoice (1-n, Association)
-5. Đặt tên cho mỗi association (ví dụ: "places", "generates", "pays").
+### Hướng dẫn vẽ Design Class Diagram trên Visual Paradigm
+
+**Các bước vẽ:**
+
+1. Mở Visual Paradigm → New → Class Diagram.
+2. Tạo 3 package: `view.statistic`, `model`, `dao`.
+3. Tạo View classes trong package `view.statistic`:
+   - `<<boundary>> MonthlyRevenueFrm`: Ngăn 2 chứa UI elements (dgvMonthlyStat, dgvInvoiceDetail, btnBack, lblTotalRevenue, lblMonthTitle). Ngăn 3 trống.
+   - `<<boundary>> HomeFrm`: Ngăn 2 chứa menu items (mnuStatistic, mnuMonthlyRevenue). Ngăn 3 trống.
+4. Tạo DAO classes trong package `dao`:
+   - `<<control>> InvoiceDAO`: Ngăn 2 trống. Ngăn 3: +getMonthlyRevenue(): List<Object[]>, +getInvoicesByMonth(year: int, month: int): List<Invoice>
+   - `<<control>> CustomerDAO`: Ngăn 3: +getCustomerById(customerId: int): Customer
+   - `<<control>> OrderDAO`: Ngăn 3: +getOrdersByMonth(year: int, month: int): List<Order>
+5. Tạo Entity classes trong package `model` với stereotype `<<entity>>`, mỗi class có Ngăn 2 chứa attributes với kiểu dữ liệu (int, String, float, Date).
+6. Vẽ Dependency (đường dashed, mũi tên tam giác rỗng ▷):
+   - MonthlyRevenueFrm → InvoiceDAO (form sử dụng DAO)
+   - MonthlyRevenueFrm → CustomerDAO (form sử dụng DAO)
+7. Vẽ Dependency từ DAO → Entity:
+   - InvoiceDAO → Invoice (DAO truy vấn entity)
+   - CustomerDAO → Customer (DAO truy vấn entity)
+   - OrderDAO → Order (DAO truy vấn entity)
+8. Vẽ Association giữa các Entity classes theo bảng quan hệ ở trên.
 
 ---
 

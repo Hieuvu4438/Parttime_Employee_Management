@@ -156,6 +156,112 @@ He thong quan ly kho Store Management bao gom cac thuc the sau:
                              +--------------------------+
 ```
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+#### 1. Các bước vẽ tổng quan
+
+| Bước | Thao tác trên Visual Paradigm |
+|------|-------------------------------|
+| 1 | Mở Visual Paradigm → File → New → chọn **Class Diagram** |
+| 2 | Tạo các entity class boxes (hình chữ nhật 3 ngăn) cho: User, Item, Supplier, SubAgent, ImportInvoice, ImportInvoiceDetail, ExportInvoice, ExportInvoiceDetail |
+| 3 | Tạo các view class boxes từ giao diện: HomeFrm, ExportFrm |
+| 4 | Vẽ các đường kết nối (relationships) giữa các class theo bảng quan hệ bên dưới |
+| 5 | Ghi multiplicity (1, N) và role name trên từng đầu đường kết nối |
+
+#### 2. Cấu trúc 1 class box (3 ngăn)
+
+Mỗi class trong Visual Paradigm được thể hiện bằng hình chữ nhật chia 3 ngăn:
+
+| Ngăn | Nội dung | Ví dụ ExportInvoice |
+|------|----------|---------------------|
+| Ngăn 1 — Tên class | Stereotype `<<entity>>` hoặc `<<boundary>>` + tên class | `<<entity>> ExportInvoice` |
+| Ngăn 2 — Thuộc tính | Định dạng `-tenThuocTinh: KieuDuLieu` | `-invoiceId: String` `-exportDate: Date` `-totalAmount: float` |
+| Ngăn 3 — Phương thức | Định dạng `+tenPhuongThuc(thamSo): KieuTraVe` | `+insertExportInvoice(inv: ExportInvoice): String` |
+
+Cách thao tác: Kéo biểu tượng Class từ panel bên trái vào canvas → double-click để chỉnh sửa tên → click phải chọn "Add Attribute" hoặc "Add Operation" để thêm thuộc tính/phương thức.
+
+#### 3. Bảng chi tiết từng entity class
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| User | `<<entity>>` | `-userId: String`, `-username: String`, `-password: String`, `-fullName: String`, `-role: String` | — |
+| Item | `<<entity>>` | `-itemId: String`, `-itemName: String`, `-description: String` | `+searchItemByName(name: String): List<Item>`, `+getStock(itemId: String): int`, `+updateStock(itemId: String, qty: int): boolean` |
+| Supplier | `<<entity>>` | `-supplierId: String`, `-supplierName: String`, `-address: String`, `-phone: String` | — |
+| SubAgent | `<<entity>>` | `-agentId: String`, `-agentName: String`, `-address: String`, `-phone: String` | `+searchAgentByName(name: String): List<SubAgent>` |
+| ImportInvoice | `<<entity>>` | `-invoiceId: String`, `-importDate: Date`, `-totalAmount: float`, `-supplierId: String`, `-userId: String` | — |
+| ImportInvoiceDetail | `<<entity>>` | `-detailId: String`, `-invoiceId: String`, `-itemId: String`, `-quantity: int`, `-unitPrice: float`, `-amount: float` | — |
+| ExportInvoice | `<<entity>>` | `-invoiceId: String`, `-exportDate: Date`, `-totalAmount: float`, `-agentId: String`, `-userId: String` | `+insertExportInvoice(inv: ExportInvoice): String` |
+| ExportInvoiceDetail | `<<entity>>` | `-detailId: String`, `-invoiceId: String`, `-itemId: String`, `-quantity: int`, `-unitPrice: float`, `-amount: float` | `+insertExportInvoiceDetails(details: List): boolean` |
+
+#### 4. Bảng chi tiết view classes
+
+| View class | Stereotype | UI elements (prefix convention) |
+|------------|-----------|--------------------------------|
+| HomeFrm | `<<boundary>>` | `subExport` (Button — chọn chức năng xuất hàng) |
+| ExportFrm | `<<boundary>>` | `inSearchAgent` (TextField — nhập tên đại lý), `subSearchAgent` (Button — tìm đại lý), `subAddAgent` (Button — thêm đại lý mới), `outsubListAgent` (Table — danh sách đại lý, click chọn), `outAgentName` (Label — tên đại lý đã chọn), `outAgentAddress` (Label — địa chỉ), `outAgentPhone` (Label — SĐT), `inSearchItem` (TextField — nhập tên hàng hóa), `subSearchItem` (Button — tìm hàng), `outsubListItem` (Table — danh sách hàng hóa, click chọn), `inQuantity` (TextField — nhập số lượng), `inUnitPrice` (TextField — nhập đơn giá), `subAddToList` (Button — thêm vào danh sách), `outListExport` (Table — danh sách hàng xuất), `outTotal` (Label — tổng tiền), `subSubmit` (Button — xuất hóa đơn) |
+
+Quy tắc prefix:
+- `in`: thành phần nhập liệu (TextField, ComboBox, DatePicker)
+- `out`: thành phần hiển thị (Label, Table chỉ đọc)
+- `sub`: thành phần gửi/nhấn (Button)
+- `outsub`: thành phần hiển thị đồng thời cho phép click chọn (Table có thể click dòng)
+
+#### 5. Cách vẽ quan hệ
+
+| Kiểu quan hệ | Ký hiệu trên Visual Paradigm | Khi nào dùng |
+|---------------|------------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng ▷ | Quan hệ tham chiếu thông thường (1 class biết đến class khác) |
+| **Aggregation** | Đường liền nét, đầu kim cương rỗng ◇ | "Contain" nhưng child có thể tồn tại độc lập |
+| **Composition** | Đường liền nét, đầu kim cương filled ◆ | "Contain" nhưng child KHÔNG tồn tại nếu không có parent |
+| **Dependency** | Đường dashed, mũi tên tam giác rỗng ▷ | "Sử dụng" tạm thời (view gọi DAO) |
+
+Cách thao tác:
+- Association: Kéo tool "Association" từ panel → click class nguồn → click class đích.
+- Aggregation/Composition: Chọn đường kết nối → trong Properties panel, chọn Aggregation hoặc Composition.
+- Dependency: Kéo tool "Dependency" từ panel → click class nguồn → click class đích.
+
+#### 6. Cách ghi multiplicity
+
+Đặt multiplicity ở cả 2 đầu của đường kết nối:
+
+| Multiplicity | Cách ghi trên VP | Ý nghĩa |
+|-------------|------------------|---------|
+| 1..1 | `1` | Đúng 1 đối tượng |
+| 0..* hoặc 1..* | `N` hoặc `*` | Nhiều đối tượng (0 hoặc nhiều, 1 hoặc nhiều) |
+
+Thao tác: Click vào đường kết nối → trong Properties panel, chỉnh "Multiplicity" ở đầu Source và Target.
+
+#### 7. Bảng quan hệ chi tiết
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|-------------|------------|
+| User | ImportInvoice | Association | 1 --- N | Một nhân viên tạo nhiều phiếu nhập |
+| User | ExportInvoice | Association | 1 --- N | Một nhân viên tạo nhiều phiếu xuất |
+| Supplier | ImportInvoice | Association | 1 --- N | Một nhà cung cấp có nhiều phiếu nhập |
+| SubAgent | ExportInvoice | Association | 1 --- N | Một đại lý có nhiều phiếu xuất |
+| ImportInvoice | ImportInvoiceDetail | Composition | 1 --- N | Chi tiết phiếu nhập không tồn tại nếu không có phiếu nhập cha |
+| ExportInvoice | ExportInvoiceDetail | Composition | 1 --- N | Chi tiết phiếu xuất không tồn tại nếu không có phiếu xuất cha |
+| Item | ImportInvoiceDetail | Association | 1 --- N | Một hàng hóa xuất hiện trong nhiều chi tiết phiếu nhập |
+| Item | ExportInvoiceDetail | Association | 1 --- N | Một hàng hóa xuất hiện trong nhiều chi tiết phiếu xuất |
+
+#### 8. Ví dụ cụ thể trên Visual Paradigm
+
+**Ví dụ 1: Vẽ quan hệ ExportInvoice (1) --- (N) ExportInvoiceDetail (Composition)**
+
+1. Tạo class `ExportInvoice` với stereotype `<<entity>>`, thêm các attribute: `-invoiceId: String`, `-exportDate: Date`, `-totalAmount: float`.
+2. Tạo class `ExportInvoiceDetail` với stereotype `<<entity>>`, thêm attribute: `-detailId: String`, `-quantity: int`, `-unitPrice: float`, `-amount: float`.
+3. Kéo tool **Composition** từ panel → click vào `ExportInvoice` → kéo sang `ExportInvoiceDetail`.
+4. Click vào đường kết nối → đặt multiplicity: đầu ExportInvoice = `1`, đầu ExportInvoiceDetail = `N`.
+5. Click vào đường kết nối → thêm role name ở đầu ExportInvoiceDetail: `details`.
+
+**Ví dụ 2: Vẽ quan hệ Item (1) --- (N) ExportInvoiceDetail (Association)**
+
+1. Tạo class `Item` với attribute: `-itemId: String`, `-itemName: String`.
+2. Kéo tool **Association** từ panel → click vào `Item` → kéo sang `ExportInvoiceDetail`.
+3. Đặt multiplicity: đầu Item = `1`, đầu ExportInvoiceDetail = `N`.
+
+---
+
 ### Classes diagram (analysis)
 
 Phan tich module nay (bo qua buoc dang nhap):
@@ -275,6 +381,16 @@ Methods: searchAgentByName(), searchItemByName(), getStock(), insertExportInvoic
 | ExportInvoiceDAO | tblExportInvoice | insert(ExportInvoice invoice): String, getById(String invoiceId): ExportInvoice |
 | ExportInvoiceDetailDAO | tblExportInvoiceDetail | insertBatch(List<ExportInvoiceDetail> details): boolean |
 | UserDAO | tblUser | getById(String userId): User |
+
+### Entity classes (Design phase)
+
+| Entity | Kiểu | Attributes |
+|--------|------|------------|
+| Item | Entity | id: int (PK), itemId: String, itemName: String, description: String |
+| SubAgent | Entity | id: int (PK), agentId: String, agentName: String, address: String, phone: String |
+| ExportInvoice | Entity | id: int (PK), invoiceId: String, exportDate: Date, totalAmount: float, agent: SubAgent (object), user: User (object) |
+| ExportInvoiceDetail | Entity | id: int (PK), exportInvoice: ExportInvoice (object), item: Item (object), quantity: int, unitPrice: float, amount: float |
+| User | Entity | id: int (PK), userId: String, username: String, password: String, fullName: String, role: String |
 
 ### Entity Types
 

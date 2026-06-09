@@ -138,6 +138,76 @@ User 1 --- n FoodInvoice
 | FoodSize → FoodInvoiceDetail | 1-n (Association) | Mot mon-size xuat hien trong nhieu chi tiet |
 | User → FoodInvoice | 1-n (Association) | Mot nhan vien tao nhieu hoa don |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**Các bước vẽ tổng quan:**
+
+1. Mở Visual Paradigm → New → Class Diagram (trong danh mục Diagrams).
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity: FoodItem, FoodSize, FoodInvoice, FoodInvoiceDetail, User.
+3. Tạo view class boxes từ các interface: HomeFrm, SellFoodFrm.
+4. Vẽ relationships giữa các class theo bảng quan hệ bên dưới.
+5. Thêm multiplicities và role names cho mỗi đường kết nối.
+
+**Cấu trúc 1 class box (3 ngăn):**
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> FoodItem`.
+- **Ngăn 2 (thuộc tính):** Mỗi thuộc tính ghi dạng `-attributeName: Type`. Ví dụ: `-code: String`, `-price: float`.
+- **Ngăn 3 (phương thức):** Mỗi phương thức ghi dạng `+methodName(params): ReturnType`. Ví dụ: `+searchFoodByName(keyword: String): List<FoodItem>`.
+
+**Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| FoodItem | `<<entity>>` | -id: int, -code: String, -name: String | +searchFoodByName(keyword: String): List<FoodItem> |
+| FoodSize | `<<entity>>` | -id: int, -size: String, -price: float | +getSizesByFoodItem(foodItemId: int): List<FoodSize> |
+| FoodInvoice | `<<entity>>` | -id: int, -invoiceDate: Date, -totalAmount: float | +addFoodInvoice(invoice: FoodInvoice): int |
+| FoodInvoiceDetail | `<<entity>>` | -id: int, -quantity: int, -unitPrice: float, -amount: float | +addInvoiceDetail(detail: FoodInvoiceDetail): boolean |
+| User | `<<entity>>` | -id: int, -username: String, -password: String, -role: String | +checkLogin(username: String, password: String): boolean |
+
+**Bảng chi tiết view classes:**
+
+| View class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| HomeFrm | `<<boundary>>` | subSellingFood: JButton |
+| SellFoodFrm | `<<boundary>>` | inFoodName: JTextField, subSearch: JButton, outsubFoodList: JTable (clickable), inSize: JComboBox, inQuantity: JTextField, subOK: JButton, outInvoiceTable: JTable, outTotal: JLabel, subPay: JButton |
+
+**Cách vẽ quan hệ:**
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: FoodSize → FoodInvoiceDetail.
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: FoodItem ◆→ FoodSize, FoodInvoice ◆→ FoodInvoiceDetail.
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: SellFoodFrm → FoodItemDAO.
+
+**Cách ghi multiplicity:**
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: FoodItem "1" --- "n" FoodSize.
+
+**Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|--------------|------------|
+| FoodItem | FoodSize | Composition | 1 — n | Một mon có nhiều size, size không tồn tại nếu không có mon |
+| FoodInvoice | FoodInvoiceDetail | Composition | 1 — n | Hóa đơn có nhiều chi tiết, chi tiết không tồn tại nếu không có hóa đơn |
+| FoodSize | FoodInvoiceDetail | Association | 1 — n | Một mon-size xuất hiện trong nhiều chi tiết hóa đơn |
+| User | FoodInvoice | Association | 1 — n | Một nhân viên tạo nhiều hóa đơn |
+| SellFoodFrm | FoodItemDAO | Dependency | — | Frm sử dụng FoodItemDAO để tìm món |
+| SellFoodFrm | FoodSizeDAO | Dependency | — | Frm sử dụng FoodSizeDAO để lấy size |
+| SellFoodFrm | FoodInvoiceDAO | Dependency | — | Frm sử dụng FoodInvoiceDAO để tạo hóa đơn |
+| SellFoodFrm | FoodInvoiceDetailDAO | Dependency | — | Frm sử dụng FoodInvoiceDetailDAO để thêm chi tiết |
+
+**Ví dụ cụ thể trên Visual Paradigm:**
+
+1. **Vẽ quan hệ FoodItem → FoodSize (Composition 1-n):**
+   - Kéo class FoodItem lên canvas, kéo class FoodSize bên dưới.
+   - Chọn tool "Association" → click vào FoodItem, kéo đến FoodSize.
+   - Đặt multiplicity "1" phía FoodItem, "n" phía FoodSize.
+   - Click chuột phải → "Association End" → phía FoodItem đặt "filled diamond" (◆).
+
+2. **Vẽ dependency SellFoodFrm → FoodItemDAO:**
+   - Chọn tool "Dependency" (đường dashed) → click vào SellFoodFrm, kéo đến FoodItemDAO.
+   - Mũi tên tam giác rỗng (▷) tự động hiển thị phía FoodItemDAO.
+
 ### Classes diagram (analysis)
 
 Phan tich module nay (bo qua buoc dang nhap):

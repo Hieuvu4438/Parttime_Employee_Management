@@ -189,6 +189,88 @@ Hệ thống quản lý thuê sân bóng đá mini. Sân bóng có nhiều sân 
 | ImportInvoice → ImportInvoiceDetail | 1-n | Một phiếu nhập có nhiều chi tiết sản phẩm |
 | Product → ImportInvoiceDetail | 1-n | Một sản phẩm xuất hiện trong nhiều phiếu nhập |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**Các bước vẽ tổng quan:**
+
+1. Mở Visual Paradigm → New → Class Diagram (trong danh mục Diagrams).
+2. Tạo entity class boxes (hình chữ nhật 3 ngăn) cho từng entity: Court, Customer, Booking, BookingSession, Product, SessionProduct, Payment, User, Supplier, ImportInvoice, ImportInvoiceDetail.
+3. Tạo view class boxes từ các interface: HomeFrm, CustomerPayFrm.
+4. Vẽ relationships giữa các class theo bảng quan hệ bên dưới.
+5. Thêm multiplicities và role names cho mỗi đường kết nối.
+
+**Cấu trúc 1 class box (3 ngăn):**
+
+- **Ngăn 1 (tên class):** Ghi stereotype `<<entity>>`, `<<boundary>>`, hoặc `<<control>>` phía trên tên class. Ví dụ: `<<entity>> Payment`.
+- **Ngăn 2 (thuộc tính):** Mỗi thuộc tính ghi dạng `-attributeName: Type`. Ví dụ: `-rentTotal: double`, `-finalAmount: double`.
+- **Ngăn 3 (phương thức):** Mỗi phương thức ghi dạng `+methodName(params): ReturnType`. Ví dụ: `+createPayment(payment: Payment): boolean`.
+
+**Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Attributes | Methods |
+|-------|-----------|------------|---------|
+| Court | `<<entity>>` | -id: int, -code: String, -courtName: String, -courtType: String, -pricePerSession: double, -status: String | getter/setter |
+| Customer | `<<entity>>` | -id: int, -code: String, -customerName: String, -phoneNumber: String, -address: String | +searchCustomer(keyword: String): List<Customer> |
+| Booking | `<<entity>>` | -id: int, -bookingDate: Date, -startDate: Date, -endDate: Date, -timeSlot: String, -totalSessions: int, -totalAmount: double, -deposit: double, -status: String | +getBookingsByCustomer(customerId: int): List<Booking>, +updateBookingStatus(bookingId: int, status: String): boolean |
+| BookingSession | `<<entity>>` | -id: int, -sessionDate: Date, -startTime: String, -endTime: String, -checkinTime: String, -checkoutTime: String, -rentAmount: double, -status: String | +getCompletedSessionsWithProducts(bookingId: int): List<BookingSession> |
+| Product | `<<entity>>` | -id: int, -code: String, -productName: String, -unit: String, -price: double, -stockQuantity: int | getter/setter |
+| SessionProduct | `<<entity>>` | -id: int, -unitPrice: double, -quantity: int, -subtotal: double | +updateSessionProduct(spId: int, quantity: int, subtotal: double): boolean |
+| Payment | `<<entity>>` | -id: int, -paymentDate: Date, -rentTotal: double, -productTotal: double, -totalAmount: double, -depositDeducted: double, -finalAmount: double, -method: String, -status: String | +createPayment(payment: Payment): boolean |
+| User | `<<entity>>` | -id: int, -username: String, -password: String, -fullName: String, -role: String | +checkLogin(username: String, password: String): boolean |
+| Supplier | `<<entity>>` | -id: int, -code: String, -supplierName: String, -address: String, -email: String, -phone: String, -description: String | getter/setter |
+| ImportInvoice | `<<entity>>` | -id: int, -importDate: Date, -totalAmount: double | getter/setter |
+| ImportInvoiceDetail | `<<entity>>` | -id: int, -unitPrice: double, -quantity: int, -amount: double | getter/setter |
+
+**Bảng chi tiết view classes:**
+
+| View class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| HomeFrm | `<<boundary>>` | subCustomerPay: JButton |
+| CustomerPayFrm | `<<boundary>>` | inCustomerName: JTextField, subSearchCustomer: JButton, outsubCustomerList: JTable (clickable), outBookingList: JTable, btnPayment: JButton, outCustomerInfo: JLabel, outBookingInfo: JLabel, outInvoiceDetail: JTable, outSubtotalRent: JLabel, outSubtotalProduct: JLabel, outDeposit: JLabel, outTotalAmount: JLabel, outFinalAmount: JLabel, btnEditItem: JButton, subConfirm: JButton |
+
+**Cách vẽ quan hệ:**
+
+- **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Customer → Booking.
+- **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Booking ◆→ BookingSession.
+- **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: CustomerPayFrm → CustomerDAO.
+
+**Cách ghi multiplicity:**
+
+- 1..1 → ghi "1" ở một đầu.
+- 0..* hoặc 1..* → ghi "n" hoặc "*" ở đầu kia.
+- Ghi ở cả 2 đầu của đường kết nối. Ví dụ: Court "1" --- "n" Booking.
+
+**Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|--------------|--------------|------------|
+| Court | Booking | Association | 1 — n | Một sân được nhiều khách đặt |
+| Customer | Booking | Association | 1 — n | Một khách hàng có nhiều booking |
+| Booking | BookingSession | Composition | 1 — n | Một booking có nhiều phiên thuê |
+| BookingSession | SessionProduct | Composition | 1 — n | Một phiên có nhiều sản phẩm đã sử dụng |
+| Product | SessionProduct | Association | 1 — n | Một sản phẩm xuất hiện trong nhiều phiên |
+| Booking | Payment | Association | 1 — 1 | Mỗi booking có 1 phiếu thanh toán |
+| Supplier | ImportInvoice | Association | 1 — n | Một nhà cung cấp có nhiều phiếu nhập |
+| ImportInvoice | ImportInvoiceDetail | Composition | 1 — n | Một phiếu nhập có nhiều chi tiết |
+| Product | ImportInvoiceDetail | Association | 1 — n | Một sản phẩm xuất hiện trong nhiều phiếu nhập |
+| CustomerPayFrm | CustomerDAO | Dependency | — | Frm sử dụng CustomerDAO để tìm khách hàng |
+| CustomerPayFrm | BookingDAO | Dependency | — | Frm sử dụng BookingDAO để lấy booking |
+| CustomerPayFrm | BookingSessionDAO | Dependency | — | Frm sử dụng BookingSessionDAO để lấy phiên hoàn thành |
+| CustomerPayFrm | SessionProductDAO | Dependency | — | Frm sử dụng SessionProductDAO để chỉnh sửa sản phẩm |
+| CustomerPayFrm | PaymentDAO | Dependency | — | Frm sử dụng PaymentDAO để tạo thanh toán |
+
+**Ví dụ cụ thể trên Visual Paradigm:**
+
+1. **Vẽ quan hệ Booking → Payment (Association 1-1):**
+   - Kéo class Booking lên canvas, kéo class Payment bên phải.
+   - Chọn tool "Association" → click vào Booking, kéo đến Payment.
+   - Đặt multiplicity "1" phía Booking, "1" phía Payment.
+   - Không cần diamond vì đây là Association (không phải Composition).
+
+2. **Vẽ dependency CustomerPayFrm → PaymentDAO:**
+   - Chọn tool "Dependency" (đường dashed) → click vào CustomerPayFrm, kéo đến PaymentDAO.
+   - Mũi tên tam giác rỗng (▷) tự động hiển thị phía PaymentDAO.
+
 ---
 
 ## Câu 3: Thiết kế tĩnh

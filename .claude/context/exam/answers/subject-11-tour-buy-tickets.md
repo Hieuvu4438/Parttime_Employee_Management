@@ -157,6 +157,99 @@ Customer n --- n Tour
 | TourDeparture → InvoiceDetail | 1-n (Association) | Mot ngay khoi hanh xuat hien trong nhieu chi tiet |
 | User → Invoice | 1-n (Association) | Mot nhan vien tao nhieu hoa don |
 
+### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
+
+**1. Các bước vẽ tổng quan:**
+
+| Bước | Thao tác | Mô tả |
+|------|----------|-------|
+| 1 | Mở Visual Paradigm → New → Class Diagram | Tạo diagram mới, đặt tên "Tour_BuyTickets" |
+| 2 | Tạo entity class boxes | Kéo "Class" từ toolbar vào canvas, tạo 6 class: Tour, TourDeparture, Customer, Invoice, InvoiceDetail, User |
+| 3 | Tạo view class boxes | Kéo "Boundary" vào canvas, tạo: LoginFrm, HomeFrm, SearchTourFrm, BuyTicketFrm |
+| 4 | Vẽ relationships | Kéo đường kết nối giữa các class theo bảng quan hệ |
+| 5 | Thêm multiplicities | Click vào đường kết nối → Properties → đặt Source/Target Multiplicity |
+
+**2. Cấu trúc 1 class box (3 ngăn):**
+
+Mỗi class trong Visual Paradigm là hình chữ nhật chia 3 ngăn:
+
+| Ngăn | Nội dung | Ví dụ (class Invoice) |
+|------|----------|------------------------|
+| Ngăn 1 — Tên class | Stereotype + tên class | `<<entity>> Invoice` |
+| Ngăn 2 — Thuộc tính | `-attributeName: Type` | `-id: int`, `-invoiceDate: Date`, `-totalAmount: float`, `-numGuests: int`, `-customerId: int`, `-userId: int` |
+| Ngăn 3 — Phương thức | `+methodName(params): ReturnType` | `+addInvoice(invoice: Invoice): boolean`, `+calculateTotal(): float` |
+
+Stereotype sử dụng: `<<entity>>` cho entity class, `<<boundary>>` cho view class (Frm), `<<control>>` cho DAO class.
+
+**3. Bảng chi tiết từng entity class:**
+
+| Class | Stereotype | Thuộc tính (Ngăn 2) | Phương thức (Ngăn 3) |
+|-------|-----------|----------------------|----------------------|
+| Tour | `<<entity>>` | `-id: int`, `-code: String`, `-name: String`, `-departure: String`, `-destination: String`, `-description: String` | `+searchByDestination(dest: String): List<Tour>`, `+getTourById(id: int): Tour` |
+| TourDeparture | `<<entity>>` | `-id: int`, `-departureDate: Date`, `-price: float`, `-maxGuests: int`, `-tourId: int` | `+getDeparturesByTour(tourId: int): List<TourDeparture>` |
+| Customer | `<<entity>>` | `-id: int`, `-code: String`, `-name: String`, `-idNumber: String`, `-idType: String`, `-phone: String`, `-email: String`, `-address: String` | `+addCustomer(c: Customer): boolean`, `+getCustomerById(id: int): Customer` |
+| Invoice | `<<entity>>` | `-id: int`, `-invoiceDate: Date`, `-totalAmount: float`, `-numGuests: int`, `-customerId: int`, `-userId: int` | `+addInvoice(invoice: Invoice): boolean`, `+calculateTotal(): float` |
+| InvoiceDetail | `<<entity>>` | `-id: int`, `-guestCount: int`, `-unitPrice: float`, `-amount: float`, `-tourDepartureId: int`, `-invoiceId: int` | `+calculateAmount(): float` |
+| User | `<<entity>>` | `-id: int`, `-username: String`, `-password: String`, `-role: String` | `+checkLogin(username: String, password: String): boolean` |
+
+**4. Bảng chi tiết view classes (nếu có):**
+
+| View Class | Stereotype | UI Elements |
+|------------|-----------|-------------|
+| LoginFrm | `<<boundary>>` | `-inUsername: JTextField`, `-inPassword: JPasswordField`, `-subLogin: JButton` |
+| HomeFrm | `<<boundary>>` | `-subBuyTickets: JButton`, `-subManageTours: JButton`, `-subStatistics: JButton` |
+| SearchTourFrm | `<<boundary>>` | `-inDestination: JTextField`, `-subSearch: JButton`, `-outsubListTour: JTable` |
+| BuyTicketFrm | `<<boundary>>` | `-outTourInfo: JLabel`, `-outDepartureInfo: JLabel`, `-inRepresentative: JTextField`, `-inIdNumber: JTextField`, `-inIdType: JComboBox`, `-inAddress: JTextField`, `-inPhone: JTextField`, `-inEmail: JTextField`, `-inNumGuests: JTextField`, `-outTotalAmount: JLabel`, `-subPay: JButton` |
+
+Quy ước đặt tên UI elements: `in` = nhập liệu, `out` = hiển thị, `sub` = nút bấm, `outsub` = bảng click được.
+
+**5. Cách vẽ quan hệ:**
+
+| Kiểu quan hệ | Ký hiệu Visual Paradigm | Khi nào dùng |
+|---------------|--------------------------|---------------|
+| **Association** | Đường liền nét, mũi tên tam giác rỗng (▷) | Quan hệ tham chiếu thông thường (Customer → Invoice) |
+| **Aggregation** | Đường liền nét, đầu kim cương rỗng (◇) | "Contain" nhưng child có thể tồn tại độc lập |
+| **Composition** | Đường liền nét, đầu kim cương filled (◆) | "Contain" nhưng child KHÔNG tồn tại nếu không có parent (Invoice → InvoiceDetail) |
+| **Dependency** | Đường dashed, mũi tên tam giác rỗng (▷) | "Sử dụng" tạm thời (BuyTicketFrm → InvoiceDAO) |
+
+**6. Cách ghi multiplicity:**
+
+| Multiplicity | Cách ghi trong VP | Ví dụ |
+|--------------|-------------------|-------|
+| 1..1 | Ghi "1" ở một đầu | Invoice có đúng 1 Customer |
+| 0..* hoặc 1..* | Ghi "*" hoặc "1..*" ở đầu kia | Customer có nhiều Invoice |
+| 0..1 | Ghi "0..1" | (hiếm dùng) |
+
+Ghi multiplicity ở cả 2 đầu của đường kết nối. Click vào đường → Properties → Source Multiplicity / Target Multiplicity.
+
+**7. Bảng quan hệ chi tiết:**
+
+| Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
+|----|-----|---------------|--------------|------------|
+| Tour | TourDeparture | Composition | 1 → * | Mỗi tour có nhiều ngày khởi hành. TourDeparture bị xóa khi Tour bị xóa |
+| Customer | Invoice | Association | 1 → * | Mỗi khách hàng có nhiều hóa đơn |
+| Invoice | InvoiceDetail | Composition | 1 → * | Mỗi hóa đơn có nhiều chi tiết. InvoiceDetail bị xóa khi Invoice bị xóa |
+| TourDeparture | InvoiceDetail | Association | 1 → * | Mỗi ngày khởi hành xuất hiện trong nhiều chi tiết hóa đơn |
+| User | Invoice | Association | 1 → * | Mỗi nhân viên tạo nhiều hóa đơn |
+
+**8. Ví dụ cụ thể trên Visual Paradigm:**
+
+*Ví dụ 1: Vẽ quan hệ Invoice → InvoiceDetail (1-n, Composition)*
+
+1. Click chuột phải vào class Invoice → chọn **Association** → kéo đến class InvoiceDetail.
+2. Click vào đường kết nối → chọn **Properties**.
+3. Set Source Multiplicity = `1`, Target Multiplicity = `*`.
+4. Click vào đầu mũi tên ở phía InvoiceDetail → chọn **Composition** (filled diamond ◆).
+5. Đặt tên association: `contains`.
+
+*Ví dụ 2: Vẽ quan hệ Customer → Invoice (1-n, Association)*
+
+1. Click chuột phải vào class Customer → chọn **Association** → kéo đến class Invoice.
+2. Click vào đường kết nối → chọn **Properties**.
+3. Set Source Multiplicity = `1`, Target Multiplicity = `*`.
+4. Giữ mặc định mũi tên tam giác rỗng (▷) — đây là Association.
+5. Đặt tên association: `purchases`.
+
 ### Classes diagram (analysis)
 
 Analysis this module (exclude login step):
