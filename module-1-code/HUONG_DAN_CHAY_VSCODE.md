@@ -193,3 +193,174 @@ src/dao/DAO.java
 ```
 
 cho dung voi mat khau MySQL tren may dang chay.
+
+## 11. Chay bang IntelliJ IDEA
+
+Neu dung IntelliJ IDEA, co the chay truc tiep project theo cac buoc sau.
+
+### 11.1. Mo project
+
+Mo IntelliJ IDEA, chon:
+
+```text
+File -> Open
+```
+
+Chon folder:
+
+```text
+D:\PROJECTS\Introduction to Software Engineer\Parttime_Employee_Management\module-1-code
+```
+
+Sau do bam `OK` hoac `Open`.
+
+### 11.2. Kiem tra SDK
+
+Vao:
+
+```text
+File -> Project Structure -> Project
+```
+
+Kiem tra `SDK` da chon JDK 8 tro len. Neu chua co JDK, bam `Add SDK` va chon thu muc JDK tren may.
+
+### 11.3. Them MySQL JDBC driver
+
+Vao:
+
+```text
+File -> Project Structure -> Modules -> Dependencies
+```
+
+Bam dau `+`, chon:
+
+```text
+JARs or Directories
+```
+
+Chon file:
+
+```text
+D:\PROJECTS\Introduction to Software Engineer\Parttime_Employee_Management\se\mysql_jdbc\mysql-connector-java-8.0.30.jar
+```
+
+Bam `Apply`, sau do bam `OK`.
+
+### 11.4. Tao database
+
+Mo MySQL Workbench hoac terminal MySQL va chay file:
+
+```text
+D:\PROJECTS\Introduction to Software Engineer\Parttime_Employee_Management\module-1-code\db.sql
+```
+
+File nay tao database `parttime_employee_management` va du lieu mau de dang nhap, tim nhan vien, dang ky ca.
+
+### 11.5. Sua mat khau MySQL trong DAO.java
+
+Mo file:
+
+```text
+src/dao/DAO.java
+```
+
+Kiem tra:
+
+```java
+protected static final String DB_USER = "root";
+protected static final String DB_PASSWORD = "your_mysql_password";
+```
+
+Sua `DB_PASSWORD` thanh mat khau MySQL tren may. Vi du:
+
+```java
+protected static final String DB_PASSWORD = "hieu1205";
+```
+
+### 11.6. Chay chuong trinh
+
+Mo file:
+
+```text
+src/view/user/LoginFrm.java
+```
+
+Tim ham:
+
+```java
+public static void main(String[] args)
+```
+
+Bam nut tam giac mau xanh ben canh ham `main`, chon:
+
+```text
+Run 'LoginFrm.main()'
+```
+
+Neu IntelliJ hoi module/classpath, chon module `module-1-code`.
+
+### 11.7. Dang nhap va demo
+
+Tai khoan dang nhap:
+
+```text
+username: staff01
+password: 123456
+```
+
+Hoac:
+
+```text
+username: staff02
+password: 123456
+```
+
+Luong demo:
+
+```text
+LoginFrm -> HomeFrm -> SearchEmployeeFrm -> RegisterShiftFrm -> HomeFrm
+```
+
+Co the tim nhan vien bang tu khoa:
+
+```text
+E001
+```
+
+Hoac:
+
+```text
+Nguyen
+```
+
+Double click vao nhan vien, chon ca lam, sau do bam `Save`.
+
+### 11.8. Loi thuong gap tren IntelliJ
+
+#### Khong tim thay package `com.mysql.cj.jdbc.Driver`
+
+Nguyen nhan la chua add MySQL JDBC jar vao module. Lam lai buoc `11.3`.
+
+#### Login bao Invalid username or password
+
+Kiem tra:
+
+- Ban co dang chay dung file `module-1-code/src/view/user/LoginFrm.java` khong.
+- Da chay `db.sql` de tao database chua.
+- MySQL Server da bat chua.
+- `DB_PASSWORD` trong `src/dao/DAO.java` co dung voi MySQL local khong.
+- Tai khoan nhap dung la `staff01 / 123456` hoac `staff02 / 123456`.
+
+#### Chay nham project mau hotel
+
+Trong repo co folder mau:
+
+```text
+se/demo CNPM hotel
+```
+
+Khong chay `LoginFrm` trong folder nay. Module can chay la:
+
+```text
+module-1-code/src/view/user/LoginFrm.java
+```

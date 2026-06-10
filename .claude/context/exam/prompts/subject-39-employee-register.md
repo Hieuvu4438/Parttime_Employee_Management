@@ -1,12 +1,5 @@
-# Prompt Template — Phân tích và sửa lỗi bài thi CNPM
+# Subject 39 — Employee — Register
 
-> Copy toàn bộ prompt bên dưới và thay `[SUBJECT_FILE]`, `[ANSWER_FILE]` bằng đường dẫn thực tế.
-
----
-
-## Prompt
-
-```
 Giúp tôi phân tích và sửa lỗi bài thi CNPM. Yêu cầu cụ thể:
 
 **Bước 1: Nạp kiến thức (BẮT BUỘC đọc trước khi phân tích)**
@@ -27,8 +20,8 @@ Sau đó đọc thêm:
 
 **Bước 2: Đọc đề bài và bài làm**
 
-1. Đọc file đề thi: `[SUBJECT_FILE]`
-2. Đọc file bài làm: `[ANSWER_FILE]`
+1. Đọc file đề thi: .claude/context/exam/subjects/subject-39.md
+2. Đọc file bài làm: .claude/context/exam/answers/subject-39-employee-register.md
 
 **Bước 3: Phân tích theo checklist**
 
@@ -109,32 +102,3 @@ Sau đó đọc thêm:
 - Đảm bảo thuật ngữ phù hợp với domain của đề thi
 - Giữ nguyên format markdown của file answer
 - Sau khi phân tích xong thì sửa trực tiếp và push code lên
-```
-
----
-
-## Cách sử dụng
-
-1. Mở Claude Code
-2. Copy toàn bộ prompt trong khối code ở trên
-3. Thay `[SUBJECT_FILE]` bằng đường dẫn file đề thi
-4. Thay `[ANSWER_FILE]` bằng đường dẫn file bài làm
-5. Paste vào Claude Code và chạy
-
-## Ví dụ
-
-```
-Subject file: .claude/context/exam/subjects/subject-02.md
-Answer file:  .claude/context/exam/answers/subject-02-library-returning.md
-```
-
-## Danh sách file teacher-reference
-
-| File | Nội dung | Dùng cho câu nào |
-|------|----------|-------------------|
-| `01_business-model-natural-language.md` | Mô tả hệ thống, business process | Câu 1, 2 |
-| `02_use-case-uml.md` | Use case diagram, actor extraction | Câu 2 |
-| `03_analysis-phase.md` | Scenario, entity extraction, analysis class diagram, analysis sequence | Câu 1, 2, 4 |
-| `04_design-phase.md` | Design entity, database, design class diagram, design sequence | Câu 3, 4 |
-| `05_testing-phase.md` | Blackbox test plan, detailed test case | Câu 5 |
-| `06_coding-java-swing-dao.md` | Java Swing/DAO patterns | Câu 3 (DAO methods) |
