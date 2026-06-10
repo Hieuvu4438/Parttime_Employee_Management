@@ -54,29 +54,32 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep sinh vi
 
 | Danh tu | Phan loai | Ly do |
 |---------|-----------|-------|
-| Student | Entity | Doi tuong chinh, co ma SV, ten, khoa hoc |
+| Student | Entity | Doi tuong chinh, co ma SV, password, ten, ngay sinh, khoa hoc, que quan, dia chi |
 | Subject | Entity | Mon hoc, co ma mon, ten mon, so tin chi, mon tien quyet |
-| Class | Entity | Lop hoc cu the, co ma lop, giao vien, khung gio |
+| Class | Entity | Lop hoc cu the, co ma lop, ten lop, giao vien, khung gio |
+| Teacher | Entity | Giao vien, co ma GV, ten GV, bo mon — dai dien cho "associated lecturers" trong de bai |
 | Registration | Entity | Bang dang ky, lien ket sinh vien voi lop hoc |
 | Grade | Entity | Bang diem, dung de kiem tra tien quyet |
-| User | Entity | Tai khoan nguoi dung (student) |
-| Classroom | Entity | Phong hoc |
-| TimeSlot | Entity | Khung gio trong tuan |
+| User | Entity | Tai khoan nguoi dung (student, teacher) |
+| Classroom | Attribute | Phong hoc — thuoc tinh cua Class (classroomName) |
+| TimeSlot | Attribute | Khung gio trong tuan — thuoc tinh cua Class (dayOfWeek, startTime, endTime) |
 | Prerequisite | Relationship | Quan he giua cac mon hoc (mon tien quyet) |
 | Semester | Attribute | Thuoc tinh cua Registration |
 | Credits | Attribute | Thuoc tinh cua Subject |
-| Lecturer | Attribute | Thuoc tinh cua Class (teacherId) |
+| Password | Attribute | Thuoc tinh cua Student (de dang nhap) |
+| Hometown | Attribute | Thuoc tinh cua Student |
+| Address | Attribute | Thuoc tinh cua Student |
 
 ### Buoc 3: Xac dinh quan he
 
 1. **Subject — Class**: Mot mon hoc co nhieu lop hoc (1-n). Moi Class thuoc ve mot Subject.
-2. **Class — Registration**: Mot lop hoc co nhieu dang ky (1-n). Moi Registration lien ket mot Student voi mot Class.
-3. **Student — Registration**: Mot sinh vien co nhieu dang ky (1-n). Moi Registration thuoc ve mot Student.
-4. **Registration — Grade**: Mot dang ky co mot bang diem (1-1). Moi Grade lien ket voi mot Registration.
-5. **Subject — Subject (Prerequisite)**: Quan he tu tham chieu (n-n). Mot mon hoc co the co nhieu mon tien quyet. VD: CS102 yeu cau CS101.
-6. **Classroom — Class**: Mot phong hoc duoc su dung cho nhieu lop (1-n).
-7. **TimeSlot — Class**: Mot khung gio co nhieu lop (1-n).
-8. **User — Student**: Mot User lien ket voi mot Student (1-1).
+2. **Teacher — Class**: Mot giao vien co day nhieu lop (1-n). Moi Class co mot giao vien.
+3. **Class — Registration**: Mot lop hoc co nhieu dang ky (1-n). Moi Registration lien ket mot Student voi mot Class.
+4. **Student — Registration**: Mot sinh vien co nhieu dang ky (1-n). Moi Registration thuoc ve mot Student.
+5. **Registration — Grade**: Mot dang ky co mot bang diem (1-1). Moi Grade lien ket voi mot Registration.
+6. **Subject — Subject (Prerequisite)**: Quan he tu tham chieu (n-n). Mot mon hoc co the co nhieu mon tien quyet. VD: CS102 yeu cau CS101.
+7. **User — Student**: Mot User lien ket voi mot Student (1-1).
+8. **User — Teacher**: Mot User lien ket voi mot Teacher (1-1).
 
 ### Buoc 4: Class Diagram (ASCII art)
 
@@ -86,92 +89,84 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep sinh vi
 |     Subject      |1      *|      Class       |
 +------------------+--------+------------------+
 | - subjectId: int |        | - classId: int   |
-| - subjectCode:   |        | - subjectId: int |
+| - subjectCode:   |        | - className:     |
+|   String         |        |   String         |
+| - subjectName:   |        | - subjectId: int |
 |   String         |        | - classroomId:   |
-| - subjectName:   |        |   int            |
-|   String         |        | - timeSlotId:    |
 | - credits: int   |        |   int            |
-| - prerequisiteId:|        | - maxStudents:   |
+| - prerequisiteId:|        | - timeSlotId:    |
 |   int            |        |   int            |
-+------------------+        | - section: String|
-        |*                  | - teacherId: int |
-        |                   +------------------+
-        | 1                        |*
-        v                          |1
-+------------------+        +------------------+
-|    <<entity>>    |        |    <<entity>>    |
-|   Subject        |        |   Classroom      |
-| (Prerequisite)   |        +------------------+
-+------------------+        | - classroomId:   |
-| - subjectId: int |        |   int            |
-| - requiredSubject|        | - classroomName: |
-|   Id: int        |        |   String         |
-+------------------+        | - building:      |
-                            |   String         |
-                            | - capacity: int  |
-                            +------------------+
-                                    |1
-+------------------+                 |
-|    <<entity>>    |                 |
-|   TimeSlot       |                 |
-+------------------+                 |
-| - timeSlotId: int|                 |
-| - slotName:      |                 |
-|   String         |                 |
-| - startTime:     |                 |
-|   String         |                 |
-| - endTime: String|                 |
-| - dayOfWeek:     |                 |
-|   String         |                 |
-+------------------+                 |
-        |1                           |
-        |                            |
-        +----------------------------+
-                     |*
-                     |1
-              +------------------+
-              |    <<entity>>    |
-              |   Registration   |
-              +------------------+
++------------------+        | - maxStudents:   |
+        |*                  |   int            |
+        |                   | - section: String|
+        | 1                 | - teacherId: int |
+        v                   +------------------+
++------------------+              |*  |*
+|    <<entity>>    |              |1  |1
+|   Subject        |              v   v
+| (Prerequisite)   |     +------------------+  +------------------+
++------------------+     |    <<entity>>    |  |    <<entity>>    |
+| - subjectId: int |     |   Classroom      |  |    Teacher       |
+| - requiredSubject|     +------------------+  +------------------+
+|   Id: int        |     | - classroomId:   |  | - teacherId: int |
++------------------+     |   int            |  | - teacherCode:   |
+                         | - classroomName: |  |   String         |
+                         |   String         |  | - teacherName:   |
+                         | - building:      |  |   String         |
+                         |   String         |  | - department:    |
+                         | - capacity: int  |  |   String         |
+                         +------------------+  | - email: String  |
+                                 |1            | - phone: String  |
++------------------+             |             | - userId: int    |
+|    <<entity>>    |             |             +------------------+
+|   TimeSlot       |             |                   |1
++------------------+             |                   |
+| - timeSlotId: int|             |                   |1
+| - slotName:      |             |             +------------------+
+|   String         |             |             |    <<entity>>    |
+| - startTime:     |             |             |      User        |
+|   String         |             |             +------------------+
+| - endTime: String|             |             | - userId: int    |
+| - dayOfWeek:     |             |             | - username:      |
+|   String         |             |             |   String         |
++------------------+             |             | - password:      |
+        |1                       |             |   String         |
+        |                        |             | - role: String   |
+        +------------------------+             +------------------+
+                     |*                               |1
+                     |1                               |
+              +------------------+                     |1
+              |    <<entity>>    |             +------------------+
+              |   Registration   |             |    <<entity>>    |
+              +------------------+             |     Student      |
+              | - regId: int     |             +------------------+
+              | - studentId: int |             | - studentId: int |
+              | - classId: int   |             | - studentCode:   |
+              | - semester:      |             |   String         |
+              |   String         |             | - studentName:   |
+              | - regDate: Date  |             |   String         |
+              | - status: String |             | - password:      |
+              +------------------+             |   String         |
+                     |1                        | - dob: Date      |
+                     |1                        | - course: String |
+                     v                         | - hometown:      |
+              +------------------+             |   String         |
+              |    <<entity>>    |             | - address:       |
+              |      Grade       |             |   String         |
+              +------------------+             | - userId: int    |
+              | - gradeId: int   |             +------------------+
               | - regId: int     |
-              | - studentId: int |
-              | - classId: int   |
-              | - semester:      |
-              |   String         |
-              | - regDate: Date  |
-              | - status: String |
+              | - component1:    |
+              |   double         |
+              | - component2:    |
+              |   double         |
+              | - component3:    |
+              |   double         |
+              | - examScore:     |
+              |   double         |
+              | - finalScore:    |
+              |   double         |
               +------------------+
-                     |1
-                     |1
-                     v
-              +------------------+        +------------------+
-              |    <<entity>>    |        |    <<entity>>    |
-              |      Grade       |        |     Student      |
-              +------------------+        +------------------+
-              | - gradeId: int   |        | - studentId: int |
-              | - regId: int     |        | - studentCode:   |
-              | - component1:    |        |   String         |
-              |   double         |        | - studentName:   |
-              | - component2:    |        |   String         |
-              |   double         |        | - email: String  |
-              | - component3:    |        | - dob: Date      |
-              |   double         |        | - major: String  |
-              | - examScore:     |        | - userId: int    |
-              |   double         |        +------------------+
-              | - finalScore:    |                |1
-              |   double         |                |
-              +------------------+                |1
-                                          +------------------+
-                                          |    <<entity>>    |
-                                          |      User        |
-                                          +------------------+
-                                          | - userId: int    |
-                                          | - username:      |
-                                          |   String         |
-                                          | - password:      |
-                                          |   String         |
-                                          | - role: String   |
-                                          +------------------+
 ```
 
 ### Buoc 5: Bang quan he chi tiet
@@ -179,13 +174,13 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep sinh vi
 | Quan he | Kieu | Giai thich |
 |---------|------|------------|
 | Subject → Class | 1-n | Mot mon hoc co nhieu lop. VD: CS101 co CL001, CL002 |
+| Teacher → Class | 1-n | Mot giao vien day nhieu lop. VD: Tran Thi Mai day CL001 |
 | Class → Registration | 1-n | Mot lop co nhieu SV dang ky. VD: CL001 co 35 SV |
 | Student → Registration | 1-n | Mot SV dang ky nhieu lop. VD: SV2026001 dang ky 3 lop |
 | Registration → Grade | 1-1 | Moi dang ky co mot bang diem duy nhat |
 | Subject → Subject (Prerequisite) | n-n | Quan he tu tham chieu. VD: CS102 yeu cau CS101, CS201 yeu cau CS101 |
-| Classroom → Class | 1-n | Mot phong hoc duoc su dung cho nhieu lop |
-| TimeSlot → Class | 1-n | Mot khung gio co nhieu lop |
 | User → Student | 1-1 | Mot tai khoan User ung voi mot Student |
+| User → Teacher | 1-1 | Mot tai khoan User ung voi mot Teacher |
 
 ### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
 
@@ -194,7 +189,7 @@ He thong quan ly ket qua sinh vien (Student Results Management) cho phep sinh vi
 | Bước | Thao tác | Mô tả |
 |------|----------|-------|
 | 1 | Mở Visual Paradigm → New → Class Diagram | Tạo diagram mới, đặt tên "Student_RegisterClass" |
-| 2 | Tạo entity class boxes | Kéo "Class" từ toolbar vào canvas, tạo 8 class: Student, Subject, Class, Registration, Grade, User, Classroom, TimeSlot |
+| 2 | Tạo entity class boxes | Kéo "Class" từ toolbar vào canvas, tạo 9 class: Student, Subject, Class, Registration, Grade, User, Teacher |
 | 3 | Tạo view class boxes | Kéo "Boundary" vào canvas, tạo: LoginFrm, HomeFrm, RegisterClassFrm, RegistrationFormFrm |
 | 4 | Vẽ relationships | Kéo đường kết nối giữa các class theo bảng quan hệ |
 | 5 | Thêm multiplicities | Click vào đường kết nối → Properties → đặt Source/Target Multiplicity |
@@ -215,14 +210,13 @@ Stereotype sử dụng: `<<entity>>` cho entity class, `<<boundary>>` cho view c
 
 | Class | Stereotype | Thuộc tính (Ngăn 2) | Phương thức (Ngăn 3) |
 |-------|-----------|----------------------|----------------------|
-| Student | `<<entity>>` | `-studentId: int`, `-studentCode: String`, `-studentName: String`, `-email: String`, `-dob: Date`, `-major: String`, `-userId: int` | `+getStudentById(id: int): Student` |
+| Student | `<<entity>>` | `-studentId: int`, `-studentCode: String`, `-studentName: String`, `-password: String`, `-dob: Date`, `-course: String`, `-hometown: String`, `-address: String`, `-userId: int` | `+getStudentById(id: int): Student` |
 | Subject | `<<entity>>` | `-subjectId: int`, `-subjectCode: String`, `-subjectName: String`, `-credits: int`, `-prerequisiteId: int` | `+getAllSubjects(): List<Subject>`, `+getPrerequisite(subjectId: int): Subject` |
-| Class | `<<entity>>` | `-classId: int`, `-subjectId: int`, `-classroomId: int`, `-timeSlotId: int`, `-maxStudents: int`, `-section: String`, `-teacherId: int` | `+getAvailableClasses(subjectId: int): List<Class>`, `+getCurrentEnrollment(classId: int): int` |
+| Class | `<<entity>>` | `-classId: int`, `-className: String`, `-subjectId: int`, `-classroomId: int`, `-timeSlotId: int`, `-maxStudents: int`, `-section: String`, `-teacherId: int` | `+getAvailableClasses(subjectId: int): List<Class>`, `+getCurrentEnrollment(classId: int): int` |
+| Teacher | `<<entity>>` | `-teacherId: int`, `-teacherCode: String`, `-teacherName: String`, `-department: String`, `-email: String`, `-phone: String`, `-userId: int` | `+getTeacherById(id: int): Teacher` |
 | Registration | `<<entity>>` | `-regId: int`, `-studentId: int`, `-classId: int`, `-semester: String`, `-regDate: Date`, `-status: String` | `+addRegistration(reg: Registration): boolean`, `+checkPrerequisite(studentId: int, subjectId: int): boolean` |
 | Grade | `<<entity>>` | `-gradeId: int`, `-regId: int`, `-component1: float`, `-component2: float`, `-component3: float`, `-examScore: float`, `-finalScore: float` | `+calculateFinalScore(): float` |
 | User | `<<entity>>` | `-userId: int`, `-username: String`, `-password: String`, `-role: String` | `+validateLogin(username: String, password: String): boolean` |
-| Classroom | `<<entity>>` | `-classroomId: int`, `-classroomName: String`, `-building: String`, `-capacity: int` | `+getAllClassrooms(): List<Classroom>` |
-| TimeSlot | `<<entity>>` | `-timeSlotId: int`, `-slotName: String`, `-startTime: Time`, `-endTime: Time`, `-dayOfWeek: String` | `+getAllTimeSlots(): List<TimeSlot>` |
 
 **4. Bảng chi tiết view classes (nếu có):**
 
@@ -259,13 +253,13 @@ Ghi multiplicity ở cả 2 đầu của đường kết nối. Click vào đư�
 | Từ | Đến | Kiểu quan hệ | Multiplicity | Giải thích |
 |----|-----|---------------|--------------|------------|
 | Subject | Class | Association | 1 → * | Mỗi môn học có nhiều lớp |
+| Teacher | Class | Association | 1 → * | Mỗi giáo viên dạy nhiều lớp |
 | Class | Registration | Association | 1 → * | Mỗi lớp có nhiều sinh viên đăng ký |
 | Student | Registration | Association | 1 → * | Mỗi sinh viên đăng ký nhiều lớp |
 | Registration | Grade | Association | 1 → 1 | Mỗi đăng ký có một bảng điểm |
 | Subject | Subject | Association (self-ref) | * → * | Quan hệ môn tiên quyết |
-| Classroom | Class | Association | 1 → * | Mỗi phòng học được dùng cho nhiều lớp |
-| TimeSlot | Class | Association | 1 → * | Mỗi khung giờ có nhiều lớp |
 | User | Student | Association | 1 → 1 | Mỗi tài khoản User ứng với một Student |
+| User | Teacher | Association | 1 → 1 | Mỗi tài khoản User ứng với một Teacher |
 
 **8. Ví dụ cụ thể trên Visual Paradigm:**
 
@@ -428,6 +422,8 @@ Phương thức: validateLogin(), getAllSubjects(), getClassesBySubject(), check
 | GradeDAO | `Grade getByRegistration(int regId)` | Lay diem theo dang ky |
 | UserDAO | `User getByUsername(String username)` | Lay nguoi dung theo ten dang nhap |
 | UserDAO | `boolean validate(String username, String password)` | Xac thuc dang nhap |
+| TeacherDAO | `Teacher getById(int teacherId)` | Lay giao vien theo ma |
+| TeacherDAO | `List<Teacher> getAll()` | Lay tat ca giao vien |
 
 ### Buoc 4: Entity Class Design
 
@@ -437,10 +433,11 @@ public class Student {
     private int studentId;
     private String studentCode;    // "SV2026001"
     private String studentName;    // "Nguyen Van A"
-    private String email;          // "nva@gmail.com"
+    private String password;       // "@Stu2026A"
     private Date dob;              // 2004-03-15
-    private String major;          // "Computer Science"
     private String course;         // "K65"
+    private String hometown;       // "Ha Noi"
+    private String address;        // "123 Nguyen Trai, Ha Noi"
     private int userId;            // FK -> tblUser
     private User user;              // object attribute
     private List<Registration> registrations; // object attribute
@@ -462,16 +459,32 @@ public class Subject {
 // Class.java
 public class Class {
     private int classId;
+    private String className;      // "CL001"
     private int subjectId;         // FK -> tblSubject
     private int classroomId;       // FK -> tblClassroom
     private int timeSlotId;        // FK -> tblTimeSlot
     private int maxStudents;       // 40
     private String section;        // "Section 1"
-    private int teacherId;         // FK -> tblUser (teacher)
+    private int teacherId;         // FK -> tblTeacher
     private Subject subject;       // object attribute
     private Classroom classroom;   // object attribute
     private TimeSlot timeSlot;     // object attribute
+    private Teacher teacher;       // object attribute
     private List<Registration> registrations; // object attribute
+    // getters, setters
+}
+
+// Teacher.java
+public class Teacher {
+    private int teacherId;
+    private String teacherCode;    // "GV001"
+    private String teacherName;    // "Tran Thi Mai"
+    private String department;     // "Computer Science"
+    private String email;          // "ttm@gmail.com"
+    private String phone;          // "0912345678"
+    private int userId;            // FK -> tblUser
+    private User user;              // object attribute
+    private List<Class> classes;   // object attribute
     // getters, setters
 }
 
@@ -549,10 +562,11 @@ public class TimeSlot {
 | StudentID | INT | PRIMARY KEY, AUTO_INCREMENT |
 | StudentCode | VARCHAR(20) | NOT NULL, UNIQUE |
 | StudentName | VARCHAR(100) | NOT NULL |
-| Email | VARCHAR(100) | UNIQUE |
+| Password | VARCHAR(100) | NOT NULL |
 | DOB | DATE | |
-| Major | VARCHAR(50) | |
-| Course | VARCHAR(20) | | "K65"
+| Course | VARCHAR(20) | DEFAULT 'K65' |
+| Hometown | VARCHAR(100) | |
+| Address | VARCHAR(200) | |
 | UserID | INT | FOREIGN KEY → tblUser(UserID) |
 
 **tblSubject**
@@ -581,12 +595,24 @@ public class TimeSlot {
 | EndTime | VARCHAR(10) | NOT NULL |
 | DayOfWeek | VARCHAR(20) | NOT NULL |
 
+**tblTeacher**
+| Column | Type | Constraint |
+|--------|------|-----------|
+| TeacherID | INT | PRIMARY KEY, AUTO_INCREMENT |
+| TeacherCode | VARCHAR(20) | NOT NULL, UNIQUE |
+| TeacherName | VARCHAR(100) | NOT NULL |
+| Department | VARCHAR(50) | |
+| Email | VARCHAR(100) | |
+| Phone | VARCHAR(20) | |
+| UserID | INT | FOREIGN KEY → tblUser(UserID) |
+
 **tblClass**
 | Column | Type | Constraint |
 |--------|------|-----------|
 | ClassID | INT | PRIMARY KEY, AUTO_INCREMENT |
+| ClassName | VARCHAR(20) | NOT NULL |
 | SubjectID | INT | FOREIGN KEY → tblSubject(SubjectID), NOT NULL |
-| TeacherID | INT | FOREIGN KEY → tblUser(UserID), NOT NULL |
+| TeacherID | INT | FOREIGN KEY → tblTeacher(TeacherID), NOT NULL |
 | ClassroomID | INT | FOREIGN KEY → tblClassroom(ClassroomID) |
 | TimeSlotID | INT | FOREIGN KEY → tblTimeSlot(TimeSlotID) |
 | MaxStudents | INT | NOT NULL, CHECK (MaxStudents > 0) |
@@ -617,13 +643,14 @@ public class TimeSlot {
 
 1. Mo Visual Paradigm → File → New Project → dat ten "StudentResults_RegisterClass"
 2. Chon Diagram → Class Diagram
-3. Tao 8 class: Student, Subject, Class, Registration, Grade, User, Classroom, TimeSlot
+3. Tao 9 class: Student, Subject, Class, Registration, Grade, User, Classroom, TimeSlot, Teacher
 4. Voi moi class:
    - Nhap dup vao class → nhap ten class
    - Them attributes: ten: kieu (VD: studentId: int)
    - Chon visibility: private (-) cho tat ca attributes
 5. Ve quan he:
    - Subject → Class: Association (1-n)
+   - Teacher → Class: Association (1-n)
    - Class → Registration: Association (1-n)
    - Student → Registration: Association (1-n)
    - Registration → Grade: Association (1-1)
@@ -631,6 +658,7 @@ public class TimeSlot {
    - TimeSlot → Class: Association (1-n)
    - Subject → Subject: Self-association (Prerequisite, n-n)
    - User → Student: Association (1-1)
+   - User → Teacher: Association (1-1)
 6. Dat multiplicity: nhap vao Association → chon multiplicity o moi dau
 7. Them `<<entity>>` stereotype cho moi class
 8. Export: File → Export → PNG/PDF
@@ -646,153 +674,120 @@ public class TimeSlot {
 3. Tao lifelines:
    - Actor: Student
    - Boundary: LoginFrm, HomeFrm, RegisterClassFrm, RegistrationFormFrm
-   - Control: RegisterController
-   - Entity: Subject, Class, Student, Registration, Grade
+   - Control: UserDAO, SubjectDAO, ClassDAO, RegistrationDAO, GradeDAO
+   - Entity: User, Subject, Class, Student, Registration, Grade
 4. Ve message flow tu tren xuong theo cac buoc trong bang
 5. Them alt fragment cho cac dieu kien: tin chi ngoai pham vi, trung gio, thieu tien quyet
 6. Them loop fragment cho viec lap chon mon va lop
 7. Export: File → Export → PNG/PDF
 
-### ASCII Sequence Diagram
+### Sequence Diagram — Dang ky lop hoc (Design phase)
 
 ```
-Student    LoginFrm  HomeFrm  RegisterClassFrm  RegisterController  Subject  Class  Registration  Grade
-  |           |         |           |                  |                |       |          |          |
-  |---------->|         |           |                  |                |       |          |          |
-  | login()   |         |           |                  |                |       |          |          |
-  |           |-------->|           |                  |                |       |          |          |
-  |           |validate()          |                  |                |       |          |          |
-  |           |         |<----------|                  |                |       |          |          |
-  |           |         |showHome() |                  |                |       |          |          |
-  |<----------|         |           |                  |                |       |          |          |
-  | showHome  |         |           |                  |                |       |          |          |
-  |           |         |           |                  |                |       |          |          |
-  |---------->|         |           |                  |                |       |          |          |
-  | clickRegister()     |           |                  |                |       |          |          |
-  |           |         |---------->|                  |                |       |          |          |
-  |           |         |openRegister()                |                |       |          |          |
-  |           |         |           |                  |                |       |          |          |
-  |           |         |           |----------------->|                |       |          |          |
-  |           |         |           |getAllSubjects()   |                |       |          |          |
-  |           |         |           |                  |--------------->|       |          |          |
-  |           |         |           |                  |querySubjects() |       |          |          |
-  |           |         |           |                  |<---------------|       |          |          |
-  |           |         |           |<-----------------|                |       |          |          |
-  |           |         |           |displaySubjects() |                |       |          |          |
-  |           |         |           |                  |                |       |          |          |
-  | [loop: for each subject to register]               |                |       |          |          |
-  |---------->|         |           |                  |                |       |          |          |
-  | selectSubject("CS101")          |                  |                |       |          |          |
-  |           |         |           |----------------->|                |       |          |          |
-  |           |         |           |getClassesBySubject(subjectId)     |       |          |          |
-  |           |         |           |                  |--------------->|       |          |          |
-  |           |         |           |                  |queryClasses()  |       |          |          |
-  |           |         |           |                  |<---------------|       |          |          |
-  |           |         |           |<-----------------|                |       |          |          |
-  |           |         |           |updateClassCbo()  |                |       |          |          |
-  |---------->|         |           |                  |                |       |          |          |
-  | selectClass("CL001")           |                  |                |       |          |          |
-  |           |         |           |addToSelected()   |                |       |          |          |
-  |           |         |           |                  |                |       |          |          |
-  |---------->|         |           |                  |                |       |          |          |
-  | selectSubject("MA101")         |                  |                |       |          |          |
-  |           |         |           |----------------->|                |       |          |          |
-  |           |         |           |getClassesBySubject(2)             |       |          |          |
-  |           |         |           |<-----------------|                |       |          |          |
-  |           |         |           |updateClassCbo()  |                |       |          |          |
-  |---------->|         |           |                  |                |       |          |          |
-  | selectClass("CL003")           |                  |                |       |          |          |
-  |           |         |           |addToSelected()   |                |       |          |          |
-  |           |         |           |                  |                |       |          |          |
-  |---------->|         |           |                  |                |       |          |          |
-  | selectSubject("EN101")         |                  |                |       |          |          |
-  |           |         |           |----------------->|                |       |          |          |
-  |           |         |           |getClassesBySubject(3)             |       |          |          |
-  |           |         |           |<-----------------|                |       |          |          |
-  |           |         |           |updateClassCbo()  |                |       |          |          |
-  |---------->|         |           |                  |                |       |          |          |
-  | selectClass("CL005")           |                  |                |       |          |          |
-  |           |         |           |addToSelected()   |                |       |          |          |
-  | [end loop]                     |                  |                |       |          |          |
-  |           |         |           |                  |                |       |          |          |
-  |---------->|         |           |                  |                |       |          |          |
-  | clickRegister()     |           |                  |                |       |          |          |
-  |           |         |           |----------------->|                |       |          |          |
-  |           |         |           |validateAndRegister()              |       |          |          |
-  |           |         |           |                  |--------------->|       |          |          |
-  |           |         |           |                  |checkCredits()  |       |          |          |
-  |           |         |           |                  | (10 <= 10 <= 15)       |          |          |
-  |           |         |           |                  |checkTimeConflict()     |          |          |
-  |           |         |           |                  | (no conflict)  |       |          |          |
-  |           |         |           |                  |checkPrerequisites()    |          |          |
-  |           |         |           |                  |------------->|          |          |
-  |           |         |           |                  |queryGrades() |          |          |
-  |           |         |           |                  |<-------------|          |          |
-  |           |         |           |                  | (prereq met) |          |          |
-  |           |         |           |                  |checkOneClassPerSubject()          |
-  |           |         |           |                  | (valid)      |          |          |
-  |           |         |           |                  |              |          |          |
-  |           |         |           |                  |------------->|          |          |
-  |           |         |           |                  |insertRegistration()    |          |
-  |           |         |           |                  |<-------------|          |          |
-  |           |         |           |                  | success      |          |          |
-  |           |         |           |<-----------------|                |          |          |
-  |           |         |           |showRegistrationForm()             |          |          |
-  |<----------|         |           |                  |                |          |          |
-  | showForm  |         |           |                  |                |          |          |
-  |           |         |           |                  |                |          |          |
-  |---------->|         |           |                  |                |          |          |
-  | clickPrint()        |           |                  |                |          |          |
-  |           |         |           |printForm()       |                |          |          |
-  |<----------|         |           |                  |                |          |          |
-  | showPDF   |         |           |                  |                |          |          |
+Student    LoginFrm    UserDAO    HomeFrm    RegisterClassFrm    SubjectDAO    ClassDAO    GradeDAO    RegistrationDAO
+  |           |           |          |              |                 |            |            |             |
+  |---login-->|           |          |              |                 |            |            |             |
+  |           |--validate->|         |              |                 |            |            |             |
+  |           |           |--query   |              |                 |            |            |             |
+  |           |           | DB       |              |                 |            |            |             |
+  |           |           |<-User----|              |                 |            |            |             |
+  |           |<-true-----|          |              |                 |            |            |             |
+  |           |---open----|--------->|              |                 |            |            |             |
+  |<--showHome|           |          |              |                 |            |            |             |
+  |           |           |          |              |                 |            |            |             |
+  |---click-->|           |          |              |                 |            |            |             |
+  | Register  |           |          |---open------>|                 |            |            |             |
+  |           |           |          |              |                 |            |            |             |
+  |           |           |          |              |---getAll-------->|            |            |             |
+  |           |           |          |              |  Subjects()     |            |            |             |
+  |           |           |          |              |                 |--query DB  |            |             |
+  |           |           |          |              |                 |<-List<Sub>-|            |             |
+  |           |           |          |              |<--List<Subject>-|            |            |             |
+  |           |           |          |              |                 |            |            |             |
+  |           |           |          |              |--display        |            |            |             |
+  |           |           |          |              | subjects        |            |            |             |
+  |           |           |          |              |                 |            |            |             |
+  | [loop: for each subject to register]           |                 |            |            |             |
+  |---select->|           |          |              |                 |            |            |             |
+  | Subject   |           |          |              |                 |            |            |             |
+  |           |           |          |              |---getClasses--->|            |            |             |
+  |           |           |          |              |  BySubject()   |            |            |             |
+  |           |           |          |              |                 |            |--query DB  |             |
+  |           |           |          |              |                 |            |<-List<Cls>-|             |
+  |           |           |          |              |<--List<Class>---|            |            |             |
+  |           |           |          |              |                 |            |            |             |
+  |           |           |          |              |--update class   |            |            |             |
+  |           |           |          |              | combobox       |            |            |             |
+  |---select->|           |          |              |                 |            |            |             |
+  | Class     |           |          |              |                 |            |            |             |
+  |           |           |          |              |--add to         |            |            |             |
+  |           |           |          |              | selected list   |            |            |             |
+  | [end loop]|           |          |              |                 |            |            |             |
+  |           |           |          |              |                 |            |            |             |
+  |---click-->|           |          |              |                 |            |            |             |
+  | Register  |           |          |              |                 |            |            |             |
+  |           |           |          |              |                 |            |            |             |
+  |           |           |          |              |--validate       |            |            |             |
+  |           |           |          |              | (checkCredits, checkTimeConflict)     |             |
+  |           |           |          |              |                 |            |            |             |
+  |           |           |          |              |---check-------->|            |            |             |
+  |           |           |          |              |  Prerequisites()|            |            |             |
+  |           |           |          |              |                 |            |     |--query DB      |
+  |           |           |          |              |                 |            |     |<-Grade---------|
+  |           |           |          |              |<--true----------|            |            |             |
+  |           |           |          |              |                 |            |            |             |
+  |           |           |          |              |---batch-------->|            |            |             |
+  |           |           |          |              |  Insert()       |            |            |             |
+  |           |           |          |              |                 |            |            |--insert DB  |
+  |           |           |          |              |                 |            |            |<-true-------|
+  |           |           |          |              |<--true----------|            |            |             |
+  |           |           |          |              |                 |            |            |             |
+  |           |           |          |              |--show registration form      |            |             |
+  |<--showForm|           |          |              |                 |            |            |             |
+  |           |           |          |              |                 |            |            |             |
+  |---click-->|           |          |              |                 |            |            |             |
+  | Print     |           |          |              |                 |            |            |             |
+  |           |           |          |              |--print form     |            |            |             |
+  |<--PDF-----|           |          |              |                 |            |            |             |
 ```
 
 ### Bang giai thich Sequence Diagram
 
 | Buoc | Message | Tu | Den | Mo ta |
 |------|---------|-----|-----|--------|
-| 1 | login() | Student | LoginFrm | SV nhap username/password va nhan Login |
-| 2 | validate() | LoginFrm | HomeFrm | Xac thuc thong tin dang nhap |
-| 3 | showHome() | HomeFrm | Student | Hien thi trang chu voi menu |
-| 4 | clickRegister() | Student | HomeFrm | SV chon menu Register → Register for new semester |
-| 5 | openRegister() | HomeFrm | RegisterClassFrm | Mo form dang ky lop hoc |
-| 6 | getAllSubjects() | RegisterClassFrm | RegisterController | Lay tat ca mon hoc hoc ky |
-| 7 | querySubjects() | RegisterController | Subject | Truy van database lay mon hoc |
-| 8 | subjectList | Subject | RegisterController | Tra ve danh sach mon hoc |
-| 9 | displaySubjects() | RegisterController | RegisterClassFrm | Hien thi bang mon hoc |
-| 10 | selectSubject("CS101") | Student | RegisterClassFrm | SV chon mon CS101 |
-| 11 | getClassesBySubject() | RegisterClassFrm | RegisterController | Lay lop theo mon CS101 |
-| 12 | queryClasses() | RegisterController | Class | Truy van database lay lop cua CS101 |
-| 13 | classList | Class | RegisterController | Tra ve: CL001, CL002 |
-| 14 | updateClassCbo() | RegisterController | RegisterClassFrm | Cap nhat combobox Class |
-| 15 | selectClass("CL001") | Student | RegisterClassFrm | SV chon lop CL001 (GV: Tran Thi Mai) |
-| 16 | addToSelected() | RegisterClassFrm | RegisterClassFrm | Them CS101-CL001 vao danh sach da chon |
-| 17 | selectSubject("MA101") | Student | RegisterClassFrm | SV chon mon MA101 |
-| 18 | getClassesBySubject() | RegisterClassFrm | RegisterController | Lay lop theo mon MA101 |
-| 19 | queryClasses() | RegisterController | Class | Truy van database |
-| 20 | updateClassCbo() | RegisterController | RegisterClassFrm | Cap nhat combobox Class |
-| 21 | selectClass("CL003") | Student | RegisterClassFrm | SV chon lop CL003 (GV: Pham Thi Lan) |
-| 22 | addToSelected() | RegisterClassFrm | RegisterClassFrm | Them MA101-CL003 vao danh sach |
-| 23 | selectSubject("EN101") | Student | RegisterClassFrm | SV chon mon EN101 |
-| 24 | getClassesBySubject() | RegisterClassFrm | RegisterController | Lay lop theo mon EN101 |
-| 25 | queryClasses() | RegisterController | Class | Truy van database |
-| 26 | updateClassCbo() | RegisterController | RegisterClassFrm | Cap nhat combobox Class |
-| 27 | selectClass("CL005") | Student | RegisterClassFrm | SV chon lop CL005 (GV: Nguyen Thi Hoa) |
-| 28 | addToSelected() | RegisterClassFrm | RegisterClassFrm | Them EN101-CL005 vao danh sach |
-| 29 | clickRegister() | Student | RegisterClassFrm | SV nhan nut Register |
-| 30 | validateAndRegister() | RegisterClassFrm | RegisterController | Kiem tra va dang ky |
-| 31 | checkCredits() | RegisterController | RegisterController | Kiem tra tong tin chi (10 <= 10 <= 15) |
-| 32 | checkTimeConflict() | RegisterController | RegisterController | Kiem tra trung khung gio (khong trung) |
-| 33 | checkPrerequisites() | RegisterController | Grade | Kiem tra tien quyet (da hoan thanh) |
-| 34 | checkOneClassPerSubject() | RegisterController | RegisterController | Kiem tra moi mon 1 lop (hop le) |
-| 35 | insertRegistration() | RegisterController | Registration | INSERT INTO tblRegistration (3 ban ghi) |
-| 36 | success | Registration | RegisterController | Luu thanh cong |
-| 37 | showRegistrationForm() | RegisterController | RegisterClassFrm | Hien thi phieu dang ky |
-| 38 | showForm | RegisterClassFrm | Student | SV xem phieu dang ky |
-| 39 | clickPrint() | Student | RegisterClassFrm | SV nhan nut Print |
-| 40 | printForm() | RegisterClassFrm | RegisterClassFrm | Xuat phieu dang ky ra PDF |
-| 41 | showPDF | RegisterClassFrm | Student | Hien thi PDF phieu dang ky |
+| 1 | login() | Student | LoginFrm | SV nhap username "SV2026001", password "******", nhan Login |
+| 2 | validate() | LoginFrm | UserDAO | Goi UserDAO.validate("SV2026001", "******") |
+| 3 | query DB | UserDAO | Database | Truy van tblUser WHERE Username='SV2026001' |
+| 4 | return User | UserDAO | LoginFrm | Tra ve doi tu User (role=student) |
+| 5 | open HomeFrm | LoginFrm | HomeFrm | Mo giao dien Home voi menu Register, View Schedule, Grade |
+| 6 | showHome | HomeFrm | Student | Hien thi trang chu |
+| 7 | clickRegister | Student | HomeFrm | SV chon menu Register → Register for new semester |
+| 8 | open RegisterClassFrm | HomeFrm | RegisterClassFrm | Mo form dang ky lop hoc |
+| 9 | getAllSubjects() | RegisterClassFrm | SubjectDAO | Goi SubjectDAO.getAll() — lay tat ca mon hoc hoc ky |
+| 10 | query DB | SubjectDAO | Database | Truy van tblSubject |
+| 11 | return List | SubjectDAO | RegisterClassFrm | Tra ve danh sach: CS101, CS102, MA101, EN101 |
+| 12 | display subjects | RegisterClassFrm | UI | Hien thi bang mon hoc (ma mon, ten mon, tin chi, tien quyet) |
+| 13 | selectSubject("CS101") | Student | RegisterClassFrm | SV chon mon CS101 (3 tin chi) |
+| 14 | getClassesBySubject(1) | RegisterClassFrm | ClassDAO | Goi ClassDAO.getBySubject(1) — lay lop cua CS101 |
+| 15 | query DB | ClassDAO | Database | Truy van tblClass JOIN tblTimeSlot JOIN tblUser WHERE SubjectID=1 |
+| 16 | return List | ClassDAO | RegisterClassFrm | Tra ve: CL001 (Tran Thi Mai, Mon 07:00-09:00), CL002 (Le Van Hung, Wed 13:00-15:00) |
+| 17 | update class combobox | RegisterClassFrm | UI | Cap nhat combobox Class voi 2 lop |
+| 18 | selectClass("CL001") | Student | RegisterClassFrm | SV chon lop CL001 |
+| 19 | add to selected list | RegisterClassFrm | UI | Them CS101-CL001 vao bang da chon. Tong TC = 3 |
+| 20-27 | (lap lai cho MA101-CL003, EN101-CL005) | | | Tuong tu buoc 13-19 |
+| 28 | clickRegister | Student | RegisterClassFrm | SV nhan nut Register |
+| 29 | checkCredits() | RegisterClassFrm | RegisterClassFrm | Kiem tra tong tin chi: 3+4+3 = 10, 10 >= 10 va <= 15 ✓ |
+| 30 | checkTimeConflict() | RegisterClassFrm | RegisterClassFrm | Kiem tra trung gio: Mon 07:00, Tue 09:00, Fri 07:00 — khong trung ✓ |
+| 31 | checkPrerequisites() | RegisterClassFrm | GradeDAO | Goi GradeDAO.getByStudent(1) — lay diem SV de kiem tra tien quyet |
+| 32 | query DB | GradeDAO | Database | Truy van tblGrade JOIN tblRegistration WHERE StudentID=1 |
+| 33 | return List | GradeDAO | RegisterClassFrm | CS101, MA101, EN101 khong co tien quyet → hop le ✓ |
+| 34 | batchInsert() | RegisterClassFrm | RegistrationDAO | Goi RegistrationDAO.batchInsert(list) — luu 3 dang ky |
+| 35 | insert DB | RegistrationDAO | Database | INSERT INTO tblRegistration (3 ban ghi: StudentID=1, ClassID=1,3,5, Semester='2026-2') |
+| 36 | return true | RegistrationDAO | RegisterClassFrm | Luu thanh cong |
+| 37 | show registration form | RegisterClassFrm | Student | Hien thi phieu dang ky: Ma SV, Ten SV, Khoa, Hoc ky, danh sach mon |
+| 38 | clickPrint | Student | RegisterClassFrm | SV nhan nut Print |
+| 39 | printForm() | RegisterClassFrm | UI | Xuat phieu dang ky ra PDF |
+| 40 | showPDF | RegisterClassFrm | Student | Hien thi PDF phieu dang ky |
 
 ---
 
@@ -800,13 +795,13 @@ Student    LoginFrm  HomeFrm  RegisterClassFrm  RegisterController  Subject  Cla
 
 ### Test Plan
 
-| TC | Muc dich | Input | Expected Output |
-|----|---------|-------|-----------------|
-| TC01 | Dang ky thanh cong 3 mon (10 TC) | CS101-CL001, MA101-CL003, EN101-CL005 | Dang ky thanh cong, tong = 10 TC, in phieu |
-| TC02 | Tong tin chi duoi 10 | Chi dang ky CS101 (3 TC) + EN101 (3 TC) = 6 TC | Loi: "Total credits (6) is below minimum (10)" |
-| TC03 | Trung khung gio | CS101-CL001 (Thu 2 07:00) + CS201-CL006 (Thu 2 07:00) | Loi: "Time conflict detected" |
-| TC04 | Chua hoan thanh tien quyet | Dang ky CS102 (yeu cau CS101) khi chua hoc CS101 | Loi: "Prerequisite not met" |
-| TC05 | Dang ky 2 lop cung 1 mon | CS101-CL001 va CS101-CL002 | Loi: "Already registered for CS101" |
+| No. | Module | Test case |
+|-----|--------|-----------|
+| 1 | Register for classes | Dang ky thanh cong 3 mon (10 TC), khong trung gio, tien quyet du |
+| 2 | Register for classes | Tong tin chi duoi 10 (chi 6 TC) |
+| 3 | Register for classes | Trung khung gio giua 2 lop |
+| 4 | Register for classes | Chua hoan thanh mon tien quyet |
+| 5 | Register for classes | Dang ky 2 lop cung 1 mon hoc |
 
 ### TC01: Dang ky thanh cong 3 mon — Chi tiet
 
@@ -821,12 +816,14 @@ tblUser:
 | 2 | teacher01 | @Teach2026 | teacher |
 | 3 | teacher02 | @Teach2026B | teacher |
 | 4 | teacher03 | @Teach2026C | teacher |
-| 5 | SV2026001 | @Stu2026A | student |
+| 5 | teacher04 | @Teach2026D | teacher |
+| 6 | teacher05 | @Teach2026E | teacher |
+| 7 | SV2026001 | @Stu2026A | student |
 
 tblStudent:
-| StudentID | StudentCode | StudentName | Email | DOB | Major | Course | UserID |
-|-----------|-------------|-------------|-------|-----|-------|--------|--------|
-| 1 | SV2026001 | Nguyen Van A | nva@gmail.com | 2004-03-15 | Computer Science | K65 | 5 |
+| StudentID | StudentCode | StudentName | Password | DOB | Course | Hometown | Address | UserID |
+|-----------|-------------|-------------|----------|-----|--------|----------|---------|--------|
+| 1 | SV2026001 | Nguyen Van A | @Stu2026A | 2004-03-15 | K65 | Ha Noi | 123 Nguyen Trai, Ha Noi | 7 |
 
 tblSubject:
 | SubjectID | SubjectCode | SubjectName | Credits | PrerequisiteID |
@@ -852,14 +849,23 @@ tblTimeSlot:
 | 4 | Slot4 | 07:00 | 09:00 | Thursday |
 | 5 | Slot5 | 07:00 | 09:00 | Friday |
 
+tblTeacher:
+| TeacherID | TeacherCode | TeacherName | Department | Email | Phone | UserID |
+|-----------|-------------|-------------|------------|-------|-------|--------|
+| 1 | GV001 | Tran Thi Mai | Computer Science | ttm@gmail.com | 0911111111 | 2 |
+| 2 | GV002 | Le Van Hung | Computer Science | lvh@gmail.com | 0922222222 | 3 |
+| 3 | GV003 | Pham Thi Lan | Mathematics | ptl@gmail.com | 0933333333 | 4 |
+| 4 | GV004 | Hoang Van Nam | Computer Science | hvn@gmail.com | 0944444444 | 5 |
+| 5 | GV005 | Nguyen Thi Hoa | English | nth@gmail.com | 0955555555 | 6 |
+
 tblClass:
-| ClassID | SubjectID | TeacherID | ClassroomID | TimeSlotID | MaxStudents | Section |
-|---------|-----------|-----------|-------------|------------|-------------|---------|
-| 1 | 1 | 2 | 1 | 1 | 40 | Section 1 |
-| 2 | 1 | 3 | 2 | 3 | 35 | Section 2 |
-| 3 | 3 | 4 | 3 | 2 | 50 | Section 1 |
-| 4 | 3 | 4 | 1 | 4 | 40 | Section 2 |
-| 5 | 4 | 2 | 2 | 5 | 35 | Section 1 |
+| ClassID | ClassName | SubjectID | TeacherID | ClassroomID | TimeSlotID | MaxStudents | Section |
+|---------|-----------|-----------|-----------|-------------|------------|-------------|---------|
+| 1 | CL001 | 1 | 1 | 1 | 1 | 40 | Section 1 |
+| 2 | CL002 | 1 | 2 | 2 | 3 | 35 | Section 2 |
+| 3 | CL003 | 3 | 3 | 3 | 2 | 50 | Section 1 |
+| 4 | CL004 | 3 | 4 | 1 | 3 | 40 | Section 2 |
+| 5 | CL005 | 4 | 5 | 2 | 5 | 35 | Section 1 |
 
 tblRegistration: (rong)
 
@@ -872,14 +878,16 @@ tblGrade: (rong)
 | 1 | Mo ung dung | Hien thi LoginFrm |
 | 2 | Nhap username: "SV2026001", password: "@Stu2026A", nhan Login | Hien thi HomeFrm |
 | 3 | Nhan menu "Register" → "Register for new semester" | Hien thi RegisterClassFrm, bang mon hoc hien thi 4 mon, tong TC = 0 |
-| 4 | Chon mon "CS101 — Lap trinh Java" (3 TC) | Combobox Class hien thi: CL001 (GV: Tran Thi Mai, Thu 2 07:00–09:00), CL002 (GV: Le Van Hung, Thu 4 13:00–15:00) |
+| 4 | Chon mon "CS101 — Lap trinh Java" (3 TC) | Combobox Class hien thi: CL001 (GV: Tran Thi Mai, Mon 07:00–09:00), CL002 (GV: Le Van Hung, Wed 13:00–15:00) |
 | 5 | Chon lop "CL001" | Mon CS101-CL001 them vao bang da chon. Tong TC = 3 |
-| 6 | Chon mon "MA101 — Toan cao cap" (4 TC) | Combobox Class hien thi: CL003 (GV: Pham Thi Lan, Thu 3 09:00–11:00), CL004 (GV: Hoang Van Nam, Thu 5 07:00–09:00) |
+| 6 | Chon mon "MA101 — Toan cao cap" (4 TC) | Combobox Class hien thi: CL003 (GV: Pham Thi Lan, Tue 09:00–11:00), CL004 (GV: Hoang Van Nam, Wed 13:00–15:00) |
 | 7 | Chon lop "CL003" | Mon MA101-CL003 them vao bang da chon. Tong TC = 7 |
-| 8 | Chon mon "EN101 — Tieng Anh" (3 TC) | Combobox Class hien thi: CL005 (GV: Nguyen Thi Hoa, Thu 6 07:00–09:00) |
+| 8 | Chon mon "EN101 — Tieng Anh" (3 TC) | Combobox Class hien thi: CL005 (GV: Nguyen Thi Hoa, Fri 07:00–09:00) |
 | 9 | Chon lop "CL005" | Mon EN101-CL005 them vao bang da chon. Tong TC = 10 |
-| 10 | Nhan nut "Register" | He thong kiem tra: (1) Tong TC = 10, 10 >= 10 va <= 15 ✓. (2) Khong trung gio: Thu 2 07:00, Thu 3 09:00, Thu 6 07:00 — khong trung ✓. (3) Tien quyet: CS101 khong co ✓, MA101 khong co ✓, EN101 khong co ✓. (4) Moi mon 1 lop ✓ |
-| 11 | He thong hien thi phieu dang ky | Phieu: Ma SV: SV2026001, Ten SV: Nguyen Van A, Khoa: K65, Hoc ky: 2026-2. Bang: \|CS101\|Lap trinh Java\|3\|Thu 2 07:00–09:00\|Tran Thi Mai\|, \|MA101\|Toan cao cap\|4\|Thu 3 09:00–11:00\|Pham Thi Lan\|, \|EN101\|Tieng Anh\|3\|Thu 6 07:00–09:00\|Nguyen Thi Hoa\| |
+| 9b | **Verify DB truoc Submit:** Truy van tblRegistration WHERE StudentID=1 AND Semester='2026-2' | Ket qua: 0 ban ghi — chua co dang ky nao duoc luu |
+| 10 | Nhan nut "Register" | He thong kiem tra: (1) Tong TC = 10, 10 >= 10 va <= 15 ✓. (2) Khong trung gio: Mon 07:00, Tue 09:00, Fri 07:00 — khong trung ✓. (3) Tien quyet: CS101 khong co ✓, MA101 khong co ✓, EN101 khong co ✓. (4) Moi mon 1 lop ✓ |
+| 11 | He thong hien thi phieu dang ky | Phieu: Ma SV: SV2026001, Ten SV: Nguyen Van A, Khoa: K65, Hoc ky: 2026-2. Bang: \|CS101\|Lap trinh Java\|3\|Mon 07:00–09:00\|Tran Thi Mai\|, \|MA101\|Toan cao cap\|4\|Tue 09:00–11:00\|Pham Thi Lan\|, \|EN101\|Tieng Anh\|3\|Fri 07:00–09:00\|Nguyen Thi Hoa\| |
+| 11b | **Verify DB sau Submit:** Truy van tblRegistration WHERE StudentID=1 AND Semester='2026-2' | Ket qua: 3 ban ghi (ClassID=1, 3, 5) — dang ky da duoc luu thanh cong |
 
 **Database sau khi chay test:**
 
