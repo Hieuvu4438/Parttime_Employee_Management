@@ -20,11 +20,10 @@
 | 6 | Staff nhap ma ve `TK001` vao o tim kiem va nhan Search. |
 | 7 | He thong hien thi chi tiet ve: ten tour, noi khoi hanh, diem den, ngay khoi hanh, ten dai dien, CMND, loai CMND, dia chi, SDT, email, so khach, gia ve, tong tien. |
 | 8 | Staff xac nhan thong tin ve va chon **Cancel ticket**. |
-| 9 | He thong tinh tien phat dua tren thoi diem huy: neu huy truoc 7 ngay khoi hanh → phat 10%, truoc 3 ngay → phat 30%, duoi 3 ngay → phat 50%. He thong hien thi hoa don phat: thong tin ve + tien phat + tien hoan lai. |
-| 10 | He thong hien thi hoa don phat: ma ve, ten tour, ngay khoi hanh, so khach, tong tien goc, muc phat, tien phat, tien hoan lai cho khach. |
-| 11 | Staff nhan **OK** de xac nhan huy ve. |
-| 12 | He thong luu vao database (cap nhat trang thai ve thanh "cancelled", tao CancellationInvoice), staff tra tien hoan lai cho khach hang. |
-| 13 | He thong thong bao "Huy ve thanh cong" va quay ve giao dien Home. |
+| 9 | He thong tinh tien phat dua tren thoi diem huy: neu huy truoc 7 ngay khoi hanh → phat 10%, truoc 3 ngay → phat 30%, duoi 3 ngay → phat 50%. He thong hien thi hoa don phat gom: ma ve, ten tour, ngay khoi hanh, so khach, tong tien goc, muc phat (%), tien phat, tien hoan lai cho khach. |
+| 10 | Staff nhan **OK** de xac nhan huy ve. |
+| 11 | He thong luu vao database (cap nhat trang thai ve thanh "cancelled", tao CancellationInvoice), staff tra tien hoan lai cho khach hang. |
+| 12 | He thong thong bao "Huy ve thanh cong" va quay ve giao dien Home. |
 
 ### Kich ban ngoai le
 
@@ -52,6 +51,7 @@ He thong quan ly huy ve tour du lich. Khi khach hang muon huy ve, nhan vien nhap
 | CancellationInvoice | Entity class | Hoa don huy ve, ghi nhan tien phat |
 | User | Entity class | Nhan vien thuc hien huy ve |
 | Ma ve, trang thai ve | Thuoc tinh | Thuoc tinh cua Invoice |
+| Ten dai dien (representativeName) | Thuoc tinh | Thuoc tinh cua Invoice — ten nguoi dai dien mua ve |
 | Tien phat, ngay huy | Thuoc tinh | Thuoc tinh cua CancellationInvoice |
 
 ### Buoc 3: Xac dinh quan he
@@ -117,16 +117,17 @@ User 1 --- n CancellationInvoice
 | -id: int         |       | -id: int         |
 | -code: String    |       | -code: String    |
 | -name: String    |       | -invoiceDate: Date|
-| -idNumber: String|       | -totalAmount: float|
-| -idType: String  |       | -numGuests: int  |
-| -phone: String   |       | -status: String  |
-| -email: String   |       +------------------+
-| -address: String |                | 1
-+------------------+                |
-         | 1                        | n
-         |                          v
-         | n                +------------------+
-         +----------------->| InvoiceDetail    |
+| -idNumber: String|       | -representativeName: String|
+| -idType: String  |       | -totalAmount: float|
+| -phone: String   |       | -numGuests: int  |
+| -email: String   |       | -status: String  |
+| -address: String |       +------------------+
++------------------+                | 1
+         | 1                        |
+         |                          | n
+         | n                        v
+         +----------------->+------------------+
+                            | InvoiceDetail    |
                             +------------------+
                             | -id: int         |
                             | -guestCount: int |
@@ -158,7 +159,7 @@ User 1 --- n CancellationInvoice
 | Customer → Invoice | 1-n (Association) | Mot khach hang co nhieu hoa don |
 | Invoice → InvoiceDetail | 1-n (Composition) | Mot hoa don co nhieu chi tiet |
 | TourDeparture → InvoiceDetail | 1-n (Association) | Mot ngay khoi hanh xuat hien trong nhieu chi tiet |
-| Invoice → CancellationInvoice | 1-0..1 (Association) | Mot hoa don co the co 1 hoa don huy |
+| Invoice → CancellationInvoice | 1-0..1 (Composition) | Mot hoa don co the co 1 hoa don huy; hoa don huy khong ton tai neu khong co hoa don goc |
 | User → CancellationInvoice | 1-n (Association) | Mot nhan vien tao nhieu hoa don huy |
 
 ### Hướng dẫn vẽ Class Diagram trên Visual Paradigm
@@ -188,7 +189,7 @@ Trong Visual Paradigm, click đúp vào class box để chỉnh sửa tên, tab 
 | Tour | <<entity>> | -id: int, -code: String, -name: String, -departure: String, -destination: String, -description: String | (không có) |
 | TourDeparture | <<entity>> | -id: int, -departureDate: Date, -price: float, -maxGuests: int | (không có) |
 | Customer | <<entity>> | -id: int, -code: String, -name: String, -idNumber: String, -idType: String, -phone: String, -email: String, -address: String | (không có) |
-| Invoice | <<entity>> | -id: int, -code: String, -invoiceDate: Date, -totalAmount: float, -numGuests: int, -status: String | +getInvoiceByCode(code: String): Invoice, +updateStatus(invoiceId: int, status: String): boolean |
+| Invoice | <<entity>> | -id: int, -code: String, -invoiceDate: Date, -representativeName: String, -totalAmount: float, -numGuests: int, -status: String | +getInvoiceByCode(code: String): Invoice, +updateStatus(invoiceId: int, status: String): boolean |
 | InvoiceDetail | <<entity>> | -id: int, -guestCount: int, -unitPrice: float, -amount: float | +getDetailsByInvoice(invoiceId: int): List<InvoiceDetail> |
 | CancellationInvoice | <<entity>> | -id: int, -cancelDate: Date, -fineRate: float, -fineAmount: float, -refundAmount: float | +addCancellation(ci: CancellationInvoice): boolean |
 | User | <<entity>> | -id: int, -username: String, -password: String, -role: String | (không có) |
@@ -210,7 +211,7 @@ Quy tắc đặt tên UI elements:
 Trong Visual Paradigm, sử dụng palette Relationships ở bên phải để chọn kiểu quan hệ:
 
 - **Association** (đường liền nét, mũi tên tam giác rỗng ▷): dùng cho quan hệ tham chiếu thông thường. Ví dụ: Customer → Invoice (khách hàng tham chiếu đến hóa đơn).
-- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập. Ví dụ: Invoice → CancellationInvoice (hóa đơn hủy tham chiếu hóa đơn gốc nhưng có thể tồn tại riêng).
+- **Aggregation** (đường liền nét, đầu kim cương rỗng ◇): dùng cho "contain" nhưng child có thể tồn tại độc lập. Ví dụ: Customer → Invoice (hóa đơn tham chiếu khách hàng nhưng có thể tồn tại riêng khi khách hàng bị xóa).
 - **Composition** (đường liền nét, đầu kim cương filled ◆): dùng cho "contain" nhưng child KHÔNG tồn tại nếu không có parent. Ví dụ: Tour → TourDeparture (ngày khởi hành không tồn tại nếu không có tour).
 - **Dependency** (đường dashed, mũi tên tam giác rỗng ▷): dùng cho "sử dụng" tạm thời. Ví dụ: CancelTicketFrm → InvoiceDAO (form sử dụng DAO để truy vấn).
 
@@ -246,13 +247,13 @@ Ví dụ: Tour (1) → (n) TourDeparture nghĩa là một tour có nhiều ngày
 5. Click vào đường kết nối → Properties → set Source Multiplicity = 1, Target Multiplicity = *.
 6. Kết quả: Tour (1) ◆----(*) TourDeparture.
 
-**Ví dụ 2: Vẽ quan hệ Invoice → CancellationInvoice (1-0..1, Association)**
+**Ví dụ 2: Vẽ quan hệ Invoice → CancellationInvoice (1-0..1, Composition)**
 1. Tạo class `<<entity>> Invoice` và `<<entity>> CancellationInvoice`.
-2. Chọn công cụ **Association** từ palette Relationships (mũi tên tam giác rỗng ▷).
+2. Chọn công cụ **Composition** từ palette Relationships (đầu kim cương filled ◆).
 3. Click vào class Invoice → kéo đến class CancellationInvoice.
 4. Click vào đường kết nối → Properties → set Source Multiplicity = 1, Target Multiplicity = 0..1.
 5. Đặt tên association: "has cancellation" (tùy chọn).
-6. Kết quả: Invoice (1) ▷----(0..1) CancellationInvoice.
+6. Kết quả: Invoice (1) ◆----(0..1) CancellationInvoice.
 
 ### Classes diagram (analysis)
 
@@ -354,7 +355,7 @@ Methods: getInvoiceByCode(), getDetailsByInvoice(), updateStatus(), addCancellat
 - `departureDate: Date`
 - `price: float`
 - `maxGuests: int`
-- `tour: Tour` (object attribute, FK)
+- `tour: Tour` (object attribute, FK — tham chiếu đến Tour cha)
 
 **Customer:**
 - `id: int` (PK)
@@ -370,6 +371,7 @@ Methods: getInvoiceByCode(), getDetailsByInvoice(), updateStatus(), addCancellat
 - `id: int` (PK)
 - `code: String`
 - `invoiceDate: Date`
+- `representativeName: String`
 - `totalAmount: float`
 - `numGuests: int`
 - `status: String` (active/cancelled)
@@ -406,73 +408,74 @@ Methods: getInvoiceByCode(), getDetailsByInvoice(), updateStatus(), addCancellat
 | Column | Type | Constraint |
 |--------|------|------------|
 | ID | int | PK |
-| code | varchar | |
-| name | varchar | |
-| departure | varchar | |
-| destination | varchar | |
-| description | varchar | |
+| code | varchar(20) | NOT NULL, UNIQUE |
+| name | varchar(100) | NOT NULL |
+| departure | varchar(100) | NOT NULL |
+| destination | varchar(100) | NOT NULL |
+| description | varchar(500) | |
 
 **tblTourDeparture:**
 | Column | Type | Constraint |
 |--------|------|------------|
 | ID | int | PK |
-| departureDate | date | |
-| price | float | |
-| maxGuests | int | |
-| tourID | int | FK → tblTour.ID |
+| departureDate | date | NOT NULL |
+| price | decimal(15,2) | NOT NULL |
+| maxGuests | int | NOT NULL |
+| tourID | int | FK → tblTour.ID, NOT NULL |
 
 **tblCustomer:**
 | Column | Type | Constraint |
 |--------|------|------------|
 | ID | int | PK |
-| code | varchar | |
-| name | varchar | |
-| idNumber | varchar | |
-| idType | varchar | |
-| phone | varchar | |
-| email | varchar | |
-| address | varchar | |
+| code | varchar(20) | NOT NULL, UNIQUE |
+| name | varchar(100) | NOT NULL |
+| idNumber | varchar(20) | NOT NULL |
+| idType | varchar(20) | NOT NULL |
+| phone | varchar(15) | |
+| email | varchar(100) | |
+| address | varchar(200) | |
 
 **tblInvoice:**
 | Column | Type | Constraint |
 |--------|------|------------|
 | ID | int | PK |
-| code | varchar | |
-| invoiceDate | date | |
-| totalAmount | float | |
-| numGuests | int | |
-| status | varchar | |
-| customerID | int | FK → tblCustomer.ID |
-| userID | int | FK → tblUser.ID |
+| code | varchar(20) | NOT NULL, UNIQUE |
+| invoiceDate | date | NOT NULL |
+| representativeName | varchar(100) | NOT NULL |
+| totalAmount | decimal(15,2) | NOT NULL |
+| numGuests | int | NOT NULL |
+| status | varchar(20) | NOT NULL, DEFAULT 'active' |
+| customerID | int | FK → tblCustomer.ID, NOT NULL |
+| userID | int | FK → tblUser.ID, NOT NULL |
 
 **tblInvoiceDetail:**
 | Column | Type | Constraint |
 |--------|------|------------|
 | ID | int | PK |
-| guestCount | int | |
-| unitPrice | float | |
-| amount | float | |
-| tourDepartureID | int | FK → tblTourDeparture.ID |
-| invoiceID | int | FK → tblInvoice.ID |
+| guestCount | int | NOT NULL |
+| unitPrice | decimal(15,2) | NOT NULL |
+| amount | decimal(15,2) | NOT NULL |
+| tourDepartureID | int | FK → tblTourDeparture.ID, NOT NULL |
+| invoiceID | int | FK → tblInvoice.ID, NOT NULL |
 
 **tblCancellationInvoice:**
 | Column | Type | Constraint |
 |--------|------|------------|
 | ID | int | PK |
-| cancelDate | date | |
-| fineRate | float | |
-| fineAmount | float | |
-| refundAmount | float | |
-| invoiceID | int | FK → tblInvoice.ID |
-| userID | int | FK → tblUser.ID |
+| cancelDate | date | NOT NULL |
+| fineRate | decimal(5,2) | NOT NULL |
+| fineAmount | decimal(15,2) | NOT NULL |
+| refundAmount | decimal(15,2) | NOT NULL |
+| invoiceID | int | FK → tblInvoice.ID, NOT NULL, UNIQUE |
+| userID | int | FK → tblUser.ID, NOT NULL |
 
 **tblUser:**
 | Column | Type | Constraint |
 |--------|------|------------|
 | ID | int | PK |
-| username | varchar | |
-| password | varchar | |
-| role | varchar | |
+| username | varchar(50) | NOT NULL, UNIQUE |
+| password | varchar(100) | NOT NULL |
+| role | varchar(20) | NOT NULL |
 
 ### Buoc 6: Mo ta cach ve Class Diagram (Design phase) bang Visual Paradigm
 
@@ -501,7 +504,7 @@ Methods: getInvoiceByCode(), getDetailsByInvoice(), updateStatus(), addCancellat
 |----|-----|-----------|---------------|------------|
 | CancelTicketFrm | InvoiceDAO | Duong lien net, mui tam tam giac rong | Dependency | CancelTicketFrm su dung InvoiceDAO |
 | CancelTicketFrm | CancellationInvoiceDAO | Duong lien net, mui tam tam giac rong | Dependency | CancelTicketFrm su dung CancellationInvoiceDAO |
-| Invoice | CancellationInvoice | Duong lien net, dau kim cuong rong | Aggregation 0..1 | Hoa don co the co hoa don huy |
+| Invoice | CancellationInvoice | Duong lien net, dau kim cuong filled | Composition 0..1 | Hoa don co the co hoa don huy; hoa don huy khong ton tai neu khong co hoa don goc |
 | Invoice | InvoiceDetail | Duong lien net, dau kim cuong filled | Composition 1-n | Hoa don chua nhieu chi tiet |
 | Invoice | Customer | Duong lien net, mui tam tam giac rong | Association | Hoa don tham chieu den Customer |
 | CancellationInvoice | User | Duong lien net, mui tam tam giac rong | Association | Hoa don huy tham chieu den User |
@@ -544,6 +547,8 @@ Staff       LoginFrm     UserDAO    HomeFrm    CancelTicketFrm  InvoiceDAO  Invo
   |            |            |          |             |               |---query DB   |                    |
   |            |            |          |             |               |<-return------|                    |
   |            |            |          |             |<--Invoice-----|              |                    |
+  |            |            |          |             |               |              |                    |
+  |            |            |          |             |--validate status (active?)   |                    |
   |            |            |          |             |               |              |                    |
   |            |            |          |             |--getDetailsByInvoice--------->|                    |
   |            |            |          |             |               |---query DB   |                    |
@@ -588,23 +593,24 @@ Staff       LoginFrm     UserDAO    HomeFrm    CancelTicketFrm  InvoiceDAO  Invo
 | 10 | getInvoiceByCode() | CancelTicketFrm | InvoiceDAO | Goi InvoiceDAO.getInvoiceByCode("TK001") |
 | 11 | query DB | InvoiceDAO | Database | Truy van tblInvoice WHERE code = 'TK001' |
 | 12 | return Invoice | InvoiceDAO | CancelTicketFrm | Tra ve doi tuong Invoice |
-| 13 | getDetailsByInvoice() | CancelTicketFrm | InvoiceDetailDAO | Goi InvoiceDetailDAO.getDetailsByInvoice(invoiceId) |
-| 14 | query DB | InvoiceDetailDAO | Database | Truy van tblInvoiceDetail JOIN tblTourDeparture JOIN tblTour |
-| 15 | return List<Detail> | InvoiceDetailDAO | CancelTicketFrm | Tra ve danh sach chi tiet |
-| 16 | display ticket info | CancelTicketFrm | UI | Hien thi chi tiet ve |
-| 17 | click Cancel | Staff | CancelTicketFrm | Staff nhan nut Cancel ticket |
-| 18 | calculate fine | CancelTicketFrm | Logic | Tinh tien phat dua tren so ngay con lai truoc khoi hanh |
-| 19 | display fine invoice | CancelTicketFrm | UI | Hien thi hoa don phat |
-| 20 | click OK | Staff | CancelTicketFrm | Staff xac nhan huy ve |
-| 21 | updateStatus() | CancelTicketFrm | InvoiceDAO | Goi InvoiceDAO.updateStatus(invoiceId, "cancelled") |
-| 22 | UPDATE DB | InvoiceDAO | Database | UPDATE tblInvoice SET status = 'cancelled' |
-| 23 | return true | InvoiceDAO | CancelTicketFrm | Tra ve true |
-| 24 | addCancellation() | CancelTicketFrm | CancellationInvoiceDAO | Tao CancellationInvoice, goi addCancellation() |
-| 25 | INSERT DB | CancellationInvoiceDAO | Database | INSERT INTO tblCancellationInvoice |
-| 26 | return true | CancellationInvoiceDAO | CancelTicketFrm | Tra ve true |
-| 27 | print refund slip | CancelTicketFrm | UI | In bien lai hoan tien |
-| 28 | show success | CancelTicketFrm | UI | Hien thi thong bao "Huy ve thanh cong" |
-| 29 | return | CancelTicketFrm | HomeFrm | Quay ve giao dien Home |
+| 13 | validate status | CancelTicketFrm | Logic | Kiem tra invoice.status == "active"; neu khong → hien thi loi "Ve da bi huy" hoac "Ve da su dung" |
+| 14 | getDetailsByInvoice() | CancelTicketFrm | InvoiceDetailDAO | Goi InvoiceDetailDAO.getDetailsByInvoice(invoiceId) |
+| 15 | query DB | InvoiceDetailDAO | Database | Truy van tblInvoiceDetail JOIN tblTourDeparture JOIN tblTour |
+| 16 | return List<Detail> | InvoiceDetailDAO | CancelTicketFrm | Tra ve danh sach chi tiet |
+| 17 | display ticket info | CancelTicketFrm | UI | Hien thi chi tiet ve |
+| 18 | click Cancel | Staff | CancelTicketFrm | Staff nhan nut Cancel ticket |
+| 19 | calculate fine | CancelTicketFrm | Logic | Tinh tien phat: (ngayKhoiHanh - ngayHuy) → neu > 7 ngay: 10%, 3-7 ngay: 30%, < 3 ngay: 50% |
+| 20 | display fine invoice | CancelTicketFrm | UI | Hien thi hoa don phat: thong tin ve + muc phat + tien phat + tien hoan lai |
+| 21 | click OK | Staff | CancelTicketFrm | Staff xac nhan huy ve |
+| 22 | updateStatus() | CancelTicketFrm | InvoiceDAO | Goi InvoiceDAO.updateStatus(invoiceId, "cancelled") |
+| 23 | UPDATE DB | InvoiceDAO | Database | UPDATE tblInvoice SET status = 'cancelled' |
+| 24 | return true | InvoiceDAO | CancelTicketFrm | Tra ve true |
+| 25 | addCancellation() | CancelTicketFrm | CancellationInvoiceDAO | Tao CancellationInvoice, goi addCancellation() |
+| 26 | INSERT DB | CancellationInvoiceDAO | Database | INSERT INTO tblCancellationInvoice |
+| 27 | return true | CancellationInvoiceDAO | CancelTicketFrm | Tra ve true |
+| 28 | print refund slip | CancelTicketFrm | UI | In bien lai hoan tien |
+| 29 | show success | CancelTicketFrm | UI | Hien thi thong bao "Huy ve thanh cong" |
+| 30 | return | CancelTicketFrm | HomeFrm | Quay ve giao dien Home |
 
 ---
 
@@ -647,9 +653,9 @@ Staff       LoginFrm     UserDAO    HomeFrm    CancelTicketFrm  InvoiceDAO  Invo
 | 1 | C001 | Nguyen Van A | 012345678901 | CCCD | 0912345678 | a@gmail.com | Ha Noi |
 
 **tblInvoice:**
-| ID | code | invoiceDate | totalAmount | numGuests | status | customerID | userID |
-|----|------|-------------|-------------|-----------|--------|------------|--------|
-| 1 | TK001 | 01/06/2026 | 5000000 | 2 | active | 1 | 1 |
+| ID | code | invoiceDate | representativeName | totalAmount | numGuests | status | customerID | userID |
+|----|------|-------------|-------------------|-------------|-----------|--------|------------|--------|
+| 1 | TK001 | 01/06/2026 | Nguyen Van A | 5000000 | 2 | active | 1 | 1 |
 
 **tblInvoiceDetail:**
 | ID | guestCount | unitPrice | amount | tourDepartureID | invoiceID |
@@ -666,21 +672,22 @@ Staff       LoginFrm     UserDAO    HomeFrm    CancelTicketFrm  InvoiceDAO  Invo
 | 2 | Nhap username `staff01`, password `123456`, nhan Login | Giao dien Home xuat hien voi cac chuc nang: Buy tickets, Cancel the ticket, Statistics |
 | 3 | Chon chuc nang Cancel the ticket | Giao dien tim kiem ve xuat hien voi o nhap ma ve, nut Search |
 | 4 | Nhap ma ve `TK001`, nhan Search | Hien thi chi tiet ve: Tour Ha Long 3 ngay, Ha Noi → Ha Long, 15/07/2026, Nguyen Van A, CMND 012345678901, 2 khach, tong tien 5,000,000 VND |
-| 5 | Nhan nut Cancel ticket | He thong tinh phat: con 37 ngay truoc khoi hanh → phat 10%. Hoa don phat hien thi: tong tien goc 5,000,000 VND, phat 10% = 500,000 VND, hoan lai 4,500,000 VND |
-| 6 | Nhan nut OK | He thong luu vao database. Thong bao "Huy ve thanh cong". Bien lai hoan tien duoc in: ma ve TK001, tien phat 500,000 VND, tien hoan lai 4,500,000 VND |
-| 7 | Nhan OK | Quay ve giao dien Home |
+| 5 | Nhan nut Cancel ticket | He thong tinh phat: con 34 ngay truoc khoi hanh (15/07/2026 - 11/06/2026) → phat 10%. Hoa don phat hien thi: tong tien goc 5,000,000 VND, phat 10% = 500,000 VND, hoan lai 4,500,000 VND |
+| 6 | Kiem tra DB truoc khi nhan OK | tblInvoice: status van la "active" (chua thay doi). tblCancellationInvoice: van rong (chua them dong moi). |
+| 7 | Nhan nut OK | He thong luu vao database. Thong bao "Huy ve thanh cong". Bien lai hoan tien duoc in: ma ve TK001, tien phat 500,000 VND, tien hoan lai 4,500,000 VND |
+| 8 | Nhan OK | Quay ve giao dien Home |
 
 ### Database sau khi test
 
 **tblInvoice:** (cap nhat 1 dong)
-| ID | code | invoiceDate | totalAmount | numGuests | status | customerID | userID |
-|----|------|-------------|-------------|-----------|--------|------------|--------|
-| 1 | TK001 | 01/06/2026 | 5000000 | 2 | **cancelled** | 1 | 1 |
+| ID | code | invoiceDate | representativeName | totalAmount | numGuests | status | customerID | userID |
+|----|------|-------------|-------------------|-------------|-----------|--------|------------|--------|
+| 1 | TK001 | 01/06/2026 | Nguyen Van A | 5000000 | 2 | **cancelled** | 1 | 1 |
 
 **tblCancellationInvoice:** (them 1 dong)
 | ID | cancelDate | fineRate | fineAmount | refundAmount | invoiceID | userID |
 |----|------------|----------|------------|--------------|-----------|--------|
-| 1 | 08/06/2026 | 0.10 | 500000 | 4500000 | 1 | 1 |
+| 1 | 11/06/2026 | 0.10 | 500000 | 4500000 | 1 | 1 |
 
 **tblInvoiceDetail:** (khong thay doi)
 
