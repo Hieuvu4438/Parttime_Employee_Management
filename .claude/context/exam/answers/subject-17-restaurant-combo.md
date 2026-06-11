@@ -24,7 +24,7 @@
 | 12 | Manager nhập "Coca", nhấn Search. Hệ thống hiển thị: SP05 — Đồ uống — Coca — Coca Cola 330ml — 15,000đ. |
 | 13 | Manager chọn "Coca" (SP05, 15,000đ). Quay về giao diện combo, Coca được thêm. Danh sách combo: Phở bò (50,000đ) + Coca (15,000đ). Tổng: 65,000đ. |
 | 14 | Manager nhấn **Update**. Hệ thống lưu combo vào database (tblCombo + tblComboDetail). |
-| 15 | Hệ thống thông báo "Tao combo thanh cong". |
+| 15 | Hệ thống thông báo "Tao combo thanh cong". Quay về giao diện quản lý combo. |
 
 ### Kịch bản ngoại lệ
 
@@ -350,7 +350,7 @@ Manager   LoginFrm  UserDAO  HomeFrm  ComboManageFrm  AddComboFrm  SearchDishFrm
   |          |         |       |            |              |              |            |         |           |
   |--login-->|         |       |            |              |              |            |         |           |
   |          |--checkLogin()-->|            |              |              |            |         |           |
-  |          |<--true--|       |            |              |              |            |         |           |
+  |          |<--User--|       |            |              |              |            |         |           |
   |          |--open HomeFrm-->|            |              |              |            |         |           |
   |          |         |       |            |              |              |            |         |           |
   |--select Combo Mgmt-------->|            |              |              |            |         |           |
@@ -397,7 +397,7 @@ Manager   LoginFrm  UserDAO  HomeFrm  ComboManageFrm  AddComboFrm  SearchDishFrm
 |------|-----|------|---------|---------|
 | 1 | Manager | LoginFrm | actionPerformed("Login") | Nhập username/password |
 | 2 | LoginFrm | UserDAO | checkLogin("manager01", "******") | Kiểm tra đăng nhập |
-| 3 | UserDAO | LoginFrm | return true | Thành công |
+| 3 | UserDAO | LoginFrm | return User | Trả về đối tượng User |
 | 4 | LoginFrm | HomeFrm | new HomeFrm().setVisible(true) | Mở giao diện chính |
 | 5 | Manager | HomeFrm | actionPerformed("Combo management") | Chọn quản lý combo |
 | 6 | HomeFrm | ComboManageFrm | new ComboManageFrm().setVisible(true) | Mở form quản lý combo |
@@ -438,8 +438,11 @@ Manager   LoginFrm  UserDAO  HomeFrm  ComboManageFrm  AddComboFrm  SearchDishFrm
 | TC02 | Combo | Tên combo để trống |
 | TC03 | Combo | Không có món nào trong combo |
 | TC04 | Combo | Nhập tên món không tồn tại |
+| TC05 | Combo | Sửa combo hiện có (thêm/xóa món) |
 
 ### TC01: Tạo combo thành công
+
+**Purpose:** Kiểm tra quy trình tạo combo hoàn chỉnh từ nhập tên combo, tìm và chọn món đến lưu combo vào database.
 
 **Purpose:** Kiểm tra quy trình tạo combo hoàn chỉnh từ nhập tên combo, tìm và chọn món đến lưu combo vào database.
 
@@ -487,7 +490,9 @@ Manager   LoginFrm  UserDAO  HomeFrm  ComboManageFrm  AddComboFrm  SearchDishFrm
 | 9 | Nhấn **Add dishes** lần nữa | Giao diện tìm món xuất hiện |
 | 10 | Nhập "Coca", nhấn Search | Bảng hiển thị: SP05 — Coca — 15,000đ |
 | 11 | Chọn dòng "Coca" (SP05) | Quay về form combo. Danh sách: Phở bò (50,000đ) + Coca (15,000đ). Tổng: 65,000đ |
-| 12 | Nhấn **Update** | Thông báo "Tao combo thanh cong" |
+| 12 | **Kiểm tra DB trước:** tblCombo có 1 dòng (ID=1). tblComboDetail có 2 dòng (comboID=1). | Dữ liệu đúng như Database trước khi test |
+| 13 | Nhấn **Update** | Thông báo "Tao combo thanh cong" |
+| 14 | **Kiểm tra DB sau:** tblCombo có 2 dòng (thêm ID=2). tblComboDetail có 4 dòng (thêm 2 dòng comboID=2). | Dữ liệu đúng như Database sau khi test |
 
 ### Database sau khi test
 
