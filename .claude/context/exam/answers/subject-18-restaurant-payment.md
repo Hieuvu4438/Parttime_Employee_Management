@@ -8,22 +8,22 @@
 
 ### Kịch bản chính
 
-| Bước | Diễn biến |
-|------|-----------|
-| 1 | Staff đăng nhập vào hệ thống. Giao diện Login xuất hiện: ô nhập username, ô nhập password, nút Login. |
-| 2 | Staff nhập username `staff01`, password `******`, nhấn Login. |
-| 3 | Giao diện Home xuất hiện với các chức năng: Order, Book a table, Payment, Combo management, Statistics. |
-| 4 | Khách hàng yêu cầu thanh toán. Staff chọn chức năng **Payment**. |
-| 5 | Giao diện chọn bàn xuất hiện: danh sách bàn có đơn hàng chưa thanh toán, hiển thị dưới dạng bảng hoặc combobox. |
-| 6 | Khách chọn bàn "B01". Staff nhấn chọn bàn B01. |
-| 7 | Giao diện hóa đơn chi tiết xuất hiện: thông tin bàn (B01 — Bàn VIP 1), tên nhân viên (staff01), tên khách hàng (nếu có), bảng danh sách món đã gọi: cột STT, Tên món, Đơn giá, Số lượng, Thành tiền. Dòng cuối: Tổng tiền. |
-| 8 | Staff hỏi khách có mã giảm giá không. Khách có mã "GIAM10". |
-| 9 | Staff nhấn **Add coupon** (btnAddCoupon). Ô nhập mã giảm giá (txtCouponCode) xuất hiện. |
-| 10 | Staff nhập "GIAM10" vào ô mã, nhấn OK. |
-| 11 | Hệ thống kiểm tra mã hợp lệ. Hóa đơn cập nhật: thêm dòng "Mã giảm giá: GIAM10 — Giảm 10%". Tổng tiền cập nhật: 210,000đ × 90% = 189,000đ. |
-| 12 | Staff thông báo số tiền 189,000đ cho khách. Khách thanh toán. |
-| 13 | Staff nhấn **Confirm** (btnConfirm). Hệ thống lưu hóa đơn vào database (tblInvoice). |
-| 14 | Hệ thống thông báo "Thanh toan thanh cong" và in hóa đơn cho khách.
+| Bước | Diễn biến | Giao diện hiển thị |
+|------|-----------|---------------------|
+| 1 | Staff đăng nhập vào hệ thống. Giao diện Login xuất hiện: ô nhập username, ô nhập password, nút Login. | **LoginFrm** |
+| 2 | Staff nhập username `staff01`, password `******`, nhấn Login. | **LoginFrm** |
+| 3 | Giao diện Home xuất hiện với các chức năng: Order, Book a table, Payment, Combo management, Statistics. | **HomeFrm** |
+| 4 | Khách hàng yêu cầu thanh toán. Staff chọn chức năng **Payment**. | **HomeFrm** |
+| 5 | Giao diện chọn bàn **PaymentFrm** xuất hiện: danh sách bàn có đơn hàng chưa thanh toán, hiển thị dưới dạng bảng hoặc combobox. | **PaymentFrm** |
+| 6 | Khách chọn bàn "B01". Staff nhấn chọn bàn B01. | **PaymentFrm** |
+| 7 | Giao diện hóa đơn chi tiết **PaymentFrm** xuất hiện: thông tin bàn (B01 — Bàn VIP 1), tên nhân viên (staff01), tên khách hàng (nếu có), bảng danh sách món đã gọi: cột STT, Tên món, Đơn giá, Số lượng, Thành tiền. Dòng cuối: Tổng tiền. | **PaymentFrm** |
+| 8 | Staff hỏi khách có mã giảm giá không. Khách có mã "GIAM10". | **PaymentFrm** |
+| 9 | Staff nhấn **Add coupon** (btnAddCoupon). Ô nhập mã giảm giá (txtCouponCode) xuất hiện. | **PaymentFrm** |
+| 10 | Staff nhập "GIAM10" vào ô mã, nhấn OK. | **PaymentFrm** |
+| 11 | Hệ thống kiểm tra mã hợp lệ. Hóa đơn cập nhật: thêm dòng "Mã giảm giá: GIAM10 — Giảm 10%". Tổng tiền cập nhật: 210,000đ × 90% = 189,000đ. | **PaymentFrm** |
+| 12 | Staff thông báo số tiền 189,000đ cho khách. Khách thanh toán. | **PaymentFrm** |
+| 13 | Staff nhấn **Confirm** (btnConfirm). Hệ thống lưu hóa đơn vào database (tblInvoice). | **PaymentFrm** |
+| 14 | Hệ thống thông báo "Thanh toan thanh cong" và in hóa đơn cho khách. Quay về giao diện Home. | **HomeFrm** |
 
 ### Kịch bản ngoại lệ
 
@@ -458,7 +458,7 @@ Staff    LoginFrm  UserDAO  HomeFrm  PaymentFrm  TableDAO  OrderDAO  OrderDetail
   |         |         |       |          |           |          |            |             |           |
   |--login->|         |       |          |           |          |            |             |           |
   |         |--checkLogin()-->|          |           |          |            |             |           |
-  |         |<--true--|       |          |           |          |            |             |           |
+  |         |<--User--|       |          |           |          |            |             |           |
   |         |--open HomeFrm-->|          |           |          |            |             |           |
   |         |         |       |          |           |          |            |             |           |
   |--select Payment-->|       |          |           |          |            |             |           |
@@ -505,7 +505,7 @@ Staff    LoginFrm  UserDAO  HomeFrm  PaymentFrm  TableDAO  OrderDAO  OrderDetail
 |------|-----|------|---------|---------|
 | 1 | Staff | LoginFrm | actionPerformed("Login") | Nhập username/password |
 | 2 | LoginFrm | UserDAO | checkLogin("staff01", "******") | Kiểm tra đăng nhập |
-| 3 | UserDAO | LoginFrm | return true | Thành công |
+| 3 | UserDAO | LoginFrm | return User | Trả về đối tượng User |
 | 4 | LoginFrm | HomeFrm | new HomeFrm().setVisible(true) | Mở giao diện chính |
 | 5 | Staff | HomeFrm | actionPerformed("Payment") | Chọn thanh toán |
 | 6 | HomeFrm | PaymentFrm | new PaymentFrm().setVisible(true) | Mở form thanh toán |
@@ -546,6 +546,7 @@ Staff    LoginFrm  UserDAO  HomeFrm  PaymentFrm  TableDAO  OrderDAO  OrderDetail
 | TC02 | Payment | Thanh toán không có mã giảm giá |
 | TC03 | Payment | Mã giảm giá không hợp lệ |
 | TC04 | Payment | Bàn không có đơn hàng |
+| TC05 | Payment | Thanh toán không sử dụng mã giảm giá |
 
 ### TC01: Thanh toán có mã giảm giá thành công
 
@@ -578,7 +579,10 @@ Staff    LoginFrm  UserDAO  HomeFrm  PaymentFrm  TableDAO  OrderDAO  OrderDetail
 | 2 | SP03 | Món chính | Gà rán | Gà rán giòn | 65000 |
 | 3 | SP05 | Đồ uống | Coca | Coca Cola 330ml | 15000 |
 
-**tblCombo:** (rỗng)
+**tblCombo:**
+| ID | name | totalPrice |
+|----|------|------------|
+| (0 dòng) | | |
 
 **tblOrder:**
 | ID | tableID | customerID | userID | orderDate | totalAmount | status |
@@ -601,7 +605,10 @@ Staff    LoginFrm  UserDAO  HomeFrm  PaymentFrm  TableDAO  OrderDAO  OrderDetail
 | 1 | GIAM10 | 0.1 |
 | 2 | GIAM20 | 0.2 |
 
-**tblInvoice:** (rỗng)
+**tblInvoice:**
+| ID | orderID | couponID | totalAmount | paidAmount | invoiceDate |
+|----|---------|----------|-------------|------------|-------------|
+| (0 dòng) | | | | | |
 
 ### Kịch bản test và kết quả mong đợi
 
@@ -613,7 +620,9 @@ Staff    LoginFrm  UserDAO  HomeFrm  PaymentFrm  TableDAO  OrderDAO  OrderDetail
 | 4 | Chọn bàn "B01" từ combobox | Hóa đơn chi tiết hiển thị: Bàn B01, NV staff01, KH Nguyen Van A. Bảng: Phở bò × 2 = 100,000đ; Coca × 3 = 45,000đ; Gà rán × 1 = 65,000đ. Tổng: 210,000đ |
 | 5 | Nhấn **Add coupon** | Ô nhập mã giảm giá xuất hiện |
 | 6 | Nhập "GIAM10", nhấn OK | Hệ thống kiểm tra mã hợp lệ. Hóa đơn cập nhật: thêm dòng "GIAM10 — Giảm 10%". Tổng mới: 210,000 × 0.9 = 189,000đ |
-| 7 | Nhấn **Confirm** | Hệ thống lưu hóa đơn. Thông báo "Thanh toan thanh cong". Hóa đơn được in |
+| 7 | **Kiểm tra DB trước:** tblInvoice có 0 dòng. tblOrder ID=1 có status = "active". | Dữ liệu đúng như Database trước khi test |
+| 8 | Nhấn **Confirm** | Hệ thống lưu hóa đơn. Thông báo "Thanh toan thanh cong". Hóa đơn được in |
+| 9 | **Kiểm tra DB sau:** tblInvoice có 1 dòng mới. tblOrder ID=1 có status = "paid". | Dữ liệu đúng như Database sau khi test |
 
 ### Database sau khi test
 
