@@ -9,18 +9,23 @@
 
 | Bước | Diễn biến |
 |------|-----------|
-| 1 | Manager đăng nhập hệ thống bằng tài khoản admin. |
-| 2 | Manager chọn menu **Statistics** → **Visitors by time slot**. |
-| 3 | Hệ thống hiển thị giao diện thống kê: ô nhập ngày bắt đầu (`txtStartDate`), ô nhập ngày kết thúc (`txtEndDate`), nút **View**. |
-| 4 | Manager nhập ngày bắt đầu: 01/01/2026, ngày kết thức: 31/12/2026. |
-| 5 | Manager nhấn nút **View**. |
-| 6 | Hệ thống truy vấn dữ liệu từ tblOrder, tblInvoice, tblOrderDetail theo khoảng thời gian đã chọn. |
-| 7 | Hệ thống nhóm đơn hàng theo khung giờ (ví dụ: 07:00-09:00, 09:00-11:00, 11:00-13:00, 13:00-15:00, 15:00-17:00, 17:00-19:00, 19:00-21:00). |
-| 8 | Hệ thống hiển thị bảng kết quả: giờ bắt đầu, giờ kết thúc, số khách trung bình, doanh thu trung bình/khách, tổng doanh thu theo giờ. Dữ liệu ví dụ: 11:00-13:00 (52 khách TB, 85,000đ/khách, 4,420,000đ), 18:00-20:00 (78 khách TB, 110,000đ/khách, 8,580,000đ). |
-| 9 | Manager nhấn vào dòng khung giờ "11:00-13:00" trong bảng. |
-| 10 | Hệ thống truy vấn chi tiết hóa đơn trong khung giờ đó từ tblInvoice, tblCustomer, tblOrder. |
-| 11 | Hệ thống hiển thị danh sách hóa đơn chi tiết: mã hóa đơn (HD001), tên khách hàng (Nguyễn Văn A), ngày (15/03/2026), tổng số món (5), tổng tiền (425,000đ). Tiếp tục: HD002, Trần Thị B, 15/03/2026, 3, 270,000đ; HD003, Lê Văn C, 16/03/2026, 4, 380,000đ. |
-| 12 | Manager nhấn **Back** để quay về bảng thống kê khung giờ. |
+| 1 | Manager đăng nhập vào hệ thống. Giao diện Login xuất hiện: ô nhập username, ô nhập password, nút Login. |
+| 2 | Manager nhập username `manager01`, password `******`, nhấn Login. |
+| 3 | Giao diện Home xuất hiện với menu Statistics. |
+| 4 | Manager chọn menu **Statistics** → **Visitors by time slot**. |
+| 5 | Giao diện thống kê xuất hiện: ô nhập ngày bắt đầu, ô nhập ngày kết thúc, nút View. |
+| 6 | Manager nhập ngày bắt đầu: 01/01/2026, ngày kết thúc: 31/12/2026, nhấn View. |
+| 7 | Hệ thống hiển thị bảng kết quả: giờ bắt đầu, giờ kết thúc, số khách trung bình, doanh thu trung bình/khách, tổng doanh thu theo giờ. Dữ liệu ví dụ: 11:00-13:00 (52 khách TB, 85,000đ/khách, 4,420,000đ), 18:00-20:00 (78 khách TB, 110,000đ/khách, 8,580,000đ). |
+| 8 | Manager nhấn vào dòng khung giờ "11:00-13:00" trong bảng. |
+| 9 | Hệ thống hiển thị danh sách hóa đơn chi tiết: mã hóa đơn (HD001), tên khách hàng (Nguyễn Văn A), ngày (15/03/2026), tổng số món (5), tổng tiền (425,000đ). Tiếp tục: HD002, Trần Thị B, 15/03/2026, 3, 270,000đ; HD003, Lê Văn C, 16/03/2026, 4, 380,000đ. |
+| 10 | Manager nhấn **Back** để quay về bảng thống kê khung giờ. |
+| 11 | Manager nhấn **Home** để quay về giao diện chính. |
+
+### Kịch bản ngoại lệ
+
+- **EL1:** Ngày bắt đầu lớn hơn ngày kết thúc → hệ thống thông báo "Ngày bắt đầu phải nhỏ hơn ngày kết thúc".
+- **EL2:** Không có dữ liệu trong khoảng thời gian đã chọn → bảng thống kê trống, hiển thị thông báo "Không có dữ liệu".
+- **EL3:** Manager nhấn vào dòng khung giờ không có hóa đơn → bảng chi tiết trống.
 
 ---
 
@@ -32,18 +37,28 @@ Hệ thống nhà hàng quản lý việc đặt món và thanh toán cho khách
 
 ### Trích xuất danh từ
 
-| Danh từ | Entity class |
-|---------|-------------|
-| Bàn ăn | Table |
-| Khách hàng | Customer |
-| Đơn hàng | Order |
-| Chi tiết đơn hàng | OrderDetail |
-| Hóa đơn | Invoice |
-| Món ăn | Dish |
-| Combo | Combo |
-| Combo chi tiết | ComboDetail |
-| Khung giờ | TimeSlot |
-| Người dùng | User |
+| Danh từ | Phân loại | Lý do |
+|---------|-----------|-------|
+| Bàn ăn (Table) | Entity class | Đối tượng chính: bàn ăn trong nhà hàng |
+| Khách hàng (Customer) | Entity class | Người đặt món và thanh toán |
+| Đơn hàng (Order) | Entity class | Bản ghi đặt món của khách tại bàn |
+| Chi tiết đơn hàng (OrderDetail) | Entity class | Chi tiết từng món trong đơn |
+| Hóa đơn (Invoice) | Entity class | Phiếu thanh toán cho đơn hàng |
+| Món ăn (Dish) | Entity class | Món ăn riêng lẻ |
+| Combo | Entity class | Combo nhiều món cho 1 người |
+| Combo chi tiết (ComboDetail) | Entity class | Chi tiết các món trong combo |
+| Khung giờ (TimeSlot) | Entity class | Khung giờ phục vụ để phân loại thống kê |
+| Người dùng (User) | Entity class | Nhân viên/quản lý thao tác trên hệ thống |
+| Mã bàn, tên bàn, số khách tối đa, mô tả | Attribute (Table) | Thuộc tính của Table |
+| Mã KH, tên, SĐT, email, địa chỉ | Attribute (Customer) | Thuộc tính của Customer |
+| Ngày đặt, tổng tiền, trạng thái | Attribute (Order) | Thuộc tính của Order |
+| Số lượng, đơn giá, thành tiền | Attribute (OrderDetail) | Thuộc tính của OrderDetail |
+| Ngày hóa đơn, tổng số món, tổng tiền, phương thức TT | Attribute (Invoice) | Thuộc tính của Invoice |
+| Mã món, loại, tên, mô tả, giá | Attribute (Dish) | Thuộc tính của Dish |
+| Tên combo, tổng giá | Attribute (Combo) | Thuộc tính của Combo |
+| Giờ bắt đầu, giờ kết thúc | Attribute (TimeSlot) | Thuộc tính của TimeSlot |
+| Username, password, họ tên, vai trò | Attribute (User) | Thuộc tính của User |
+| Số khách trung bình, doanh thu TB/khách | Rejected (derived) | Giá trị tính toán, không lưu trong DB |
 
 ### Bảng thuộc tính
 
@@ -51,12 +66,12 @@ Hệ thống nhà hàng quản lý việc đặt món và thanh toán cho khách
 |--------|------------|
 | Table | id (PK), code, name, maxGuests, status |
 | Customer | id (PK), code, name, phone, email, address |
-| Order | id (PK), tableId (FK), customerId (FK), userId (FK), orderDate, totalAmount, status |
-| OrderDetail | id (PK), orderId (FK), dishId (FK), comboId (FK), quantity, unitPrice, amount |
-| Invoice | id (PK), orderId (FK), customerId (FK), invoiceDate, totalOrders, totalAmount, paymentMethod |
+| Order | id (PK), orderDate, totalAmount, status, table: Table (FK), customer: Customer (FK), user: User (FK) |
+| OrderDetail | id (PK), quantity, unitPrice, amount, order: Order (FK), dish: Dish (FK), combo: Combo (FK) |
+| Invoice | id (PK), invoiceDate, totalOrders, totalAmount, paymentMethod, order: Order (FK), customer: Customer (FK) |
 | Dish | id (PK), code, type, name, description, price |
-| Combo | id (PK), name, totalPrice |
-| ComboDetail | id (PK), comboId (FK), dishId (FK), quantity |
+| Combo | id (PK), name, totalPrice, comboDetails: List<ComboDetail> |
+| ComboDetail | id (PK), quantity, combo: Combo (FK), dish: Dish (FK) |
 | TimeSlot | id (PK), startTime, endTime, description |
 | User | id (PK), username, password, fullName, role |
 
@@ -65,15 +80,15 @@ Hệ thống nhà hàng quản lý việc đặt món và thanh toán cho khách
 Phân tích module này (bỏ qua bước đăng nhập):
 
 Đăng nhập thành công -> HomeFrm xuất hiện:
-  menu thống kê -> mnuStatistic
-  mục khách theo khung giờ -> mnuVisitorByTimeSlot
+  nút thống kê -> subStatistic
 
 Chọn Visitors by time slot -> StatisticVisitorFrm xuất hiện:
-  ô nhập ngày bắt đầu -> dtpStartDate
-  ô nhập ngày kết thúc -> dtpEndDate
-  nút xem -> btnView
-  bảng thống kê khung giờ (clickable) -> dgvTimeSlotStat
-  bảng chi tiết hóa đơn -> dgvInvoiceDetail
+  ô nhập ngày bắt đầu -> inStartDate
+  ô nhập ngày kết thúc -> inEndDate
+  nút xem -> subView
+  bảng thống kê khung giờ (clickable) -> outsubTimeSlotStat
+  bảng chi tiết hóa đơn -> outInvoiceDetail
+  nút quay lại -> subBack
 
 Nhập ngày và nhấn View -> hệ thống lấy đơn hàng theo khoảng thời gian -> cần phương thức:
   tên: getOrdersByDateRange()
@@ -94,23 +109,23 @@ Click vào khung giờ -> hệ thống lấy thông tin khách hàng -> cần ph
   gán cho entity class: Customer.
 
 ### Summary
-View classes: HomeFrm, StatisticVisitorFrm
-Methods: getOrdersByDateRange(), getInvoicesByTimeSlot(), getCustomerById()
+View classes: LoginFrm, HomeFrm, StatisticVisitorFrm
+Methods: checkLogin(), getOrdersByDateRange(), getInvoicesByTimeSlot(), getCustomerById()
 
 ### Quan hệ
 
-```
-Table 1 --- n Order
-Customer 1 --- n Order
-User 1 --- n Order
-Order 1 --- n OrderDetail
-Dish 1 --- n OrderDetail
-Combo 1 --- n OrderDetail
-Order 1 --- 1 Invoice
-Customer 1 --- n Invoice
-Combo 1 --- n ComboDetail
-Dish 1 --- n ComboDetail
-```
+| Quan hệ | Kiểu | Multiplicity | Giải thích |
+|----------|------|--------------|------------|
+| Table → Order | Association | 1 - n | Một bàn có nhiều đơn hàng |
+| Customer → Order | Association | 1 - n | Một khách hàng có nhiều đơn hàng |
+| User → Order | Association | 1 - n | Một nhân viên tạo nhiều đơn hàng |
+| Order → OrderDetail | Composition | 1 - n | Một đơn hàng chứa nhiều chi tiết; chi tiết không tồn tại nếu không có đơn hàng |
+| Dish → OrderDetail | Association | 1 - n | Một món ăn xuất hiện trong nhiều chi tiết đơn |
+| Combo → OrderDetail | Association | 1 - n | Một combo xuất hiện trong nhiều chi tiết đơn |
+| Order → Invoice | Association | 1 - 1 | Mỗi đơn hàng tạo ra đúng 1 hóa đơn |
+| Customer → Invoice | Association | 1 - n | Một khách hàng có nhiều hóa đơn |
+| Combo → ComboDetail | Composition | 1 - n | Một combo chứa nhiều chi tiết món; chi tiết không tồn tại nếu không có combo |
+| Dish → ComboDetail | Association | 1 - n | Một món ăn xuất hiện trong nhiều combo |
 
 ### ASCII Class Diagram
 
@@ -195,9 +210,9 @@ Trong Visual Paradigm, click đúp vào class box để chỉnh sửa tên, tab 
 |-------|-----------|------------|---------|
 | Table | <<entity>> | -id: int, -code: String, -name: String, -maxGuests: int, -status: String | (không có) |
 | Customer | <<entity>> | -id: int, -code: String, -name: String, -phone: String, -email: String, -address: String | +getCustomerById(customerId: int): Customer |
-| Order | <<entity>> | -id: int, -orderDate: Date, -totalAmount: float, -status: String | +getOrdersByDateRange(startDate: Date, endDate: Date): List<Order> |
-| OrderDetail | <<entity>> | -id: int, -quantity: int, -unitPrice: float, -amount: float | (không có) |
-| Invoice | <<entity>> | -id: int, -invoiceDate: Date, -totalOrders: int, -totalAmount: float, -paymentMethod: String | +getInvoicesByTimeSlot(startTime: String, endTime: String, startDate: Date, endDate: Date): List<Invoice> |
+| Order | <<entity>> | -id: int, -orderDate: Date, -totalAmount: float, -status: String, -table: Table, -customer: Customer, -user: User | +getOrdersByDateRange(startDate: Date, endDate: Date): List<Order> |
+| OrderDetail | <<entity>> | -id: int, -quantity: int, -unitPrice: float, -amount: float, -order: Order, -dish: Dish, -combo: Combo | (không có) |
+| Invoice | <<entity>> | -id: int, -invoiceDate: Date, -totalOrders: int, -totalAmount: float, -paymentMethod: String, -order: Order, -customer: Customer | +getInvoicesByTimeSlot(startTime: String, endTime: String, startDate: Date, endDate: Date): List<Invoice> |
 | Dish | <<entity>> | -id: int, -code: String, -type: String, -name: String, -description: String, -price: float | (không có) |
 | Combo | <<entity>> | -id: int, -name: String, -totalPrice: float | (không có) |
 | ComboDetail | <<entity>> | -id: int, -quantity: int | (không có) |
@@ -208,14 +223,14 @@ Trong Visual Paradigm, click đúp vào class box để chỉnh sửa tên, tab 
 
 | View Class | Stereotype | UI Elements | Mô tả |
 |-----------|-----------|-------------|-------|
-| HomeFrm | <<boundary>> | -mnuStatistic: JMenu, -mnuVisitorByTimeSlot: JMenuItem | Giao diện chính, chứa menu Statistics |
-| StatisticVisitorFrm | <<boundary>> | -dtpStartDate: DateTimePicker, -dtpEndDate: DateTimePicker, -btnView: JButton, -dgvTimeSlotStat: JTable, -dgvInvoiceDetail: JTable, -btnBack: JButton | Giao diện thống kê khách theo khung giờ |
+| HomeFrm | <<boundary>> | -subStatistic: JButton | Giao diện chính, chứa nút chọn Statistics |
+| StatisticVisitorFrm | <<boundary>> | -inStartDate: JTextField, -inEndDate: JTextField, -subView: JButton, -outsubTimeSlotStat: JTable, -outInvoiceDetail: JTable, -subBack: JButton | Giao diện thống kê khách theo khung giờ |
 
 Quy tắc đặt tên UI elements:
-- Tiền tố `dtp` → DateTimePicker (chọn ngày): dtpStartDate, dtpEndDate
-- Tiền tố `btn` → Button (nút bấm): btnView, btnBack
-- Tiền tố `dgv` → DataGridView (bảng dữ liệu): dgvTimeSlotStat, dgvInvoiceDetail
-- Tiền tố `mnu` → Menu: mnuStatistic, mnuVisitorByTimeSlot
+- Tiền tố `in` → input (ô nhập liệu): inStartDate, inEndDate
+- Tiền tố `out` → output (vùng hiển thị): outInvoiceDetail
+- Tiền tố `outsub` → clickable output (bảng click được): outsubTimeSlotStat
+- Tiền tố `sub` → submit (nút bấm): subView, subBack, subStatistic
 
 #### 5. Cách vẽ quan hệ
 
@@ -272,37 +287,41 @@ Ví dụ: Table (1) → (n) Order nghĩa là một bàn có nhiều đơn hàng.
 
 ### View classes
 
-**StatisticVisitorFrm** — Giao diện thống kê khách theo khung giờ:
-- `dtpStartDate`: DateTimePicker — chọn ngày bắt đầu thống kê
-- `dtpEndDate`: DateTimePicker — chọn ngày kết thúc thống kê
-- `btnView`: Button — thực hiện thống kê
-- `dgvTimeSlotStat`: DataGridView — hiển thị danh sách khung giờ (giờ bắt đầu, giờ kết thúc, số khách TB, doanh thu TB/khách, tổng doanh thu)
-- `dgvInvoiceDetail`: DataGridView — hiển thị chi tiết hóa đơn khi click vào 1 dòng khung giờ (mã hóa đơn, tên KH, ngày, tổng số món, tổng tiền)
+**LoginFrm** — Giao diện đăng nhập:
+- `inUsername`: JTextField — nhập tên đăng nhập
+- `inPassword`: JPasswordField — nhập mật khẩu
+- `subLogin`: JButton — nút Login
 
 **HomeFrm** — Giao diện chính:
-- `mnuStatistic`: Menu — menu thống kê
-- `mnuVisitorByTimeSlot`: MenuItem — mở giao diện thống kê khách theo khung giờ
+- `subStatistic`: JButton — nút chọn chức năng Statistics
+
+**StatisticVisitorFrm** — Giao diện thống kê khách theo khung giờ:
+- `inStartDate`: JTextField — nhập ngày bắt đầu thống kê
+- `inEndDate`: JTextField — nhập ngày kết thúc thống kê
+- `subView`: JButton — nút xem thống kê
+- `outsubTimeSlotStat`: JTable — bảng danh sách khung giờ, click để chọn (giờ bắt đầu, giờ kết thúc, số khách TB, doanh thu TB/khách, tổng doanh thu)
+- `outInvoiceDetail`: JTable — bảng chi tiết hóa đơn (mã hóa đơn, tên KH, ngày, tổng số món, tổng tiền)
+- `subBack`: JButton — nút quay lại
 
 ### UI Elements
 
 | UI Element | Kiểu | Mô tả |
 |------------|------|-------|
-| dtpStartDate | DateTimePicker | Chọn ngày bắt đầu |
-| dtpEndDate | DateTimePicker | Chọn ngày kết thúc |
-| btnView | Button | Nhấn để xem thống kê |
-| dgvTimeSlotStat | DataGridView | Bảng kết quả thống kê khung giờ |
-| dgvInvoiceDetail | DataGridView | Bảng chi tiết hóa đơn |
-| btnBack | Button | Quay lại bảng thống kê |
+| inStartDate | JTextField | Nhập ngày bắt đầu |
+| inEndDate | JTextField | Nhập ngày kết thúc |
+| subView | JButton | Nhấn để xem thống kê |
+| outsubTimeSlotStat | JTable | Bảng kết quả thống kê khung giờ (clickable) |
+| outInvoiceDetail | JTable | Bảng chi tiết hóa đơn |
+| subBack | JButton | Quay lại bảng thống kê |
 
 ### DAO classes
 
 | DAO | Phương thức | Mô tả |
 |-----|-------------|-------|
+| UserDAO | `checkLogin(username, password): boolean` | Kiểm tra đăng nhập |
 | OrderDAO | `getOrdersByDateRange(startDate, endDate): List<Order>` | Lấy danh sách đơn hàng theo khoảng thời gian |
-| OrderDAO | `getOrdersByTimeSlot(startTime, endTime, startDate, endDate): List<Order>` | Lấy đơn hàng theo khung giờ và khoảng ngày |
 | InvoiceDAO | `getInvoicesByTimeSlot(startTime, endTime, startDate, endDate): List<Invoice>` | Lấy hóa đơn theo khung giờ |
 | CustomerDAO | `getCustomerById(customerId): Customer` | Lấy thông tin khách hàng theo mã |
-| TableDAO | `getTableById(tableId): Table` | Lấy thông tin bàn theo mã |
 
 ### Entity classes (Design phase)
 
@@ -310,12 +329,12 @@ Ví dụ: Table (1) → (n) Order nghĩa là một bàn có nhiều đơn hàng.
 |--------|------|------------|
 | Table | Model | id: int, code: String, name: String, maxGuests: int, status: String |
 | Customer | Model | id: int, code: String, name: String, phone: String, email: String, address: String |
-| Order | Model | id: int, tableId: int, customerId: int, userId: int, orderDate: Date, totalAmount: float, status: String |
-| OrderDetail | Model | id: int, orderId: int, dishId: int, comboId: int, quantity: int, unitPrice: float, amount: float |
-| Invoice | Model | id: int, orderId: int, customerId: int, invoiceDate: Date, totalOrders: int, totalAmount: float, paymentMethod: String |
+| Order | Model | id: int, orderDate: Date, totalAmount: float, status: String, table: Table (FK), customer: Customer (FK), user: User (FK) |
+| OrderDetail | Model | id: int, quantity: int, unitPrice: float, amount: float, order: Order (FK), dish: Dish (FK), combo: Combo (FK) |
+| Invoice | Model | id: int, invoiceDate: Date, totalOrders: int, totalAmount: float, paymentMethod: String, order: Order (FK), customer: Customer (FK) |
 | Dish | Model | id: int, code: String, type: String, name: String, description: String, price: float |
-| Combo | Model | id: int, name: String, totalPrice: float |
-| ComboDetail | Model | id: int, comboId: int, dishId: int, quantity: int |
+| Combo | Model | id: int, name: String, totalPrice: float, comboDetails: List<ComboDetail> |
+| ComboDetail | Model | id: int, quantity: int, combo: Combo (FK), dish: Dish (FK) |
 | User | Model | id: int, username: String, password: String, fullName: String, role: String |
 
 ### Entity types sử dụng
@@ -388,9 +407,9 @@ Ví dụ: Table (1) → (n) Order nghĩa là một bàn có nhiều đơn hàng.
 | Column | Type | Constraint |
 |--------|------|------------|
 | ID | int | PRIMARY KEY |
-| tableID | int | FOREIGN KEY → tblTable(ID) |
+| tableID | int | FOREIGN KEY → tblTable(ID), NOT NULL |
 | customerID | int | FOREIGN KEY → tblCustomer(ID), NULLABLE |
-| userID | int | FOREIGN KEY → tblUser(ID) |
+| userID | int | FOREIGN KEY → tblUser(ID), NOT NULL |
 | orderDate | datetime | NOT NULL |
 | totalAmount | float | NOT NULL |
 | status | varchar(20) | NOT NULL |
@@ -410,8 +429,8 @@ Ví dụ: Table (1) → (n) Order nghĩa là một bàn có nhiều đơn hàng.
 | Column | Type | Constraint |
 |--------|------|------------|
 | ID | int | PRIMARY KEY |
-| orderID | int | FOREIGN KEY → tblOrder(ID) |
-| customerID | int | FOREIGN KEY → tblCustomer(ID) |
+| orderID | int | FOREIGN KEY → tblOrder(ID), NOT NULL |
+| customerID | int | FOREIGN KEY → tblCustomer(ID), NULLABLE |
 | invoiceDate | datetime | NOT NULL |
 | totalOrders | int | |
 | totalAmount | float | NOT NULL |
@@ -423,19 +442,23 @@ Ví dụ: Table (1) → (n) Order nghĩa là một bàn có nhiều đơn hàng.
 
 1. Mở Visual Paradigm → New → Class Diagram.
 2. Tạo 3 package: `view.statistic`, `model`, `dao`.
-3. Tạo View classes trong package `view.statistic`:
-   - `<<boundary>> StatisticVisitorFrm`: Ngăn 2 chứa UI elements (dtpStartDate, dtpEndDate, btnView, dgvTimeSlotStat, dgvInvoiceDetail, btnBack). Ngăn 3 trống.
-   - `<<boundary>> HomeFrm`: Ngăn 2 chứa menu items (mnuStatistic, mnuVisitorByTimeSlot). Ngăn 3 trống.
+3. Tạo View classes:
+   - `<<boundary>> LoginFrm`: Ngăn 2 chứa (inUsername: JTextField, inPassword: JPasswordField, subLogin: JButton). Ngăn 3 trống.
+   - `<<boundary>> HomeFrm`: Ngăn 2 chứa (subStatistic: JButton). Ngăn 3 trống.
+   - `<<boundary>> StatisticVisitorFrm`: Ngăn 2 chứa UI elements (inStartDate: JTextField, inEndDate: JTextField, subView: JButton, outsubTimeSlotStat: JTable, outInvoiceDetail: JTable, subBack: JButton). Ngăn 3 trống.
 4. Tạo DAO classes trong package `dao`:
-   - `<<control>> OrderDAO`: Ngăn 2 trống. Ngăn 3: +getOrdersByDateRange(startDate: Date, endDate: Date): List<Order>, +getOrdersByTimeSlot(startTime: String, endTime: String, startDate: Date, endDate: Date): List<Order>
+   - `<<control>> OrderDAO`: Ngăn 2 trống. Ngăn 3: +getOrdersByDateRange(startDate: Date, endDate: Date): List<Order>
    - `<<control>> InvoiceDAO`: Ngăn 3: +getInvoicesByTimeSlot(startTime: String, endTime: String, startDate: Date, endDate: Date): List<Invoice>
    - `<<control>> CustomerDAO`: Ngăn 3: +getCustomerById(customerId: int): Customer
+   - `<<control>> UserDAO`: Ngăn 3: +checkLogin(username: String, password: String): boolean
 5. Tạo Entity classes trong package `model` với stereotype `<<entity>>`, mỗi class có Ngăn 2 chứa attributes với kiểu dữ liệu (int, String, float, Date).
 6. Vẽ Dependency (đường dashed, mũi tên tam giác rỗng ▷):
-   - StatisticVisitorFrm → OrderDAO (form sử dụng DAO)
-   - StatisticVisitorFrm → InvoiceDAO (form sử dụng DAO)
-   - StatisticVisitorFrm → CustomerDAO (form sử dụng DAO)
+   - LoginFrm → UserDAO (form sử dụng DAO để đăng nhập)
+   - StatisticVisitorFrm → OrderDAO (form sử dụng DAO để truy vấn đơn hàng)
+   - StatisticVisitorFrm → InvoiceDAO (form sử dụng DAO để truy vấn hóa đơn)
+   - StatisticVisitorFrm → CustomerDAO (form sử dụng DAO để truy vấn khách hàng)
 7. Vẽ Dependency từ DAO → Entity:
+   - UserDAO → User (DAO truy vấn entity)
    - OrderDAO → Order (DAO truy vấn entity)
    - InvoiceDAO → Invoice (DAO truy vấn entity)
    - CustomerDAO → Customer (DAO truy vấn entity)
@@ -464,39 +487,76 @@ Ví dụ: Table (1) → (n) Order nghĩa là một bàn có nhiều đơn hàng.
 
 ### Bảng chi tiết các bước
 
-| Bước | Từ | Đến | Message | Loại |
-|------|-----|-----|---------|------|
-| 1 | Manager | HomeFrm | selectMenu("Statistics") | synchronous |
-| 2 | HomeFrm | StatisticVisitorFrm | show() | synchronous |
-| 3 | StatisticVisitorFrm | Manager | displayForm(dtpStartDate, dtpEndDate, btnView) | return |
-| 4 | Manager | StatisticVisitorFrm | enterDateRange(01/01/2026, 31/12/2026) | synchronous |
-| 5 | Manager | StatisticVisitorFrm | clickView() | synchronous |
-| 6 | StatisticVisitorFrm | OrderDAO | getOrdersByDateRange(01/01/2026, 31/12/2026) | synchronous |
-| 7 | OrderDAO | StatisticVisitorFrm | return List<Order> | return |
-| 8 | StatisticVisitorFrm | StatisticVisitorFrm | groupOrdersByTimeSlot(orders) | self |
-| 9 | StatisticVisitorFrm | StatisticVisitorFrm | calculateAvgVisitors() | self |
-| 10 | StatisticVisitorFrm | StatisticVisitorFrm | calculateAvgRevenuePerGuest() | self |
-| 11 | StatisticVisitorFrm | StatisticVisitorFrm | calculateTotalHourlyRevenue() | self |
-| 12 | StatisticVisitorFrm | Manager | displayTimeSlotTable(data) | return |
-| 13 | Manager | StatisticVisitorFrm | clickRow("11:00-13:00") | synchronous |
-| 14 | StatisticVisitorFrm | InvoiceDAO | getInvoicesByTimeSlot("11:00", "13:00", 01/01/2026, 31/12/2026) | synchronous |
-| 15 | InvoiceDAO | StatisticVisitorFrm | return List<Invoice> | return |
-| 16 | StatisticVisitorFrm | CustomerDAO | getCustomerById(customerId) | synchronous |
-| 17 | CustomerDAO | StatisticVisitorFrm | return Customer | return |
-| 18 | StatisticVisitorFrm | StatisticVisitorFrm | buildInvoiceDetailList(invoices, customers) | self |
-| 19 | StatisticVisitorFrm | Manager | displayInvoiceDetail(data) | return |
-| 20 | Manager | StatisticVisitorFrm | clickBack() | synchronous |
-| 21 | StatisticVisitorFrm | Manager | displayTimeSlotTable(previousData) | return |
+| # | Message | Từ | Đến | Mô tả |
+|---|---------|----|-----|-------|
+| 1 | selectMenu("Statistics") | Manager | HomeFrm | Manager chọn menu Statistics |
+| 2 | show() | HomeFrm | StatisticVisitorFrm | Mở giao diện thống kê |
+| 3 | displayForm() | StatisticVisitorFrm | Manager | Hiển thị ô nhập ngày, nút View |
+| 4 | enterDateRange() | Manager | StatisticVisitorFrm | Nhập ngày 01/01/2026 - 31/12/2026 |
+| 5 | clickView() | Manager | StatisticVisitorFrm | Nhấn nút View |
+| 6 | getOrdersByDateRange() | StatisticVisitorFrm | OrderDAO | Gọi OrderDAO.getOrdersByDateRange(01/01/2026, 31/12/2026) |
+| 7 | query DB | OrderDAO | Database | Truy vấn tblOrder |
+| 8 | return List<Order> | OrderDAO | StatisticVisitorFrm | Trả về danh sách đơn hàng |
+| 9 | groupOrdersByTimeSlot() | StatisticVisitorFrm | StatisticVisitorFrm | Nhóm đơn theo khung giờ (self-call) |
+| 10 | calculateAvgVisitors() | StatisticVisitorFrm | StatisticVisitorFrm | Tính số khách TB/khung giờ (self-call) |
+| 11 | calculateAvgRevenuePerGuest() | StatisticVisitorFrm | StatisticVisitorFrm | Tính doanh thu TB/khách (self-call) |
+| 12 | calculateTotalHourlyRevenue() | StatisticVisitorFrm | StatisticVisitorFrm | Tính tổng doanh thu/khung giờ (self-call) |
+| 13 | displayTimeSlotTable() | StatisticVisitorFrm | Manager | Hiển thị bảng thống kê khung giờ |
+| 14 | clickRow("11:00-13:00") | Manager | StatisticVisitorFrm | Nhấn vào dòng khung giờ |
+| 15 | getInvoicesByTimeSlot() | StatisticVisitorFrm | InvoiceDAO | Gọi InvoiceDAO.getInvoicesByTimeSlot("11:00", "13:00", 01/01/2026, 31/12/2026) |
+| 16 | query DB | InvoiceDAO | Database | Truy vấn tblInvoice JOIN tblOrder |
+| 17 | return List<Invoice> | InvoiceDAO | StatisticVisitorFrm | Trả về danh sách hóa đơn |
+| 18 | getCustomerById() | StatisticVisitorFrm | CustomerDAO | Gọi CustomerDAO.getCustomerById(customerId) |
+| 19 | query DB | CustomerDAO | Database | Truy vấn tblCustomer |
+| 20 | return Customer | CustomerDAO | StatisticVisitorFrm | Trả về thông tin khách hàng |
+| 21 | buildInvoiceDetailList() | StatisticVisitorFrm | StatisticVisitorFrm | Xây dựng danh sách chi tiết (self-call) |
+| 22 | displayInvoiceDetail() | StatisticVisitorFrm | Manager | Hiển thị bảng chi tiết hóa đơn |
+| 23 | clickBack() | Manager | StatisticVisitorFrm | Nhấn nút Back |
+| 24 | displayTimeSlotTable() | StatisticVisitorFrm | Manager | Quay về bảng thống kê khung giờ |
 
 ---
 
 ## Câu 5: Blackbox Testcase
 
+### Bảng tổng hợp test case
+
+| No. | Module | Test case |
+|-----|--------|-----------|
+| TC01 | Stat visitors | Thống kê thành công có dữ liệu và xem chi tiết hóa đơn |
+| TC02 | Stat visitors | Khoảng thời gian không có dữ liệu |
+| TC03 | Stat visitors | Ngày bắt đầu lớn hơn ngày kết thúc |
+| TC04 | Stat visitors | Click vào khung giờ không có hóa đơn |
+| TC05 | Stat visitors | Thống kê với khoảng thời gian 1 ngày |
+
 ### TC01: Thống kê khách theo khung giờ và xem chi tiết hóa đơn
+
+**Purpose:** Kiểm tra chức năng thống kê khách theo khung giờ hiển thị đúng dữ liệu và xem chi tiết hóa đơn khi click vào một khung giờ.
 
 **Database trước:**
 
-tblOrder:
+**tblUser:**
+| ID | username | password | fullName | role |
+|----|----------|----------|----------|------|
+| 1 | manager01 | 123456 | Nguyen Van M | manager |
+| 2 | staff01 | 123456 | Tran Van S | staff |
+
+**tblTable:**
+| ID | code | name | maxGuests | status |
+|----|------|------|-----------|--------|
+| 1 | B01 | Bàn VIP 1 | 6 | active |
+| 2 | B02 | Bàn thường 1 | 4 | active |
+| 3 | B03 | Bàn thường 2 | 4 | active |
+
+**tblCustomer:**
+| ID | code | name | phone | email | address |
+|----|------|------|-------|-------|---------|
+| 1 | C001 | Nguyễn Văn A | 0901234567 | nva@gmail.com | Ha Noi |
+| 2 | C002 | Trần Thị B | 0912345678 | ttb@gmail.com | HCM |
+| 3 | C003 | Lê Văn C | 0923456789 | lvc@gmail.com | Da Nang |
+| 4 | C004 | Phạm Thị D | 0934567890 | ptd@gmail.com | Hue |
+| 5 | C005 | Hoàng Văn E | 0945678901 | hve@gmail.com | Can Tho |
+
+**tblOrder:**
 | id | tableId | customerId | userId | orderDate | totalAmount | status |
 |----|---------|------------|--------|-----------|-------------|--------|
 | 1 | 1 | 1 | 1 | 2026-03-15 11:30:00 | 425000 | Completed |
@@ -525,13 +585,14 @@ tblCustomer:
 
 | Bước | Kịch bản | Kết quả mong đợi |
 |------|----------|------------------|
-| 1 | Manager đăng nhập hệ thống | Đăng nhập thành công, hiển thị HomeFrm |
+| 1 | Manager nhập `manager01` / `123456`, nhấn Login | Đăng nhập thành công, hiển thị HomeFrm |
 | 2 | Manager chọn menu Statistics → Visitors by time slot | Hiển thị giao diện thống kê với ô nhập ngày bắt đầu, ngày kết thúc, nút View |
 | 3 | Manager nhập ngày bắt đầu: 01/01/2026, ngày kết thúc: 31/12/2026 | Các ô nhập hiển thị giá trị đã chọn |
 | 4 | Manager nhấn nút View | Hệ thống hiển thị bảng thống kê: 11:00-13:00 (3 khách TB, 358,333đ/khách, 1,075,000đ), 18:00-20:00 (2 khách TB, 585,000đ/khách, 1,170,000đ) |
-| 5 | Manager nhấn vào dòng "11:00-13:00" | Hệ thống hiển thị bảng chi tiết hóa đơn bên dưới |
-| 6 | Bảng chi tiết hiển thị 3 dòng: HD001, Nguyễn Văn A, 15/03/2026, 5 món, 425,000đ; HD002, Trần Thị B, 15/03/2026, 3 món, 270,000đ; HD003, Lê Văn C, 16/03/2026, 4 món, 380,000đ | Dữ liệu hiển thị chính xác |
-| 7 | Manager nhấn nút Back | Quay về bảng thống kê khung giờ, bảng chi tiết ẩn đi |
+| 5 | Kiểm tra DB | tblOrder, tblInvoice không thay đổi (chức năng chỉ đọc) |
+| 6 | Manager nhấn vào dòng "11:00-13:00" | Hệ thống hiển thị bảng chi tiết hóa đơn bên dưới |
+| 7 | Bảng chi tiết hiển thị 3 dòng: HD001, Nguyễn Văn A, 15/03/2026, 5 món, 425,000đ; HD002, Trần Thị B, 15/03/2026, 3 món, 270,000đ; HD003, Lê Văn C, 16/03/2026, 4 món, 380,000đ | Dữ liệu hiển thị chính xác |
+| 8 | Manager nhấn nút Back | Quay về bảng thống kê khung giờ, bảng chi tiết ẩn đi |
 
 **Database sau:**
 - Không có thay đổi dữ liệu (chức năng chỉ đọc).
@@ -540,15 +601,29 @@ tblCustomer:
 
 ### TC02: Thống kê với khoảng thời gian không có dữ liệu
 
+**Purpose:** Kiểm tra hệ thống xử lý đúng khi không có dữ liệu trong khoảng thời gian đã chọn.
+
 **Database trước:**
-- tblOrder: không có đơn hàng nào trong khoảng 01/06/2025 - 30/06/2025.
+
+**tblUser:**
+| ID | username | password | fullName | role |
+|----|----------|----------|----------|------|
+| 1 | manager01 | 123456 | Nguyen Van M | manager |
+
+**tblTable:** (giống TC01)
+
+**tblCustomer:** (giống TC01)
+
+**tblOrder:** (giống TC01 — nhưng không có đơn nào trong khoảng 01/06/2025 - 30/06/2025)
+
+**tblInvoice:** (giống TC01)
 
 | Bước | Kịch bản | Kết quả mong đợi |
 |------|----------|------------------|
-| 1 | Manager đăng nhập hệ thống | Đăng nhập thành công |
+| 1 | Manager nhập `manager01` / `123456`, nhấn Login | Đăng nhập thành công |
 | 2 | Manager chọn Statistics → Visitors by time slot | Hiển thị giao diện thống kê |
 | 3 | Manager nhập ngày: 01/06/2025 - 30/06/2025 | Các ô nhập hiển thị giá trị |
 | 4 | Manager nhấn View | Bảng thống kê trống, hiển thị thông báo "Không có dữ liệu trong khoảng thời gian này" |
 
 **Database sau:**
-- Không có thay đổi dữ liệu.
+- Không có thay đổi dữ liệu (chức năng chỉ đọc).
